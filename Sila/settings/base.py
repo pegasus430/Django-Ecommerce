@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     #'django.contrib.sites',  ## needed for django-allauth
 
     'inventory',
+    'contacts',
 
     #'huey.contrib.djhuey', 
 ]
