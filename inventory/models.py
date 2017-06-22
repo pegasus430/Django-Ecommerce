@@ -18,6 +18,9 @@ class Supplier(models.Model):
     contact_phone = models.CharField(max_length=100)
     contact_email = models.CharField(max_length=100)
 
+    def __unicode__(self):
+        return self.business_name
+
 
 ###################
 ## Raw materials ##
@@ -52,13 +55,13 @@ class Material(models.Model):
     
     name = models.CharField(max_length=50)
     description = models.TextField()
-    mat_type = models.CharField(max_length=3, choices=MAT_TYPE_SELECTIONS)
+    mat_type = models.CharField(max_length=3, choices=MAT_TYPE_SELECTIONS, verbose_name="Material type")
     
     cost_per_usage_unit = models.FloatField()
     quantity_in_stock = models.IntegerField()
-    unit_usage = models.CharField(max_length=2, choices=UNIT_USAGE_SELECTIONS)
-    unit_purchase = models.CharField(max_length=2, choices=UNIT_PURCHASE_SELECTIONS)
-    unit_usage_in_purchase = models.FloatField()
+    unit_usage = models.CharField(max_length=2, choices=UNIT_USAGE_SELECTIONS, verbose_name="Usage unit")
+    unit_purchase = models.CharField(max_length=2, choices=UNIT_PURCHASE_SELECTIONS, verbose_name="Purchase unit")
+    unit_usage_in_purchase = models.FloatField(verbose_name="Number of usage units in purchase unit")
 
     supplier = models.ForeignKey(Supplier)
     
@@ -73,7 +76,7 @@ class Material(models.Model):
 class Collection(models.Model):
     ''' collection name '''
     name = models.CharField(max_length=100)
-    number = models.IntegerField()
+    number = models.CharField(max_length=3)
 
     def __unicode__(self):
         return self.name
@@ -87,11 +90,27 @@ class Size(models.Model):
         return self.short_size
 
 
+class Colour(models.Model):
+    '''Product sizes'''
+    name = models.CharField(max_length=2)
+    code = models.CharField(max_length=20)
+
+    def __unicode__(self):
+        return self.colour_name
+
+
 class ProductModel(models.Model):
     ''' product model '''
     name = models.CharField(max_length=100)
     number = models.IntegerField()
     size = models.ForeignKey(Size)
+
+    @property
+    def used_in_collections(self):
+        collections = ""
+        for i in self.product_set.all():
+            collections += "{}\n".format(i.collection)
+        return collections
 
     def __unicode__(self):
         return '{} {}'.format(self.name, self.size)
@@ -126,7 +145,7 @@ class Product(models.Model):
     description = models.TextField()
     collection = models.ForeignKey(Collection)
     model = models.ForeignKey(ProductModel)
-    colour = models.CharField(max_length=2)
+    colour = models.ForeignKey(Colour)
     ean_code = models.CharField(max_length=13)
 
     def __unicode__(self):
@@ -140,19 +159,34 @@ class Product(models.Model):
         return round(cost, ROUND_DIGITS)
 
     @property
-    def recommended_shop_price(self):
+    def recommended_B2B_price_per_96(self):
+        return round(self.cost * 1.35, ROUND_DIGITS)
+
+    @property
+    def recommended_B2B_price_per_24(self):
+        return round(self.cost * 1.40, ROUND_DIGITS)
+
+    @property
+    def recommended_B2B_price_per_6(self):
         return round(self.cost * 1.45, ROUND_DIGITS)
 
     @property
+    def recommended_B2B_price_per_1(self):
+        return round(self.cost * 1.60, ROUND_DIGITS)
+
+    @property
     def recommended_retail_price(self):
-        return round(self.cost * 2 * 1.21, ROUND_DIGITS)
+        ## calculate marge
+        rrp = self.recommended_B2B_price_per_1 * 2 * 1.21
+        ## round up to nearst 5 and return
+        return int(5 * round(float(rrp)/5))
 
     @property
     def sku(self):
         return '{collection}-{model}-{colour}-{size}'.format(
             collection=self.collection.number,
             model=self.model.number,
-            colour=self.colour,
+            colour=self.colour.code,
             size=self.model.size)
 
 
