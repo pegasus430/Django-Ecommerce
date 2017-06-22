@@ -103,7 +103,7 @@ class ProductModel(models.Model):
 class ProductModelImage(models.Model):
     '''Product model images'''
     description = models.CharField(max_length=100)
-    image = models.FileField(upload_to='product_model_images/%Y/%m/%d')
+    image = models.FileField(upload_to='media/product_model_images/%Y/%m/%d')
     product_model = models.ForeignKey(ProductModel)
 
     def __unicode__(self):
@@ -112,8 +112,8 @@ class ProductModelImage(models.Model):
 
 class ProductPattern(models.Model):
     name = models.CharField(max_length=100)
-    pattern_vector = models.FileField(upload_to='patterns/vector/%Y/%m/%d')
-    pattern_image = models.FileField(upload_to='patterns/image/%Y/%m/%d')
+    pattern_vector = models.FileField(upload_to='media/patterns/vector/%Y/%m/%d')
+    pattern_image = models.FileField(upload_to='media/patterns/image/%Y/%m/%d')
     product = models.ForeignKey(ProductModel)
 
     def __unicode__(self):
@@ -159,7 +159,7 @@ class Product(models.Model):
 class ProductImage(models.Model):
     ''' product image'''
     description = models.CharField(max_length=100)
-    image = models.FileField(upload_to='products/%Y/%m/%d')
+    image = models.FileField(upload_to='media/products/%Y/%m/%d')
     product = models.ForeignKey(Product)
 
     def __unicode__(self):
