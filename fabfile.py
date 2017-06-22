@@ -10,7 +10,7 @@ from os import path
 env.domain = 'sila.network'
 env.ssl_email = 'sascha.dobblaere@gmail.com'
 env.rolefs = {
-	'web': ['www.sila.network'],
+	'web': ['www.sila.network',],
 	'mail': [],
 	'feature':[],
 }
