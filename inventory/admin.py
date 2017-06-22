@@ -35,7 +35,6 @@ class ProductAdmin(admin.ModelAdmin):
 
     inlines = [BillOfMaterialInline, ProductImageInline]
 
-admin.site.register(Supplier)
 admin.site.register(Material)
 admin.site.register(Collection)
 admin.site.register(Size)
