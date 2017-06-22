@@ -88,7 +88,7 @@ class ProductModel(models.Model):
     ''' product model '''
     name = models.CharField(max_length=100)
     number = models.IntegerField()
-    size = models.ForeignKey(Size)
+    size = models.ForeignKey(Size, blank=True, null=True)
 
     @property
     def used_in_collections(self):
