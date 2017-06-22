@@ -31,6 +31,7 @@ class Material(models.Model):
         ('PC', 'Pieces'),
         ('ME', 'Meters'),
         ('RO', 'Rolls'),
+        ('BA', 'Bags'),
     )    
 
     sku = models.CharField(max_length=50)
