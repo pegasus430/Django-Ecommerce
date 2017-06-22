@@ -1,7 +1,9 @@
+from copy import deepcopy
+
 from django.contrib import admin
 
 def copy_object(obj):
-    new_obj = obj
+    new_obj = deepcopy(obj)
     new_obj.pk = None
     try:
         new_obj.name += ' (Copy)'
