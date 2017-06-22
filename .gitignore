@@ -1,0 +1,21 @@
+## Virtualenv
+venv
+venv/
+
+## File types
+*.pyc
+*.sqlite3
+*.db
+*.zip
+*.rar
+
+## Other
+node_modules
+/static/
+/media/
+CACHE
+.idea/
+_*
+
+## Selenium gecko driver
+geckodriver.log
