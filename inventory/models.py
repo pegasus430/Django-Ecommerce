@@ -31,6 +31,7 @@ class Material(models.Model):
         ('PC', 'Pieces'),
         ('ME', 'Meters'),
         ('RO', 'Rolls'),
+        ('BO', 'Box'),
         ('BA', 'Bags'),
     )    
 
