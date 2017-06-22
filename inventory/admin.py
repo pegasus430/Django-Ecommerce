@@ -4,11 +4,11 @@ from models import *
 
 class ProductPatternInline(admin.TabularInline):
     model=ProductPattern
-    extra = 1
+    extra = 0
 
 class ProductModelImageInline(admin.TabularInline):
     model=ProductModelImage
-    extra=1
+    extra=0
 
 class ProductModelAdmin(admin.ModelAdmin):
     inlines = [ProductPatternInline, ProductModelImageInline]
@@ -16,11 +16,11 @@ class ProductModelAdmin(admin.ModelAdmin):
 
 class BillOfMaterialInline(admin.TabularInline):
     model = BillOfMaterial
-    extra = 2
+    extra = 0
 
 class ProductImageInline(admin.TabularInline):
     model = ProductImage
-    extra = 1
+    extra = 0
 
 class ProductAdmin(admin.ModelAdmin):
     readonly_fields = (

@@ -2,12 +2,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 
-#####################
-## Extra Variables ##
-#####################
-
-ROUND_DIGITS = 2
-
+from .helpers import calc_price, ROUND_DIGITS
 ##############
 ## Contacts ##
 ##############
@@ -92,11 +87,11 @@ class Size(models.Model):
 
 class Colour(models.Model):
     '''Product sizes'''
-    name = models.CharField(max_length=2)
-    code = models.CharField(max_length=20)
+    name = models.CharField(max_length=20)
+    code = models.CharField(max_length=2)
 
     def __unicode__(self):
-        return self.colour_name
+        return self.name
 
 
 class ProductModel(models.Model):
@@ -146,7 +141,7 @@ class Product(models.Model):
     collection = models.ForeignKey(Collection)
     model = models.ForeignKey(ProductModel)
     colour = models.ForeignKey(Colour)
-    ean_code = models.CharField(max_length=13)
+    ean_code = models.CharField(max_length=13, blank=True, null=True)
 
     def __unicode__(self):
         return self.name
@@ -160,24 +155,29 @@ class Product(models.Model):
 
     @property
     def recommended_B2B_price_per_96(self):
-        return round(self.cost * 1.35, ROUND_DIGITS)
+        sell_price = calc_price(self.cost, 1.35)
+        return sell_price
 
     @property
     def recommended_B2B_price_per_24(self):
-        return round(self.cost * 1.40, ROUND_DIGITS)
+        sell_price = calc_price(self.cost, 1.4)
+        return sell_price
 
     @property
     def recommended_B2B_price_per_6(self):
-        return round(self.cost * 1.45, ROUND_DIGITS)
+        sell_price = calc_price(self.cost, 1.45)
+        return sell_price
 
     @property
     def recommended_B2B_price_per_1(self):
-        return round(self.cost * 1.60, ROUND_DIGITS)
+        sell_price = calc_price(self.cost, 1.60)
+        return sell_price
 
     @property
     def recommended_retail_price(self):
-        ## calculate marge
-        rrp = self.recommended_B2B_price_per_1 * 2 * 1.21
+        ## calculate marge - B2B price_per_1 * shop_margin * VAT
+        markup = 1.6 * 2.2 * 1.21
+        rrp = calc_price(self.cost, markup)
         ## round up to nearst 5 and return
         return int(5 * round(float(rrp)/5))
 
