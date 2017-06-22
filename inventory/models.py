@@ -29,7 +29,6 @@ class Material(models.Model):
     UNIT_PURCHASE_SELECTIONS = (
         ('MO', 'Months'),
         ('PC', 'Pieces'),
-        ('PL', 'Pieces'),
         ('ME', 'Meters'),
         ('RO', 'Rolls'),
     )    
