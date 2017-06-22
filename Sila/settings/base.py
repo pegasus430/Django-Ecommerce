@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #'django.contrib.sites',  ## needed for django-allauth
 
+    'defaults',
     'inventory',
     'contacts',
 

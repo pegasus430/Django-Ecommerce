@@ -1,6 +1,10 @@
 from django.contrib import admin
+from defaults.admin import DefaultAdmin
 
 from models import *
+
+class MaterialAdmin(DefaultAdmin):
+    pass
 
 class ProductPatternInline(admin.TabularInline):
     model=ProductPattern
@@ -22,7 +26,7 @@ class ProductImageInline(admin.TabularInline):
     model = ProductImage
     extra = 0
 
-class ProductAdmin(admin.ModelAdmin):
+class ProductAdmin(DefaultAdmin):
     readonly_fields = (
         'sku',
         'recommended_retail_price', 
@@ -32,10 +36,9 @@ class ProductAdmin(admin.ModelAdmin):
         'recommended_B2B_price_per_96',
         'cost',
         )        
-
     inlines = [BillOfMaterialInline, ProductImageInline]
 
-admin.site.register(Material)
+admin.site.register(Material, MaterialAdmin)
 admin.site.register(Collection)
 admin.site.register(Size)
 admin.site.register(Colour)
