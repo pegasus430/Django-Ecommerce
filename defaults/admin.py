@@ -14,8 +14,9 @@ def copy_object(obj):
 def copy_object_action(modeladmin, request, queryset):
     for obj in queryset:
         copy_object(obj)
-copy_object.short_description = "Copy Object"
+copy_object_action.short_description = "Copy Object"
 
 
 class DefaultAdmin(admin.ModelAdmin):
-    actions = [copy_object_action]
+    # actions = [copy_object_action]
+    pass

@@ -1,7 +1,14 @@
 from django.contrib import admin
 from defaults.admin import DefaultAdmin
 
-from models import *
+from .models import *
+from .helpers import copy_product
+
+def copy_product_action(modeladmin, request, queryset):
+    for obj in queryset:
+        copy_product(obj)
+copy_product_action.short_description = "Copy Product"
+
 
 class MaterialAdmin(DefaultAdmin):
     pass
@@ -37,6 +44,7 @@ class ProductAdmin(DefaultAdmin):
         'cost',
         )        
     inlines = [BillOfMaterialInline, ProductImageInline]
+    actions = [copy_product_action]
 
 admin.site.register(Material, MaterialAdmin)
 admin.site.register(Collection)
