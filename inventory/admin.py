@@ -12,7 +12,7 @@ copy_product_action.short_description = "Copy Product"
 
 class MaterialAdmin(DefaultAdmin):
     list_display = ['name', 'quantity_in_stock', 'sku_supplier', 'supplier']
-    search_fields = ['name', 'supplier']
+    search_fields = ['name', 'supplier__business_name']
 
 class ProductPatternInline(admin.TabularInline):
     model=ProductPattern
