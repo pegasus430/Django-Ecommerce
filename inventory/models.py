@@ -48,6 +48,8 @@ class Material(models.Model):
     unit_purchase = models.CharField(max_length=2, choices=UNIT_PURCHASE_SELECTIONS, verbose_name="Purchase unit")
     unit_usage_in_purchase = models.FloatField(verbose_name="Number of usage units in purchase unit")
 
+    est_delivery_time = models.CharField(max_length=100, blank=True, null=True)
+
     supplier = models.ForeignKey(Supplier)
     
     def __unicode__(self):
