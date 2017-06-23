@@ -50,6 +50,7 @@ class ProductAdmin(DefaultAdmin):
 
 class BillOfMaterialAdmin(admin.ModelAdmin):
     readonly_fields = ['all_materials_in_stock']
+    list_display = ['quantity_in_stock', 'sku_supplier']
 
 admin.site.register(Material, MaterialAdmin)
 admin.site.register(Collection)
