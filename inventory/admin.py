@@ -46,7 +46,7 @@ class ProductAdmin(DefaultAdmin):
         'cost',
         )    
     list_display = ['name','sku', 'active', 'complete', 'all_materials_in_stock']        
-    list_filter = ['all_materials_in_stock']
+    # list_filter = ['all_materials_in_stock']
     inlines = [BillOfMaterialInline, ProductImageInline]
     actions = [copy_product_action]
 
