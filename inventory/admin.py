@@ -11,7 +11,7 @@ copy_product_action.short_description = "Copy Product"
 
 
 class MaterialAdmin(DefaultAdmin):
-    list_display = ['quantity_in_stock', 'sku_supplier', 'supplier']
+    list_display = ['name', 'quantity_in_stock', 'sku_supplier', 'supplier']
     search_fields = ['name', 'supplier']
 
 class ProductPatternInline(admin.TabularInline):
