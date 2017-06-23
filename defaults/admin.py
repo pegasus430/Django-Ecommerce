@@ -18,5 +18,5 @@ copy_object_action.short_description = "Copy Object"
 
 
 class DefaultAdmin(admin.ModelAdmin):
-    # actions = [copy_object_action]
+    actions = [copy_object_action]
     pass
