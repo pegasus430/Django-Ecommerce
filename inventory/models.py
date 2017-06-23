@@ -193,7 +193,7 @@ class Product(models.Model):
     def recommended_retail_price(self):
         ## calculate marge - B2B price_per_1 * shop_margin * VAT
         rrp_markup = 2.4 * 1.21
-        rrp = calc_price(self, lux_markup=rrp_markup, classic_markup=rrp_markup, price_markup=rrp_markup)
+        rrp = calc_price(self, lux_markup=rrp_markup, classic_markup=rrp_markup, price_markup=rrp_markup, rrp=True)
         ## round up to nearst 5 and return
         return int(5 * round(float(rrp)/5))
     recommended_retail_price.fget.short_description = u'RRP'
