@@ -30,6 +30,7 @@ def copy_product_model(obj):
     new_obj.pk = None
     new_obj.name += ' (Copy)'
     new_obj.size = None
+    new_obj.all_patterns_present = False
     new_obj.save()
 
     for img in obj.productmodelimage_set.all():
