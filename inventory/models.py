@@ -96,11 +96,20 @@ class Colour(models.Model):
 
 class ProductModel(models.Model):
     ''' product model '''
+    PRODUCT_TYPE_CHOICES = (
+        ('PL', 'Plaid'),
+        ('BA', 'Basket'),
+        ('CA', 'Carrier'),
+        ('JA', 'Jacket'),
+        ('SW', 'Sweater'),
+        ('CU', 'Cushion'),
+    )
     name = models.CharField(max_length=100)
     number = models.CharField(max_length=10)
     size = models.ForeignKey(Size, blank=True, null=True)
     all_patterns_present = models.BooleanField(default=False)
     product_images_present = models.BooleanField(default=False)
+    product_type = models.CharField(choices=PRODUCT_TYPE_CHOICES, max_length=2 ,blank=True, null=True)
 
     @property
     def used_in_collections(self):
