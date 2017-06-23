@@ -181,21 +181,21 @@ class Product(models.Model):
     @property
     def recommended_B2B_price_per_6(self):
         if self.range_type == 'LUX':
-            markup = 1.6
+            markup = 1.8
         elif self.range_type == 'CLA':
-            markup = 1.45
+            markup = 1.65
         elif self.range_type == 'PRI':
-            markup = 1.45
+            markup = 1.65
         return calc_price(self.cost, markup)
 
     @property
     def recommended_B2B_price_per_1(self):
         if self.range_type == 'LUX':
-            markup = 1.7
+            markup = 2
         elif self.range_type == 'CLA':
-            markup = 1.6
+            markup = 1.8
         elif self.range_type == 'PRI':
-            markup = 1.6
+            markup = 1.8
         return calc_price(self.cost, markup)
 
     @property
