@@ -28,8 +28,8 @@ class ProductModelImageInline(admin.TabularInline):
     extra=0
 
 class ProductModelAdmin(admin.ModelAdmin):
-    list_display = ['__unicode__', 'number', 'size', 'all_patterns_present', 'product_images_present']
-    list_filter = ['number', 'size', 'all_patterns_present', 'product_images_present']
+    list_display = ['__unicode__', 'product_type', 'size', 'all_patterns_present', 'product_images_present']
+    list_filter = ['product_type', 'number', 'size', 'all_patterns_present', 'product_images_present']
     inlines = [ProductPatternInline, ProductModelImageInline]
     readonly_fields = ['used_in_collections']
     actions = [copy_product_model_action]
@@ -51,7 +51,7 @@ class ProductAdmin(admin.ModelAdmin):
         'recommended_retail_price', 'recommended_B2B_price_per_1',
         'recommended_B2B_price_per_6', 'recommended_B2B_price_per_24', 
         'recommended_B2B_price_per_96']  
-    list_filter = ['collection', 'colour', 'model__size', 'model__number', 'complete', 'active']
+    list_filter = ['collection', 'colour', 'model__product_type', 'model__size', 'model__number', 'complete', 'active']
     inlines = [BillOfMaterialInline, ProductImageInline]
     actions = [copy_product_action]
 
