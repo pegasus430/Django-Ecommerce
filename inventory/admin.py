@@ -29,6 +29,7 @@ class ProductModelImageInline(admin.TabularInline):
 
 class ProductModelAdmin(admin.ModelAdmin):
     list_display = ['__unicode__', 'number', 'size', 'all_patterns_present', 'product_images_present']
+    list_filter = ['number', 'size', 'all_patterns_present', 'product_images_present']
     inlines = [ProductPatternInline, ProductModelImageInline]
     readonly_fields = ['used_in_collections']
     actions = [copy_product_model_action]
