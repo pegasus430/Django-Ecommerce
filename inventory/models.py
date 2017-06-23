@@ -68,11 +68,11 @@ class Collection(models.Model):
 
 class Size(models.Model):
     '''Product sizes'''
-    short_size = models.CharField(max_length=3)
     full_size = models.CharField(max_length=20)
+    short_size = models.CharField(max_length=3)
 
     def __unicode__(self):
-        return self.short_size
+        return self.full_size
 
 
 class Colour(models.Model):
@@ -89,6 +89,8 @@ class ProductModel(models.Model):
     name = models.CharField(max_length=100)
     number = models.IntegerField()
     size = models.ForeignKey(Size, blank=True, null=True)
+    all_patterns_present = models.BooleanField(default=False)
+    product_images_present = models.BooleanField(default=False)
 
     @property
     def used_in_collections(self):
@@ -116,8 +118,8 @@ class ProductModelImage(models.Model):
 
 class ProductPattern(models.Model):
     name = models.CharField(max_length=100)
-    pattern_vector = models.FileField(upload_to='media/patterns/vector/%Y/%m/%d')
     pattern_image = models.FileField(upload_to='media/patterns/image/%Y/%m/%d')
+    pattern_vector = models.FileField(upload_to='media/patterns/vector/%Y/%m/%d')
     product = models.ForeignKey(ProductModel)
 
     def __unicode__(self):
