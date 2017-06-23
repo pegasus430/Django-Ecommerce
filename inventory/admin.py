@@ -11,7 +11,8 @@ copy_product_action.short_description = "Copy Product"
 
 
 class MaterialAdmin(DefaultAdmin):
-    pass
+    list_display = ['quantity_in_stock', 'sku_supplier', 'supplier']
+    search_fields = ['name', 'supplier']
 
 class ProductPatternInline(admin.TabularInline):
     model=ProductPattern
@@ -50,7 +51,6 @@ class ProductAdmin(DefaultAdmin):
 
 class BillOfMaterialAdmin(admin.ModelAdmin):
     readonly_fields = ['all_materials_in_stock']
-    list_display = ['quantity_in_stock', 'sku_supplier', 'supplier']
 
 admin.site.register(Material, MaterialAdmin)
 admin.site.register(Collection)
