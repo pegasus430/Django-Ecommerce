@@ -44,16 +44,12 @@ class ProductImageInline(admin.TabularInline):
     extra = 0
 
 class ProductAdmin(admin.ModelAdmin):
-    readonly_fields = (
-        'sku',
-        'recommended_retail_price', 
-        'recommended_B2B_price_per_1',
-        'recommended_B2B_price_per_6',
-        'recommended_B2B_price_per_24',
-        'recommended_B2B_price_per_96',
-        'cost',
-        )    
-    list_display = ['name','sku', 'active', 'complete', 'all_materials_in_stock']        
+    readonly_fields = ('sku', 'recommended_retail_price', 'recommended_B2B_price_per_1',
+        'recommended_B2B_price_per_6', 'recommended_B2B_price_per_24',
+        'recommended_B2B_price_per_96', 'cost',)    
+    list_display = ['name','sku', 'active', 'complete', 'all_materials_in_stock',
+        'recommended_B2B_price_per_1', 'recommended_B2B_price_per_6', 
+        'recommended_B2B_price_per_24', 'recommended_B2B_price_per_96']  
     list_filter = ['collection', 'colour', 'model__size', 'model__number', 'complete', 'active']
     inlines = [BillOfMaterialInline, ProductImageInline]
     actions = [copy_product_action]
