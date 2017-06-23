@@ -162,53 +162,62 @@ class Product(models.Model):
 
     @property
     def recommended_B2B_price_per_96(self):
-        if self.collection.range_type == 'LUX':
+        range_type = self.collection.range_type
+        if range_type == 'LUX':
             markup = 1.45
-        elif self.range_type == 'CLA':
+        elif range_type == 'CLA':
             markup = 1.35
-        elif self.range_type == 'PRI':
+        elif range_type == 'PRI':
             markup = 1.25
         return calc_price(self.cost, markup)
+    recommended_B2B_price_per_96.fget.short_description = u'Per 96'
 
     @property
     def recommended_B2B_price_per_24(self):
-        if self.collection.range_type == 'LUX':
+        range_type = self.collection.range_type
+        if range_type == 'LUX':
             markup = 1.5
-        elif self.range_type == 'CLA':
+        elif range_type == 'CLA':
             markup = 1.4
-        elif self.range_type == 'PRI':
+        elif range_type == 'PRI':
             markup = 1.3
         return calc_price(self.cost, markup)
+    recommended_B2B_price_per_24.fget.short_description = u'Per 24'    
 
     @property
     def recommended_B2B_price_per_6(self):
-        if self.collection.range_type == 'LUX':
+        range_type = self.collection.range_type
+        if range_type == 'LUX':
             markup = 1.8
-        elif self.range_type == 'CLA':
+        elif range_type == 'CLA':
             markup = 1.65
-        elif self.range_type == 'PRI':
+        elif range_type == 'PRI':
             markup = 1.65
         return calc_price(self.cost, markup)
+    recommended_B2B_price_per_6.fget.short_description = u'Per 6'
 
     @property
     def recommended_B2B_price_per_1(self):
-        if self.collection.range_type == 'LUX':
+        range_type = self.collection.range_type
+        if range_type == 'LUX':
             markup = 2
-        elif self.range_type == 'CLA':
+        elif range_type == 'CLA':
             markup = 1.8
-        elif self.range_type == 'PRI':
+        elif range_type == 'PRI':
             markup = 1.8
         return calc_price(self.cost, markup)
+    recommended_B2B_price_per_1.fget.short_description = u'Per 1'
 
     @property
     def recommended_retail_price(self):
         ## calculate marge - B2B price_per_1 * shop_margin * VAT
-        if self.collection.range_type == 'LUX':
-            markup = 2.2 * 1.35
-        elif self.collection.range_type == 'CLA':
-            markup = 2.2 * 1.35
-        elif self.collection.range_type == 'PRI':
-            markup = 2.2 * 1.35
+        range_type = self.collection.range_type
+        if range_type == 'LUX':
+            markup = 2.5 * 1.21
+        elif range_type == 'CLA':
+            markup = 2.5 * 1.21
+        elif range_type == 'PRI':
+            markup = 2.5 * 1.21
             
         rrp = calc_price(self.recommended_B2B_price_per_1, markup)
         ## round up to nearst 5 and return
