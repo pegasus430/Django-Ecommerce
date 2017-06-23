@@ -202,13 +202,13 @@ class Product(models.Model):
     def recommended_retail_price(self):
         ## calculate marge - B2B price_per_1 * shop_margin * VAT
         if self.range_type == 'LUX':
-            markup = self.recommended_B2B_price_per_1 * 2.2 * 1.35
+            markup = 2.2 * 1.35
         elif self.range_type == 'CLA':
-            markup = self.recommended_B2B_price_per_1 * 2.2 * 1.35
+            markup = 2.2 * 1.35
         elif self.range_type == 'PRI':
-            markup = self.recommended_B2B_price_per_1 * 2.2 * 1.35
+            markup = 2.2 * 1.35
             
-        rrp = calc_price(self.cost, markup)
+        rrp = calc_price(self.recommended_B2B_price_per_1, markup)
         ## round up to nearst 5 and return
         return int(5 * round(float(rrp)/5))
 
