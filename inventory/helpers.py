@@ -2,8 +2,15 @@ from copy import deepcopy
 
 ROUND_DIGITS = 2
 
-def calc_price(ori_price, markup):
-    return round(ori_price * markup, ROUND_DIGITS)
+def calc_price(product, lux_markup, classic_markup, price_markup):
+    range_type = product.collection.range_type
+    if range_type == 'LUX':
+        markup = lux_markup
+    elif range_type == 'CLA':
+        markup = classic_markup
+    elif range_type == 'PRI':
+        markup = price_markup
+    return round(product.cost * markup, ROUND_DIGITS)
 
 
 def copy_product(obj):
