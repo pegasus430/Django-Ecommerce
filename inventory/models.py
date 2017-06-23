@@ -182,7 +182,7 @@ class Product(models.Model):
             collection=self.collection.number,
             model=self.model.number,
             colour=self.colour.code,
-            size=self.model.size)
+            size=self.model.size.short_size)
 
     @property 
     def all_materials_in_stock(self):
