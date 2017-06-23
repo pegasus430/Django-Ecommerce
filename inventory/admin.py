@@ -43,7 +43,7 @@ class ProductImageInline(admin.TabularInline):
     model = ProductImage
     extra = 0
 
-class ProductAdmin(DefaultAdmin):
+class ProductAdmin(admin.ModelAdmin):
     readonly_fields = (
         'sku',
         'recommended_retail_price', 
