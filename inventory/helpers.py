@@ -20,3 +20,9 @@ def copy_product(obj):
         new_mat.pk = None
         new_mat.product = new_obj
         new_mat.save()
+
+    for img in obj.productimage_set.all():
+        new_img = deepcopy(img)
+        new_img.pk = None
+        new_img.product = new_obj
+        new_img.save()
