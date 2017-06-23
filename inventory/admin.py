@@ -2,13 +2,17 @@ from django.contrib import admin
 from defaults.admin import DefaultAdmin
 
 from .models import *
-from .helpers import copy_product
+from .helpers import copy_product, copy_product_model
 
 def copy_product_action(modeladmin, request, queryset):
     for obj in queryset:
         copy_product(obj)
 copy_product_action.short_description = "Copy Product"
 
+def copy_product_model_action(modeladmin, request, queryset):
+    for obj in queryset:
+        copy_product_model(obj)
+copy_product_model_action.short_description = "Copy product-model without patterns"
 
 class MaterialAdmin(DefaultAdmin):
     list_display = ['name', 'quantity_in_stock', 'sku_supplier', 'supplier']
@@ -27,6 +31,7 @@ class ProductModelAdmin(admin.ModelAdmin):
     list_display = ['__unicode__', 'number', 'size', 'all_patterns_present', 'product_images_present']
     inlines = [ProductPatternInline, ProductModelImageInline]
     readonly_fields = ['used_in_collections']
+    actions = [copy_product_model_action]
 
 class BillOfMaterialInline(admin.TabularInline):
     model = BillOfMaterial
