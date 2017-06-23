@@ -39,7 +39,7 @@ class Material(models.Model):
     sku_supplier = models.CharField(max_length=50)
     
     name = models.CharField(max_length=50)
-    description = models.TextField()
+    description = models.TextField(blank=True, null=True)
     mat_type = models.CharField(max_length=3, choices=MAT_TYPE_SELECTIONS, verbose_name="Material type")
     
     cost_per_usage_unit = models.FloatField()
