@@ -130,6 +130,12 @@ class ProductPattern(models.Model):
 
 class Product(models.Model):
     ''' Item to be sold '''
+    RANGE_TYPE_SELECTION = (
+        ('LUX', 'Luxury'),
+        ('CLA', 'Classic'),
+        ('PRI', 'Price'),
+    )
+
     name = models.CharField(max_length=50)
     description = models.TextField()
     collection = models.ForeignKey(Collection)
@@ -139,6 +145,8 @@ class Product(models.Model):
 
     active = models.BooleanField(default=True)
     complete = models.BooleanField(default=False)
+
+    range_type = models.CharField(choices=RANGE_TYPE_SELECTION, default='CLA', max_length=3)
 
     def __unicode__(self):
         return self.name
@@ -152,28 +160,54 @@ class Product(models.Model):
 
     @property
     def recommended_B2B_price_per_96(self):
-        sell_price = calc_price(self.cost, 1.35)
-        return sell_price
+        if self.range_type == 'LUX':
+            markup = 1.35
+        elif self.range_type == 'CLA':
+            markup = 1.35
+        elif self.range_type == 'PRI':
+            markup = 1.35
+        return calc_price(self.cost, markup)
 
     @property
     def recommended_B2B_price_per_24(self):
-        sell_price = calc_price(self.cost, 1.4)
-        return sell_price
+        if self.range_type == 'LUX':
+            markup = 1.4
+        elif self.range_type == 'CLA':
+            markup = 1.4
+        elif self.range_type == 'PRI':
+            markup = 1.4
+        return calc_price(self.cost, markup)
 
     @property
     def recommended_B2B_price_per_6(self):
-        sell_price = calc_price(self.cost, 1.45)
-        return sell_price
+        if self.range_type == 'LUX':
+            markup = 1.45
+        elif self.range_type == 'CLA':
+            markup = 1.45
+        elif self.range_type == 'PRI':
+            markup = 1.45
+        return calc_price(self.cost, markup)
 
     @property
     def recommended_B2B_price_per_1(self):
-        sell_price = calc_price(self.cost, 1.60)
-        return sell_price
+        if self.range_type == 'LUX':
+            markup = 1.6
+        elif self.range_type == 'CLA':
+            markup = 1.6
+        elif self.range_type == 'PRI':
+            markup = 1.6
+        return calc_price(self.cost, markup)
 
     @property
     def recommended_retail_price(self):
         ## calculate marge - B2B price_per_1 * shop_margin * VAT
-        markup = 1.6 * 2.2 * 1.21
+        if self.range_type == 'LUX':
+            markup = self.recommended_B2B_price_per_1 * 2.2 * 1.35
+        elif self.range_type == 'CLA':
+            markup = self.recommended_B2B_price_per_1 * 2.2 * 1.35
+        elif self.range_type == 'PRI':
+            markup = self.recommended_B2B_price_per_1 * 2.2 * 1.35
+            
         rrp = calc_price(self.cost, markup)
         ## round up to nearst 5 and return
         return int(5 * round(float(rrp)/5))
