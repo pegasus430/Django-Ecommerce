@@ -68,10 +68,10 @@ class Collection(models.Model):
         ('CLA', 'Classic'),
         ('PRI', 'Price'),
     )
+    
     name = models.CharField(max_length=100)
     number = models.CharField(max_length=3)
     range_type = models.CharField(choices=RANGE_TYPE_SELECTION, default='CLA', max_length=3)
-
 
     def __unicode__(self):
         return self.name
