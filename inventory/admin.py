@@ -28,7 +28,7 @@ class ProductModelImageInline(admin.TabularInline):
     extra=0
 
 class ProductModelAdmin(admin.ModelAdmin):
-    list_display = ['__unicode__', 'product_type', 'size', 'all_patterns_present', 'product_images_present']
+    list_display = ['__unicode__', 'product_type', 'number', 'size', 'all_patterns_present', 'product_images_present']
     list_filter = ['product_type', 'number', 'size', 'all_patterns_present', 'product_images_present']
     inlines = [ProductPatternInline, ProductModelImageInline]
     readonly_fields = ['used_in_collections']
