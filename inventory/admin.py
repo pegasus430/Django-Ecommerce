@@ -27,6 +27,7 @@ class ProductModelAdmin(admin.ModelAdmin):
 
 class BillOfMaterialInline(admin.TabularInline):
     model = BillOfMaterial
+    readonly_fields = ['all_materials_in_stock',]
     extra = 0
 
 class ProductImageInline(admin.TabularInline):
@@ -47,6 +48,9 @@ class ProductAdmin(DefaultAdmin):
     inlines = [BillOfMaterialInline, ProductImageInline]
     actions = [copy_product_action]
 
+class BillOfMaterialAdmin(admin.ModelAdmin):
+    readonly_fields = ['all_materials_in_stock']
+
 admin.site.register(Material, MaterialAdmin)
 admin.site.register(Collection)
 admin.site.register(Size)
@@ -54,4 +58,4 @@ admin.site.register(Colour)
 admin.site.register(ProductPattern)
 admin.site.register(ProductModel, ProductModelAdmin)
 admin.site.register(Product, ProductAdmin)
-admin.site.register(BillOfMaterial)
+admin.site.register(BillOfMaterial, BillOfMaterialAdmin)

@@ -186,7 +186,7 @@ class Product(models.Model):
     def all_materials_in_stock(self):
         all_mats_in_stock = True
         for mat in self.billofmaterial_set.all():
-            if mat.material.quantity_in_stock < mat.quantity_needed:
+            if not mat.all_materials_in_stock:
                 all_mats_in_stock = False
         return all_mats_in_stock
 
@@ -209,3 +209,11 @@ class BillOfMaterial(models.Model):
 
     def __unicode__(self):
         return '{} {}'.format(self.quantity_needed, self.material)
+
+    @property 
+    def all_materials_in_stock(self):
+        all_mats_in_stock = True
+        if self.material.quantity_in_stock < self.quantity_needed:
+            all_mats_in_stock = False
+        return all_mats_in_stock
+
