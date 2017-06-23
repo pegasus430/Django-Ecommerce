@@ -222,6 +222,7 @@ class Product(models.Model):
         rrp = calc_price(self.recommended_B2B_price_per_1, markup)
         ## round up to nearst 5 and return
         return int(5 * round(float(rrp)/5))
+    recommended_retail_price.fget.short_description = u'RRP'
 
     @property
     def sku(self):
