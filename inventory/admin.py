@@ -42,7 +42,8 @@ class ProductAdmin(DefaultAdmin):
         'recommended_B2B_price_per_24',
         'recommended_B2B_price_per_96',
         'cost',
-        )        
+        )    
+    list_display = ['name','sku', 'active', 'complete', 'all_materials_in_stock']        
     inlines = [BillOfMaterialInline, ProductImageInline]
     actions = [copy_product_action]
 
