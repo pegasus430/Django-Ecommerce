@@ -213,11 +213,11 @@ class Product(models.Model):
         ## calculate marge - B2B price_per_1 * shop_margin * VAT
         range_type = self.collection.range_type
         if range_type == 'LUX':
-            markup = 2.5 * 1.21
+            markup = 2.4 * 1.21
         elif range_type == 'CLA':
-            markup = 2.5 * 1.21
+            markup = 2.4 * 1.21
         elif range_type == 'PRI':
-            markup = 2.5 * 1.21
+            markup = 2.4 * 1.21
             
         rrp = calc_price(self.recommended_B2B_price_per_1, markup)
         ## round up to nearst 5 and return
