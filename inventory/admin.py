@@ -4,6 +4,10 @@ from defaults.admin import DefaultAdmin
 from .models import *
 from .helpers import copy_product, copy_product_model
 
+######################
+### Custom Actions ###
+######################
+
 def copy_product_action(modeladmin, request, queryset):
     for obj in queryset:
         copy_product(obj)
@@ -14,9 +18,42 @@ def copy_product_model_action(modeladmin, request, queryset):
         copy_product_model(obj)
 copy_product_model_action.short_description = "Copy product-model without patterns"
 
+###############
+### Inlines ###
+###############
+
 class StockLocationItemInline(admin.TabularInline):
     model=StockLocationItem
     extra=0
+
+class ProductPatternInline(admin.TabularInline):
+    model=ProductPattern
+    extra = 0
+
+class ProductModelImageInline(admin.TabularInline):
+    model=ProductModelImage
+    extra=0
+
+class ProductInline(admin.TabularInline):
+    model=Product  
+    extra=0
+    fields = ('name', 'model', 'colour')  
+
+class BillOfMaterialInline(admin.TabularInline):
+    model = BillOfMaterial
+    readonly_fields = [] #['materials_on_stock',]
+    extra = 0
+
+class ProductImageInline(admin.TabularInline):
+    model = ProductImage
+    extra = 0    
+
+#####################
+### Custom Admins ###
+#####################
+
+class CollectionAdmin(admin.ModelAdmin):
+    inlines = [ProductInline]
 
 class StockLocationAdmin(admin.ModelAdmin):
     inlines = [StockLocationItemInline]
@@ -27,29 +64,12 @@ class MaterialAdmin(DefaultAdmin):
     search_fields = ['name', 'supplier__business_name']
     inlines = [StockLocationItemInline]
 
-class ProductPatternInline(admin.TabularInline):
-    model=ProductPattern
-    extra = 0
-
-class ProductModelImageInline(admin.TabularInline):
-    model=ProductModelImage
-    extra=0
-
 class ProductModelAdmin(admin.ModelAdmin):
     list_display = ['__unicode__', 'product_type', 'number', 'size', 'all_patterns_present', 'product_images_present']
     list_filter = ['product_type', 'number', 'size', 'all_patterns_present', 'product_images_present']
     inlines = [ProductPatternInline, ProductModelImageInline]
     readonly_fields = ['used_in_collections']
     actions = [copy_product_model_action]
-
-class BillOfMaterialInline(admin.TabularInline):
-    model = BillOfMaterial
-    readonly_fields = [] #['materials_on_stock',]
-    extra = 0
-
-class ProductImageInline(admin.TabularInline):
-    model = ProductImage
-    extra = 0
 
 class ProductAdmin(admin.ModelAdmin):
     readonly_fields = ('sku', 'recommended_retail_price', 'recommended_B2B_price_per_1',
@@ -70,7 +90,7 @@ class BillOfMaterialAdmin(admin.ModelAdmin):
 admin.site.register(StockLocation, StockLocationAdmin)
 admin.site.register(Material, MaterialAdmin)
 admin.site.register(StockLocationItem)
-admin.site.register(Collection)
+admin.site.register(Collection, CollectionAdmin)
 admin.site.register(Size)
 admin.site.register(Colour)
 admin.site.register(ProductPattern)
