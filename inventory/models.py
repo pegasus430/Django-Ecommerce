@@ -80,7 +80,10 @@ class Material(models.Model):
                     amount_available.append(item_in_location.quantity_in_stock / bom.quantity_needed)
                 except StockLocationItem.DoesNotExist:
                     amount_available.append(0)
-            stock_status[location.name] = int(min(amount_available)) ## int rounds down
+            try:
+                stock_status[location.name] = int(min(amount_available)) ## int rounds down
+            except ValueError:
+                stock_status[location.name] = 0
 
         return stock_status
 
