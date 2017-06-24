@@ -164,7 +164,7 @@ class ProductModel(models.Model):
         return collections
 
     def __unicode__(self):
-        return '{} {}'.format(self.name, self.size)
+        return '{} {} item # {}'.format(self.name, self.size, self.number)
 
     class Meta:
         unique_together = ('number', 'size')    
