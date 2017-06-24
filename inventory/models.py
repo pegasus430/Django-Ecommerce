@@ -252,6 +252,7 @@ class Product(models.Model):
     @property 
     def materials_on_stock(self):
         '''Show the stock status on each location'''
+        ## FIXME:  This entire function should be eliminated and use the one from Material
         stock_status = {}
         for location in StockLocation.objects.all():
             stock_status[location.name] = True
@@ -262,7 +263,10 @@ class Product(models.Model):
                     amount_available.append(item_in_location.quantity_in_stock / bom.quantity_needed)
                 except StockLocationItem.DoesNotExist:
                     amount_available.append(0)
-            stock_status[location.name] = int(min(amount_available)) ## int rounds down
+            try:
+                stock_status[location.name] = int(min(amount_available)) ## int rounds down
+            except ValueError:
+                stock_status[location.name] = 0
 
         return stock_status
 
