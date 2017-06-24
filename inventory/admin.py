@@ -14,10 +14,15 @@ def copy_product_model_action(modeladmin, request, queryset):
         copy_product_model(obj)
 copy_product_model_action.short_description = "Copy product-model without patterns"
 
+class StockLocationItemInline(admin.TabularInline):
+    model=StockLocationItem
+    extra=0
+
 class MaterialAdmin(DefaultAdmin):
     list_display = ['name', 'quantity_in_stock', 'sku_supplier', 'supplier']
     list_filter = ['supplier', 'mat_type']
     search_fields = ['name', 'supplier__business_name']
+    inlines = [StockLocationItemInline]
 
 class ProductPatternInline(admin.TabularInline):
     model=ProductPattern
