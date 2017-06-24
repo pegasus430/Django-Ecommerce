@@ -53,7 +53,6 @@ class Material(models.Model):
     mat_type = models.CharField(max_length=3, choices=MAT_TYPE_SELECTIONS, verbose_name="Material type")
     
     cost_per_usage_unit = models.FloatField()
-    quantity_in_stock = models.IntegerField()
     unit_usage = models.CharField(max_length=2, choices=UNIT_USAGE_SELECTIONS, verbose_name="Usage unit")
     unit_purchase = models.CharField(max_length=2, choices=UNIT_PURCHASE_SELECTIONS, verbose_name="Purchase unit")
     unit_usage_in_purchase = models.FloatField(verbose_name="Number of usage units in purchase unit")

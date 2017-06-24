@@ -19,7 +19,7 @@ class StockLocationItemInline(admin.TabularInline):
     extra=0
 
 class MaterialAdmin(DefaultAdmin):
-    list_display = ['name', 'quantity_in_stock', 'sku_supplier', 'supplier']
+    list_display = ['name', 'sku_supplier', 'supplier']
     list_filter = ['supplier', 'mat_type']
     search_fields = ['name', 'supplier__business_name']
     inlines = [StockLocationItemInline]
