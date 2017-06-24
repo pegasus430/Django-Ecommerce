@@ -16,6 +16,7 @@ class StockLocation(models.Model):
     def __unicode__(self):
         return self.name
 
+
 ###################
 ## Raw materials ##
 ###################
@@ -63,6 +64,24 @@ class Material(models.Model):
     
     def __unicode__(self):
         return self.name
+
+    def materials_on_stock(self):
+        '''Show the stock status on each location'''
+        stock_status = {}
+        for location in StockLocation.objects.all():
+            stock_status[location.name] = True
+            amount_available = []
+            for bom in self.billofmaterial_set.all():
+                try: 
+                    item_in_location = StockLocationItem.objects.get(location=location, material=bom.material)
+                    amount_available.append(item_in_location.quantity_in_stock / bom.quantity_needed)
+                except StockLocationItem.DoesNotExist:
+                    amount_available.append(0)
+            stock_status[location.name] = int(min(amount_available)) ## int rounds down
+
+        return stock_status
+
+
 
 
 class StockLocationItem(models.Model):

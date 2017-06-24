@@ -18,6 +18,9 @@ class StockLocationItemInline(admin.TabularInline):
     model=StockLocationItem
     extra=0
 
+class StockLocationAdmin(admin.ModelAdmin):
+    inlines = [StockLocationItemInline]
+
 class MaterialAdmin(DefaultAdmin):
     list_display = ['name', 'sku_supplier', 'supplier']
     list_filter = ['supplier', 'mat_type']
@@ -62,9 +65,9 @@ class ProductAdmin(admin.ModelAdmin):
 
 
 class BillOfMaterialAdmin(admin.ModelAdmin):
-    readonly_fields = []#['all_materials_in_stock']
+    readonly_fields = []
 
-admin.site.register(StockLocation)
+admin.site.register(StockLocation, StockLocationAdmin)
 admin.site.register(Material, MaterialAdmin)
 admin.site.register(StockLocationItem)
 admin.site.register(Collection)
