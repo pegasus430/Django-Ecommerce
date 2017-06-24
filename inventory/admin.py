@@ -39,6 +39,9 @@ class ProductInline(admin.TabularInline):
     extra=0
     fields = ('name', 'model', 'colour')  
 
+    def has_delete_permission(self, request, obj):
+        return False
+
 class BillOfMaterialInline(admin.TabularInline):
     model = BillOfMaterial
     readonly_fields = [] #['materials_on_stock',]
