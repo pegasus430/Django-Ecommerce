@@ -36,7 +36,7 @@ class ProductModelAdmin(admin.ModelAdmin):
 
 class BillOfMaterialInline(admin.TabularInline):
     model = BillOfMaterial
-    readonly_fields = ['all_materials_in_stock',]
+    readonly_fields = [] #['materials_on_stock',]
     extra = 0
 
 class ProductImageInline(admin.TabularInline):
@@ -46,8 +46,8 @@ class ProductImageInline(admin.TabularInline):
 class ProductAdmin(admin.ModelAdmin):
     readonly_fields = ('sku', 'recommended_retail_price', 'recommended_B2B_price_per_1',
         'recommended_B2B_price_per_6', 'recommended_B2B_price_per_24',
-        'recommended_B2B_price_per_96', 'cost',)    
-    list_display = ['name','sku', 'active', 'complete', 'all_materials_in_stock',
+        'recommended_B2B_price_per_96', 'cost', 'materials_on_stock',)    
+    list_display = ['name','sku', 'active', 'complete', 'materials_on_stock',
         'recommended_retail_price', 'recommended_B2B_price_per_1',
         'recommended_B2B_price_per_6', 'recommended_B2B_price_per_24', 
         'recommended_B2B_price_per_96']  
@@ -55,10 +55,13 @@ class ProductAdmin(admin.ModelAdmin):
     inlines = [BillOfMaterialInline, ProductImageInline]
     actions = [copy_product_action]
 
-class BillOfMaterialAdmin(admin.ModelAdmin):
-    readonly_fields = ['all_materials_in_stock']
 
+class BillOfMaterialAdmin(admin.ModelAdmin):
+    readonly_fields = []#['all_materials_in_stock']
+
+admin.site.register(StockLocation)
 admin.site.register(Material, MaterialAdmin)
+admin.site.register(StockLocationItem)
 admin.site.register(Collection)
 admin.site.register(Size)
 admin.site.register(Colour)

@@ -6,6 +6,16 @@ from .helpers import calc_price, ROUND_DIGITS
 
 from contacts.models import Supplier
 
+######################
+### Stock location ###
+######################
+
+class StockLocation(models.Model):
+    name = models.CharField(max_length=100, verbose_name='Location name')
+
+    def __unicode__(self):
+        return self.name
+
 ###################
 ## Raw materials ##
 ###################
@@ -54,6 +64,23 @@ class Material(models.Model):
     
     def __unicode__(self):
         return self.name
+
+
+class StockLocationItem(models.Model):
+    ''' QTY in stock per location'''
+    location = models.ForeignKey(StockLocation)
+    material = models.ForeignKey(Material)
+    quantity_in_stock = models.FloatField()
+
+    def __unicode__(self):
+        return '{} {} of {} available in {}'.format(
+            self.quantity_in_stock,
+            self.material.unit_usage,
+            self.material.name,
+            self.location)
+
+    class Meta:
+        unique_together = ('location', 'material')
 
 
 ##############
@@ -198,6 +225,23 @@ class Product(models.Model):
         return int(5 * round(float(rrp)/5))
     recommended_retail_price.fget.short_description = u'RRP'
 
+    @property 
+    def materials_on_stock(self):
+        '''Show the stock status on each location'''
+        stock_status = {}
+        for location in StockLocation.objects.all():
+            stock_status[location.name] = True
+            amount_available = []
+            for bom in self.billofmaterial_set.all():
+                try: 
+                    item_in_location = StockLocationItem.objects.get(location=location, material=bom.material)
+                    amount_available.append(item_in_location.quantity_in_stock / bom.quantity_needed)
+                except StockLocationItem.DoesNotExist:
+                    amount_available.append(0)
+            stock_status[location.name] = int(min(amount_available)) ## int rounds down
+
+        return stock_status
+
     @property
     def sku(self):
         return '{collection}-{model}-{colour}-{size}'.format(
@@ -205,14 +249,6 @@ class Product(models.Model):
             model=self.model.number,
             colour=self.colour.code,
             size=self.model.size.short_size)
-
-    @property 
-    def all_materials_in_stock(self):
-        all_mats_in_stock = True
-        for mat in self.billofmaterial_set.all():
-            if not mat.all_materials_in_stock:
-                all_mats_in_stock = False
-        return all_mats_in_stock
 
 
 class ProductImage(models.Model):
@@ -234,10 +270,6 @@ class BillOfMaterial(models.Model):
     def __unicode__(self):
         return '{} {}'.format(self.quantity_needed, self.material)
 
-    @property 
-    def all_materials_in_stock(self):
-        all_mats_in_stock = True
-        if self.material.quantity_in_stock < self.quantity_needed:
-            all_mats_in_stock = False
-        return all_mats_in_stock
+    class Meta:
+        unique_together = ('material', 'product')
 
