@@ -61,6 +61,9 @@ class Material(models.Model):
     est_delivery_time = models.CharField(max_length=100, blank=True, null=True)
 
     supplier = models.ForeignKey(Supplier)
+
+    class Meta:
+        ordering = ('name',)
     
     def __unicode__(self):
         return self.name
