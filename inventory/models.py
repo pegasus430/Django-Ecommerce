@@ -235,7 +235,7 @@ class Product(models.Model):
                     amount_available.append(item_in_location.quantity_in_stock / bom.quantity_needed)
                 except StockLocationItem.DoesNotExist:
                     amount_available.append(0)
-            stock_status[location.name] = min(amount_available)
+            stock_status[location.name] = int(min(amount_available)) ## int rounds down
 
         return stock_status
 
