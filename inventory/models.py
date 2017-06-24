@@ -79,6 +79,9 @@ class StockLocationItem(models.Model):
             self.material.name,
             self.location)
 
+    class Meta:
+        unique_together = ('location', 'material')
+
 
 ##############
 ## Products ##
@@ -247,14 +250,6 @@ class Product(models.Model):
             colour=self.colour.code,
             size=self.model.size.short_size)
 
-    # @property 
-    # def all_materials_in_stock(self):
-    #     all_mats_in_stock = True
-    #     for mat in self.billofmaterial_set.all():
-    #         if not mat.all_materials_in_stock:
-    #             all_mats_in_stock = False
-    #     return all_mats_in_stock
-
 
 class ProductImage(models.Model):
     ''' product image'''
@@ -275,11 +270,6 @@ class BillOfMaterial(models.Model):
     def __unicode__(self):
         return '{} {}'.format(self.quantity_needed, self.material)
 
-    ### FIXME: Needs to be replaced by function that looks at stock per stocklocation.  Not all stock.
-    # @property 
-    # def all_materials_in_stock(self):
-    #     all_mats_in_stock = True
-    #     if self.material.quantity_in_stock < self.quantity_needed:
-    #         all_mats_in_stock = False
-    #     return all_mats_in_stock
+    class Meta:
+        unique_together = ('material', 'product')
 
