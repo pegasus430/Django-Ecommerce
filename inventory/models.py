@@ -223,22 +223,22 @@ class Product(models.Model):
 
     @property
     def recommended_B2B_price_per_96(self):
-        return calc_price(self, lux_markup=1.45, classic_markup=1.35, price_markup=1.20)
+        return calc_price(self, lux_markup=1.50, classic_markup=1.50, price_markup=1.50)
     recommended_B2B_price_per_96.fget.short_description = u'Per 96'
 
     @property
     def recommended_B2B_price_per_24(self):
-        return calc_price(self, lux_markup=1.5, classic_markup=1.4, price_markup=1.25)
+        return calc_price(self, lux_markup=1.7, classic_markup=1.55, price_markup=1.55)
     recommended_B2B_price_per_24.fget.short_description = u'Per 24'    
 
     @property
     def recommended_B2B_price_per_6(self):
-        return calc_price(self, lux_markup=1.8, classic_markup=1.65, price_markup=1.35)
+        return calc_price(self, lux_markup=1.8, classic_markup=1.65, price_markup=1.65)
     recommended_B2B_price_per_6.fget.short_description = u'Per 6'
 
     @property
     def recommended_B2B_price_per_1(self):
-        return calc_price(self, lux_markup=2, classic_markup=1.8, price_markup=1.8)
+        return calc_price(self, lux_markup=2, classic_markup=2, price_markup=2)
     recommended_B2B_price_per_1.fget.short_description = u'Per 1'
 
     @property
@@ -310,4 +310,5 @@ class BillOfMaterial(models.Model):
 
     class Meta:
         unique_together = ('material', 'product')
+        ordering = ('material', 'product')
 
