@@ -271,6 +271,16 @@ class Product(models.Model):
 
         return stock_status
 
+    @property 
+    def materials_on_stock_in_production_location(self):
+        '''Show the stock status in the production-location'''
+        stock = self.materials_on_stock
+        for key in stock:
+            if key == self.collection.production_location.name:
+                return stock[key]
+    materials_on_stock_in_production_location.fget.short_description = u'Avail. Prod.'                
+
+
     @property
     def sku(self):
         return '{collection}-{model}-{colour}-{size}'.format(
