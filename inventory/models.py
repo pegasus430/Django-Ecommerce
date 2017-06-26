@@ -38,6 +38,7 @@ class Material(models.Model):
         ('HU', 'Hours'),
         ('PI', 'Pieces'),
         ('ME', 'Meters'),
+        ('KG', 'Kilograms')
     )
 
     UNIT_PURCHASE_SELECTIONS = (
