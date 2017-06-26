@@ -313,7 +313,7 @@ class BillOfMaterial(models.Model):
 
     @property 
     def cost(self):
-        return self.quantity_needed * self.material.cost_per_usage_unit
+        return round(self.quantity_needed * self.material.cost_per_usage_unit, ROUND_DIGITS)
 
     class Meta:
         unique_together = ('material', 'product')
