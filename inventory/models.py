@@ -280,7 +280,6 @@ class Product(models.Model):
                 return stock[key]
     materials_on_stock_in_production_location.fget.short_description = u'Avail. Prod.'                
 
-
     @property
     def sku(self):
         return '{collection}-{model}-{colour}-{size}'.format(

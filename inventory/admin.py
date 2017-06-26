@@ -37,10 +37,13 @@ class ProductModelImageInline(admin.TabularInline):
 class ProductInline(admin.TabularInline):
     model=Product  
     extra=0
-    fields = ('name', 'model', 'colour')  
+    # fields = ('name', 'model',)  
+    exclude = ('description', 'complete', 'active')
+    readonly_fields = ('colour', 'materials_on_stock_in_production_location',)
+    can_delete = False
 
-    def has_delete_permission(self, request, obj):
-        return False
+    # def has_delete_permission(self, request, obj):
+    #     return False
 
 class BillOfMaterialInline(admin.TabularInline):
     model = BillOfMaterial
