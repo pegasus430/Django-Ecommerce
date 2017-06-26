@@ -123,6 +123,7 @@ class Collection(models.Model):
     name = models.CharField(max_length=100)
     number = models.CharField(max_length=3)
     range_type = models.CharField(choices=RANGE_TYPE_SELECTION, default='CLA', max_length=3)
+    production_location = models.ForeignKey(StockLocation)
 
     def __unicode__(self):
         return self.name
