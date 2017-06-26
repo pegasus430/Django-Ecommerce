@@ -308,7 +308,13 @@ class BillOfMaterial(models.Model):
     def __unicode__(self):
         return '{} {}'.format(self.quantity_needed, self.material)
 
+    @property 
+    def cost(self):
+        return self.quantity_needed * self.material.cost_per_usage_unit
+
     class Meta:
         unique_together = ('material', 'product')
         ordering = ('material', 'product')
+
+
 
