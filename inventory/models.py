@@ -316,6 +316,12 @@ class BillOfMaterial(models.Model):
     def cost(self):
         return round(self.quantity_needed * self.material.cost_per_usage_unit, ROUND_DIGITS)
 
+    @property 
+    def availability(self):
+        location = self.product.collection.production_location
+        quantity_in_stock = StockLocationItem.objects.get(location=location, material=self.material).quantity_in_stock
+        return int(quantity_in_stock / self.quantity_needed)
+
     class Meta:
         unique_together = ('material', 'product')
         ordering = ('material', 'product')
