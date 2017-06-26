@@ -19,3 +19,6 @@ class Supplier(models.Model):
 
     def __unicode__(self):
         return self.business_name
+
+    class Meta:
+        ordering = ('business_name',)    
