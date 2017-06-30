@@ -6,7 +6,7 @@ def calc_price(product, lux_markup, classic_markup, price_markup, rrp=False):
     range_type = product.collection.range_type
 
     if rrp:
-        start_price = product.recommended_B2B_price_per_1
+        start_price = product.recommended_B2B_price_per_6
     else:
         start_price = product.cost
     

@@ -217,17 +217,17 @@ class Product(models.Model):
 
     @property
     def recommended_B2B_price_per_96(self):
-        return calc_price(self, lux_markup=2.0, classic_markup=1.60, price_markup=1.50)
+        return calc_price(self, lux_markup=2.0, classic_markup=1.35, price_markup=1.50)
     recommended_B2B_price_per_96.fget.short_description = u'Per 96'
 
     @property
     def recommended_B2B_price_per_24(self):
-        return calc_price(self, lux_markup=2.3, classic_markup=1.8, price_markup=1.55)
+        return calc_price(self, lux_markup=2.3, classic_markup=1.4, price_markup=1.55)
     recommended_B2B_price_per_24.fget.short_description = u'Per 24'    
 
     @property
     def recommended_B2B_price_per_6(self):
-        return calc_price(self, lux_markup=2.5, classic_markup=2, price_markup=1.65)
+        return calc_price(self, lux_markup=2.5, classic_markup=1.5, price_markup=1.65)
     recommended_B2B_price_per_6.fget.short_description = u'Per 6'
 
     @property
