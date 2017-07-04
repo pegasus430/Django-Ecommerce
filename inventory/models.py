@@ -83,6 +83,13 @@ class Material(models.Model):
                 stock_status[location.name] = 0
         return stock_status
 
+    @property
+    def used_in_collections(self):
+        collections = set()
+        for bom in self.billofmaterial_set.all():
+            collections.add(bom.product.collection)
+        return list(collections)
+
 
 class StockLocationItem(models.Model):
     ''' QTY in stock per location'''

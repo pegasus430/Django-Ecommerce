@@ -75,6 +75,7 @@ class MaterialAdmin(DefaultAdmin):
     list_display = ['name', 'sku_supplier', 'supplier', 'cost_per_usage_unit', 'usage_units_on_stock']
     list_filter = ['supplier', 'mat_type']
     search_fields = ['name', 'supplier__business_name']
+    readonly_fields = ['used_in_collections']
     inlines = [StockLocationItemInline]
 
 class ProductModelAdmin(admin.ModelAdmin):
