@@ -133,7 +133,7 @@ class Collection(models.Model):
     def materials_missing(self):
         '''return a list of materials missing to produce any item in the collection'''
         materials_missing = set()
-        for prod in col.product_set.all():
+        for prod in self.product_set.all():
             for mat in prod.materials_missing:
                 materials_missing.add(mat)
         return list(materials_missing)
