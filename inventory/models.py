@@ -280,7 +280,7 @@ class Product(models.Model):
         mats_missing = []
         for mat in self.billofmaterial_set.all():
             try:
-                if mat.availability < 6:
+                if mat.availability < 18:
                     mats_missing.append(mat.material.sku)
             except StockLocationItem.DoesNotExist:
                 mats_missing.append(mat.material.sku)
