@@ -68,6 +68,7 @@ class StockLocationItemAdmin(admin.ModelAdmin):
     list_display = ['material', 'quantity_in_stock', 'location']
     list_filter = ['location']
     search_fields = ['material']
+    ordering = ('material', 'location')
 
 class MaterialAdmin(DefaultAdmin):
     list_display = ['name', 'sku_supplier', 'supplier', 'cost_per_usage_unit', 'usage_units_on_stock']
