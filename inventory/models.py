@@ -265,6 +265,7 @@ class Product(models.Model):
 
         return stock_status
 
+
     @property 
     def materials_on_stock_in_production_location(self):
         '''Show the stock status in the production-location'''
@@ -273,6 +274,15 @@ class Product(models.Model):
             if key == self.collection.production_location.name:
                 return stock[key]
     materials_on_stock_in_production_location.fget.short_description = u'Avail. Prod.'                
+
+    @property 
+    def materials_missing(self):
+        mats_missing = []
+        for mat in self.billofmaterial_set.all():
+            if mat.availability < 6:
+                mats_missing.append(mat.material.sku)
+
+        return mats_missing
 
     @property
     def sku(self):
