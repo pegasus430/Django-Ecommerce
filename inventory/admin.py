@@ -64,6 +64,11 @@ class CollectionAdmin(admin.ModelAdmin):
 class StockLocationAdmin(admin.ModelAdmin):
     inlines = [StockLocationItemInline]
 
+class StockLocationItemAdmin(admin.ModelAdmin):
+    list_display = ['location', 'quantity_in_stock', 'material']
+    list_filter = ['location']
+    search_fields = ['material']
+
 class MaterialAdmin(DefaultAdmin):
     list_display = ['name', 'sku_supplier', 'supplier', 'cost_per_usage_unit', 'usage_units_on_stock']
     list_filter = ['supplier', 'mat_type']
@@ -96,7 +101,7 @@ class BillOfMaterialAdmin(admin.ModelAdmin):
 
 admin.site.register(StockLocation, StockLocationAdmin)
 admin.site.register(Material, MaterialAdmin)
-admin.site.register(StockLocationItem)
+admin.site.register(StockLocationItem, StockLocationItemAdmin)
 admin.site.register(Collection, CollectionAdmin)
 admin.site.register(Size)
 admin.site.register(Colour)
