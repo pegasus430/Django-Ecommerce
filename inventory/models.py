@@ -203,6 +203,7 @@ class ProductPattern(models.Model):
     pattern_image = models.FileField(upload_to='media/patterns/image/%Y/%m/%d')
     pattern_vector = models.FileField(upload_to='media/patterns/vector/%Y/%m/%d')
     product = models.ForeignKey(ProductModel)
+    surface_area = models.FloatField(default=0, verbose_name='Surface Area in cm2')
 
     def __unicode__(self):
         return self.name
