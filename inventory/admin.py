@@ -60,7 +60,9 @@ class ProductImageInline(admin.TabularInline):
 
 class CollectionAdmin(admin.ModelAdmin):
     inlines = [ProductInline]
-    list_display = ['name', 'number','range_type', 'production_location']
+    list_display = ['name', 'number','range_type', 'production_location', 'materials_missing']
+    readonly_fields = ('materials_missing',)
+
 
 class StockLocationAdmin(admin.ModelAdmin):
     inlines = [StockLocationItemInline]
