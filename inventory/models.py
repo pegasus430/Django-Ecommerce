@@ -184,6 +184,14 @@ class ProductModel(models.Model):
     def __unicode__(self):
         return '{} {} item # {}'.format(self.name, self.size, self.number)
 
+    @property
+    def total_pattern_surface_area(self):
+        '''return sum of all pattern surface areas'''
+        total = 0.0
+        for pattern in self.productpattern_set.all():
+            total += pattern.surface_area
+        return total
+
     class Meta:
         unique_together = ('number', 'size')    
 
