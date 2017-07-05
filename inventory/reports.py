@@ -11,11 +11,11 @@ def send_purchase_report_simple():
     Information is based upon the value of Product.materials_missing and Product.active
     '''
     mat_set = set()
-    mat_detail_list = []
     for product in Product.objects.filter(active=True):
         for mat in product.materials_missing:
             mat_set.add(mat)
 
+    mat_detail_list = []
     for mat in mat_set:
         mat = Material.objects.get(sku=mat)
         mat_detail_list.append({
