@@ -91,6 +91,25 @@ class Material(models.Model):
         return list(collections)
 
 
+class MaterialImage(models.Model):
+    ''' Images to go with a Material '''
+    name = models.CharField(max_length=100)
+    material = models.ForeignKey(Material)
+    image = models.FileField(upload_to='media/materials/images/%Y/%m/%d')
+
+    def __unicode__(self):
+        return '{} {}'.format(self.name, self.material)
+
+
+class MaterialDataSheet(models.Model):
+    name = models.CharField(max_length=100)
+    material = models.ForeignKey(Material)
+    datasheet = models.FileField(upload_to='media/materials/datasheets/%Y/%m/%d')
+
+    def __unicode__(self):
+        return '{} {}'.format(self.name, self.material)
+
+
 class StockLocationItem(models.Model):
     ''' QTY in stock per location'''
     location = models.ForeignKey(StockLocation)
@@ -173,6 +192,7 @@ class ProductModel(models.Model):
     all_patterns_present = models.BooleanField(default=False)
     product_images_present = models.BooleanField(default=False)
     product_type = models.CharField(choices=PRODUCT_TYPE_CHOICES, max_length=2 ,blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
 
     @property
     def used_in_collections(self):
@@ -212,6 +232,7 @@ class ProductPattern(models.Model):
     pattern_vector = models.FileField(upload_to='media/patterns/vector/%Y/%m/%d')
     product = models.ForeignKey(ProductModel)
     surface_area = models.FloatField(default=0, verbose_name='Surface Area in cm2')
+    description = models.TextField(blank=True, null=True)
 
     def __unicode__(self):
         return self.name
@@ -219,10 +240,8 @@ class ProductPattern(models.Model):
 
 class Product(models.Model):
     ''' Item to be sold '''
-
-
     name = models.CharField(max_length=50)
-    description = models.TextField()
+    description = models.TextField(blank=True, null=True)
     collection = models.ForeignKey(Collection)
     model = models.ForeignKey(ProductModel)
     colour = models.ForeignKey(Colour)
