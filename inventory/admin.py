@@ -1,5 +1,5 @@
 from django.contrib import admin
-from defaults.admin import DefaultAdmin
+from defaults.admin import DefaultAdmin, DefaultInline
 
 from .models import *
 from .helpers import copy_product, copy_product_model
@@ -21,18 +21,26 @@ copy_product_model_action.short_description = "Copy product-model without patter
 ###############
 ### Inlines ###
 ###############
+class SizeBreedsInline(DefaultInline):
+    model = SizeBreed
 
-class StockLocationItemInline(admin.TabularInline):
+class MaterialImageInline(DefaultInline):
+    model=MaterialImage
+
+class MaterialDataSheetInline(DefaultInline):
+    model=MaterialDataSheet
+
+class StockLocationItemInline(DefaultInline):
     model=StockLocationItem
-    extra=0
 
-class ProductPatternInline(admin.TabularInline):
+class ProductPatternInline(DefaultInline):
     model=ProductPattern
-    extra = 0
 
-class ProductModelImageInline(admin.TabularInline):
+class ProductModelImageInline(DefaultInline):
     model=ProductModelImage
-    extra=0
+
+class ProductModelProductionDescriptionInline(DefaultInline):
+    model=ProductModelProductionDescription
 
 class ProductInline(admin.TabularInline):
     model=Product  
@@ -42,17 +50,13 @@ class ProductInline(admin.TabularInline):
     readonly_fields = ('colour', 'materials_on_stock_in_production_location',)
     can_delete = False
 
-    # def has_delete_permission(self, request, obj):
-    #     return False
-
 class BillOfMaterialInline(admin.TabularInline):
     model = BillOfMaterial
     readonly_fields = ['cost', 'availability'] #['materials_on_stock',]
     extra = 0
 
-class ProductImageInline(admin.TabularInline):
-    model = ProductImage
-    extra = 0    
+class ProductImageInline(DefaultInline):
+    model = ProductImage 
 
 #####################
 ### Custom Admins ###
@@ -63,6 +67,8 @@ class CollectionAdmin(admin.ModelAdmin):
     list_display = ['name', 'number','range_type', 'production_location', 'materials_missing']
     readonly_fields = ('materials_missing',)
 
+class SizeAdmin(DefaultAdmin):
+    inlines = [SizeBreedsInline]
 
 class StockLocationAdmin(admin.ModelAdmin):
     inlines = [StockLocationItemInline]
@@ -78,12 +84,12 @@ class MaterialAdmin(DefaultAdmin):
     list_filter = ['supplier', 'mat_type']
     search_fields = ['name', 'supplier__business_name']
     readonly_fields = ['used_in_collections']
-    inlines = [StockLocationItemInline]
+    inlines = [MaterialImageInline, MaterialDataSheetInline, StockLocationItemInline]
 
 class ProductModelAdmin(admin.ModelAdmin):
     list_display = ['__unicode__', 'product_type', 'number', 'size', 'all_patterns_present', 'product_images_present']
     list_filter = ['product_type', 'number', 'size', 'all_patterns_present', 'product_images_present']
-    inlines = [ProductPatternInline, ProductModelImageInline]
+    inlines = [ProductPatternInline, ProductModelImageInline, ProductModelProductionDescriptionInline]
     readonly_fields = ['used_in_collections']
     actions = [copy_product_model_action]
 
@@ -108,7 +114,7 @@ admin.site.register(StockLocation, StockLocationAdmin)
 admin.site.register(Material, MaterialAdmin)
 admin.site.register(StockLocationItem, StockLocationItemAdmin)
 admin.site.register(Collection, CollectionAdmin)
-admin.site.register(Size)
+admin.site.register(Size, SizeAdmin)
 admin.site.register(Colour)
 admin.site.register(ProductPattern)
 admin.site.register(ProductModel, ProductModelAdmin)

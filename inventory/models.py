@@ -162,9 +162,18 @@ class Size(models.Model):
     '''Product sizes'''
     full_size = models.CharField(max_length=20)
     short_size = models.CharField(max_length=3)
+    measurements = models.TextField(verbose_name='Describe target group measurements')
 
     def __unicode__(self):
         return self.full_size
+
+class SizeBreed(models.Model):
+    '''breeds to go with sizes'''
+    dog_breed = models.CharField(max_length=20)
+    size = models.ForeignKey(Size)
+
+    def __unicode__(self):
+        return '{} has size {}'.format(self.dog_breed, self.size)
 
 
 class Colour(models.Model):
@@ -219,11 +228,21 @@ class ProductModel(models.Model):
 class ProductModelImage(models.Model):
     '''Product model images'''
     description = models.CharField(max_length=100)
-    image = models.FileField(upload_to='media/product_model_images/%Y/%m/%d')
+    image = models.FileField(upload_to='media/product_model/images/%Y/%m/%d')
     product_model = models.ForeignKey(ProductModel)
 
     def __unicode__(self):
         return self.description
+
+class ProductModelProductionDescription(models.Model):
+    '''descriptions for model production'''
+    product_model = models.ForeignKey(ProductModel)
+    name = models.CharField(max_length=100, verbose_name='Step name')
+    description = models.TextField(verbose_name='What to do and how to do it')
+    image = models.FileField(upload_to='media/product_models/production_description/images/%Y/%m/%d')
+
+    def __unicode__(self):
+        return '{} for {}'.format(self.name, self.product_model)
 
 
 class ProductPattern(models.Model):

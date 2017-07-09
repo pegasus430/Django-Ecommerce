@@ -20,3 +20,7 @@ copy_object_action.short_description = "Copy Object"
 class DefaultAdmin(admin.ModelAdmin):
     actions = [copy_object_action]
     pass
+
+class DefaultInline(admin.TabularInline):
+    extra = 0
+    classes = ['collapse']
