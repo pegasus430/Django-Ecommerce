@@ -239,7 +239,9 @@ class ProductModelProductionDescription(models.Model):
     product_model = models.ForeignKey(ProductModel)
     name = models.CharField(max_length=100, verbose_name='Step name')
     description = models.TextField(verbose_name='What to do and how to do it')
-    image = models.FileField(upload_to='media/product_models/production_description/images/%Y/%m/%d')
+    image = models.FileField(upload_to='media/product_models/production_description/images/%Y/%m/%d',
+                            blank=True,
+                            null=True)
 
     def __unicode__(self):
         return '{} for {}'.format(self.name, self.product_model)
