@@ -202,6 +202,7 @@ class ProductModel(models.Model):
     product_images_present = models.BooleanField(default=False)
     product_type = models.CharField(choices=PRODUCT_TYPE_CHOICES, max_length=2 ,blank=True, null=True)
     description = models.TextField(blank=True, null=True)
+    original_product_model = models.ForeignKey('self', blank=True, null=True)
 
     @property
     def used_in_collections(self):

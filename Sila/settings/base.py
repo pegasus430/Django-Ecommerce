@@ -145,8 +145,6 @@ LOGGING = {
         'verbose': {
             'format': '[%(asctime)s] %(levelname)s:%(name)s.%(funcName)20s(): %(message)s'            
         },
-
-
     },
     'handlers': {
         # Send all messages to console
