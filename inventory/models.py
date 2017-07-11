@@ -1,10 +1,16 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 from .helpers import calc_price, ROUND_DIGITS
 
 from contacts.models import Supplier
+
+import logging
+logger = logging.getLogger(__name__)
+
 
 ######################
 ### Stock location ###
@@ -72,6 +78,7 @@ class Material(models.Model):
     def __unicode__(self):
         return self.name
 
+    @property
     def usage_units_on_stock(self):
         '''Show the stock status on each location'''
         stock_status = {}
@@ -86,8 +93,8 @@ class Material(models.Model):
     @property
     def used_in_collections(self):
         collections = set()
-        for bom in self.billofmaterial_set.all():
-            collections.add(bom.product.collection)
+        for bom in self.umbrellaproductbillofmaterial_set.all():
+            collections.add(bom.umbrella_product.collection)
         return list(collections)
 
 
@@ -185,7 +192,7 @@ class Colour(models.Model):
         return self.name
 
 
-class ProductModel(models.Model):
+class UmbrellaProductModel(models.Model):
     ''' product model '''
     PRODUCT_TYPE_CHOICES = (
         ('PL', 'Plaid'),
@@ -197,61 +204,65 @@ class ProductModel(models.Model):
     )
     name = models.CharField(max_length=100)
     number = models.CharField(max_length=10)
-    size = models.ForeignKey(Size, blank=True, null=True)
     all_patterns_present = models.BooleanField(default=False)
     product_images_present = models.BooleanField(default=False)
     product_type = models.CharField(choices=PRODUCT_TYPE_CHOICES, max_length=2 ,blank=True, null=True)
     description = models.TextField(blank=True, null=True)
-    original_product_model = models.ForeignKey('self', blank=True, null=True)
+    original_umbrella_product_model = models.ForeignKey('self', blank=True, null=True)
+
+    # class Meta:
+    #     unique_together = ('number', 'size')  
 
     @property
     def used_in_collections(self):
-        collections = ""
-        for i in self.product_set.all():
-            collections += "{}\n".format(i.collection)
-        return collections
+        return [i.collection for i in self.umbrellaproduct_set.all()]
 
     def __unicode__(self):
-        return '{} {} item # {}'.format(self.name, self.size, self.number)
+        return '{} item # {}'.format(self.name, self.number)
+
+
+class UmbrellaProductModelProductionDescription(models.Model):
+    '''descriptions for model production'''
+    umbrella_product_model = models.ForeignKey(UmbrellaProductModel)
+    name = models.CharField(max_length=100, verbose_name='Step name')
+    description = models.TextField(verbose_name='What to do and how to do it')
+    image = models.FileField(upload_to='media/umbrella_product_models/production_description/images/%Y/%m/%d',
+                blank=True,
+                null=True)
+
+    def __unicode__(self):
+        return '{} for {}'.format(self.name, self.product_model)
+
+class UmbrellaProductModelImage(models.Model):
+    '''Product model images'''
+    description = models.CharField(max_length=100)
+    image = models.FileField(upload_to='media/umbrella_product_model/images/%Y/%m/%d')
+    umbrella_product_model = models.ForeignKey(UmbrellaProductModel)
+
+    def __unicode__(self):
+        return self.description
+
+
+class ProductModel(models.Model):
+    umbrella_product_model = models.ForeignKey(UmbrellaProductModel)
+    size = models.ForeignKey(Size, blank=True, null=True)
+
+    def __unicode__(self):
+        return '{}, size: {}'.format(self.umbrella_product_model, self.size)
 
     @property
     def total_pattern_surface_area(self):
         '''return sum of all pattern surface areas'''
         total = 0.0
-        for pattern in self.productpattern_set.all():
+        for pattern in self.productmodelpattern_set.all():
             total += pattern.surface_area
         return total
 
-    class Meta:
-        unique_together = ('number', 'size')    
 
-
-class ProductModelImage(models.Model):
-    '''Product model images'''
-    description = models.CharField(max_length=100)
-    image = models.FileField(upload_to='media/product_model/images/%Y/%m/%d')
-    product_model = models.ForeignKey(ProductModel)
-
-    def __unicode__(self):
-        return self.description
-
-class ProductModelProductionDescription(models.Model):
-    '''descriptions for model production'''
-    product_model = models.ForeignKey(ProductModel)
-    name = models.CharField(max_length=100, verbose_name='Step name')
-    description = models.TextField(verbose_name='What to do and how to do it')
-    image = models.FileField(upload_to='media/product_models/production_description/images/%Y/%m/%d',
-                            blank=True,
-                            null=True)
-
-    def __unicode__(self):
-        return '{} for {}'.format(self.name, self.product_model)
-
-
-class ProductPattern(models.Model):
+class ProductModelPattern(models.Model):
     name = models.CharField(max_length=100)
-    pattern_image = models.FileField(upload_to='media/patterns/image/%Y/%m/%d')
-    pattern_vector = models.FileField(upload_to='media/patterns/vector/%Y/%m/%d')
+    pattern_image = models.FileField(upload_to='media/product_model/patterns/image/%Y/%m/%d')
+    pattern_vector = models.FileField(upload_to='media/product_model/patterns/vector/%Y/%m/%d')
     product = models.ForeignKey(ProductModel)
     surface_area = models.FloatField(default=0, verbose_name='Surface Area in cm2')
     description = models.TextField(blank=True, null=True)
@@ -260,14 +271,13 @@ class ProductPattern(models.Model):
         return self.name
 
 
-class Product(models.Model):
-    ''' Item to be sold '''
+class UmbrellaProduct(models.Model):
+    ''' Product to be sold '''
     name = models.CharField(max_length=50)
     description = models.TextField(blank=True, null=True)
     collection = models.ForeignKey(Collection)
-    model = models.ForeignKey(ProductModel)
+    umbrella_product_model = models.ForeignKey(UmbrellaProductModel)
     colour = models.ForeignKey(Colour)
-    ean_code = models.CharField(max_length=13, blank=True, null=True)
 
     active = models.BooleanField(default=True)
     complete = models.BooleanField(default=False)
@@ -276,11 +286,136 @@ class Product(models.Model):
         return self.name
 
     @property
+    def base_sku(self):
+        return '{collection}-{model}-{colour}'.format(
+            collection=self.collection.number,
+            model=self.umbrella_product_model.number,
+            colour=self.colour.code)
+
+
+class UmbrellaProductImage(models.Model):
+    ''' product image'''
+    description = models.CharField(max_length=100)
+    image = models.FileField(upload_to='media/products/%Y/%m/%d')
+    product = models.ForeignKey(UmbrellaProduct)
+
+    def __unicode__(self):
+        return self.description
+
+
+class UmbrellaProductBillOfMaterial(models.Model):
+    ''' 
+    Contains all of the BillOfMaterial for UmbrellaProduct.
+
+    If you add a BOM in this models, it will auto-create them in the ones down the piramid.
+    Same goes for deleting a BOM
+    '''
+    material = models.ForeignKey(Material)
+    quantity_needed = models.FloatField()
+    umbrella_product = models.ForeignKey(UmbrellaProduct)
+
+    class Meta:
+        unique_together = ('material', 'umbrella_product')
+        ordering = ('material__supplier', 'material', 'umbrella_product')
+
+    ## Create the same bom for all products in product_set
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            for product in self.umbrella_product.product_set.all():
+                product_bom = ProductBillOfMaterial.objects.create(
+                    material=self.material,
+                    quantity_needed=self.quantity_needed,
+                    product=product)
+                logger.info('Auto-Created ProductBillOfMaterial {}'.format(product_bom.id))
+        super(UmbrellaProductBillOfMaterial, self).save(*args, **kwargs)
+
+    ## Delete the same bom for all products in product_set
+    def delete(self, *args, **kwargs):
+        for product in self.umbrella_product.product_set.all():
+            try:
+                product_bom = ProductBillOfMaterial.objects.get(
+                        material=self.material,
+                        quantity_needed=self.quantity_needed,
+                        product=product)
+                product_bom_id = product_bom.id
+                product_bom.delete()
+                logger.info('Auto-Deleted ProductBillOfMaterial {}'.format(product_bom_id))
+            except ProductBillOfMaterial.DoesNotExist:
+                logger.info('FAILED Auto-Delete ProductBillOfMaterial in product {} object missing'.format(product.id))
+        super(UmbrellaProductBillOfMaterial, self).delete(*args, **kwargs)
+
+    def __unicode__(self):
+        return '{} {}'.format(self.quantity_needed, self.material)
+
+    @property 
     def cost(self):
-        cost = 0.0
-        for b in self.billofmaterial_set.all():
-            cost += b.quantity_needed * b.material.cost_per_usage_unit
-        return round(cost, ROUND_DIGITS)
+        return round(self.quantity_needed * self.material.cost_per_usage_unit, ROUND_DIGITS)
+
+
+class Product(models.Model):
+    '''
+    The child of an Umbrellaproduct.  This is the item being sold.
+    BOMS are partially dependant on the umbrella_product
+    '''
+    umbrella_product = models.ForeignKey(UmbrellaProduct)
+    product_model = models.ForeignKey(ProductModel)
+    ean_code = models.CharField(max_length=13, blank=True, null=True)
+
+    active = models.BooleanField(default=True)
+    complete = models.BooleanField(default=False)
+
+    sku = models.CharField(max_length=15, blank=True, null=True)
+
+    ## Set sku on any save 
+    def save(self, *args, **kwargs):
+        self.sku = '{}-{}'.format(self.umbrella_product.base_sku, self.product_model.size.short_size)
+        super(Product, self).save(*args, **kwargs)
+
+    @property 
+    def name(self):
+        return '{} {}'.format(self.umbrella_product, self.product_model.size)
+    
+    def __unicode__(self):
+        return self.name
+
+
+    @property 
+    def materials_on_stock(self):
+        '''Show the stock status on each location per product-need'''
+        ## FIXME:  This entire function should be eliminated and use the one from Material
+        stock_status = {}
+        for location in StockLocation.objects.all():
+            stock_status[location.name] = True
+            amount_available = []
+            for bom in self.productbillofmaterial_set.all():
+                try: 
+                    item_in_location = StockLocationItem.objects.get(location=location, material=bom.material)
+                    amount_available.append(item_in_location.quantity_in_stock / bom.quantity_needed)
+                except StockLocationItem.DoesNotExist:
+                    amount_available.append(0)
+            try:
+                stock_status[location.name] = int(min(amount_available)) ## int rounds down
+            except ValueError:
+                stock_status[location.name] = 0
+
+        return stock_status
+
+    @property 
+    def materials_on_stock_in_production_location(self):
+        '''Show the stock status in the production-location'''
+        stock = self.materials_on_stock
+        for key in stock:
+            if key == self.umbrella_product.collection.production_location.name:
+                return stock[key]
+    materials_on_stock_in_production_location.fget.short_description = u'Avail. Prod.'                
+
+    @property 
+    def cost(self):
+        '''calculate the total cost of this product'''
+        total_cost = 0
+        for bom in self.productbillofmaterial_set.all():
+            total_cost += bom.cost
+        return total_cost
 
     @property
     def recommended_B2B_price_per_96(self):
@@ -311,73 +446,16 @@ class Product(models.Model):
         return int(5 * round(float(rrp)/5))
     recommended_retail_price.fget.short_description = u'RRP'
 
-    @property 
-    def materials_on_stock(self):
-        '''Show the stock status on each location per product-need'''
-        ## FIXME:  This entire function should be eliminated and use the one from Material
-        stock_status = {}
-        for location in StockLocation.objects.all():
-            stock_status[location.name] = True
-            amount_available = []
-            for bom in self.billofmaterial_set.all():
-                try: 
-                    item_in_location = StockLocationItem.objects.get(location=location, material=bom.material)
-                    amount_available.append(item_in_location.quantity_in_stock / bom.quantity_needed)
-                except StockLocationItem.DoesNotExist:
-                    amount_available.append(0)
-            try:
-                stock_status[location.name] = int(min(amount_available)) ## int rounds down
-            except ValueError:
-                stock_status[location.name] = 0
 
-        return stock_status
-
-
-    @property 
-    def materials_on_stock_in_production_location(self):
-        '''Show the stock status in the production-location'''
-        stock = self.materials_on_stock
-        for key in stock:
-            if key == self.collection.production_location.name:
-                return stock[key]
-    materials_on_stock_in_production_location.fget.short_description = u'Avail. Prod.'                
-
-    @property 
-    def materials_missing(self):
-        mats_missing = []
-        for mat in self.billofmaterial_set.all():
-            try:
-                if mat.availability < 18:
-                    mats_missing.append(mat.material.sku)
-            except StockLocationItem.DoesNotExist:
-                mats_missing.append(mat.material.sku)
-
-        return mats_missing
-
-    @property
-    def sku(self):
-        return '{collection}-{model}-{colour}-{size}'.format(
-            collection=self.collection.number,
-            model=self.model.number,
-            colour=self.colour.code,
-            size=self.model.size.short_size)
-
-
-class ProductImage(models.Model):
-    ''' product image'''
-    description = models.CharField(max_length=100)
-    image = models.FileField(upload_to='media/products/%Y/%m/%d')
-    product = models.ForeignKey(Product)
-
-    def __unicode__(self):
-        return self.description
-
-
-class BillOfMaterial(models.Model):
+class ProductBillOfMaterial(models.Model):
     ''' Materials in a product '''
     material = models.ForeignKey(Material)
     quantity_needed = models.FloatField()
     product = models.ForeignKey(Product)
+
+    class Meta:
+        unique_together = ('material', 'product')
+        ordering = ('material__supplier', 'material', 'product')
 
     def __unicode__(self):
         return '{} {}'.format(self.quantity_needed, self.material)
@@ -389,16 +467,28 @@ class BillOfMaterial(models.Model):
     @property 
     def availability(self):
         ''' availability in production location '''
-        location = self.product.collection.production_location
+        location = self.product.umbrella_product.collection.production_location
         try:
             quantity_in_stock = StockLocationItem.objects.get(location=location, material=self.material).quantity_in_stock
         except StockLocationItem.DoesNotExist:
             return 0
         return int(quantity_in_stock / self.quantity_needed)
 
-    class Meta:
-        unique_together = ('material', 'product')
-        ordering = ('material__supplier', 'material', 'product')
 
 
+###############
+### Signals ###
+###############
 
+## Create all BOM from umbrella-product on creation
+@receiver(post_save, sender=Product)
+def on_creation_generate_boms_from_umbrella_product(sender, instance, created, **kwargs):
+    if created:
+        for umbrella_bom in instance.umbrella_product.umbrellaproductbillofmaterial_set.all():
+            product_bom = ProductBillOfMaterial.objects.create(
+                    material=umbrella_bom.material,
+                    quantity_needed=umbrella_bom.quantity_needed,
+                    product=instance)
+            logger.info('Auto-Created ProductBillOfMaterial on Product.Create {}'.format(product_bom.id))
+
+        
