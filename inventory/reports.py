@@ -57,7 +57,8 @@ def send_stock_status_for_order(item_qtys_dict_list):
     - sku  (full item sku)
     - qty  (qty wanted to product)
 
-    This script will ignore all location-information somewhere along the line.  So 
+    FIXME: This script will only look at stock availble in the production location of an item and mix it.
+    So if you need an item in 2 locations, it will not specify this.
     '''
     material_needed_dict = {}
 
@@ -91,36 +92,51 @@ def send_stock_status_for_order(item_qtys_dict_list):
                     raise
             
             mat_needed = material_needed_dict[bom.material.sku_supplier]
-            mat_needed['qty_to_order'] = mat_needed['qty_needed'] - mat_needed['qty_available']
+
+            qty_to_order = mat_needed['qty_needed'] - mat_needed['qty_available']
+            if qty_to_order < 0:
+                mat_needed['qty_to_order'] = 0
+            else:
+                mat_needed['qty_to_order'] = qty_to_order
 
     
 
-    ## flatten the material_needed_dict to material_needed_list
+    ## flatten the material_needed_dict to material_needed_list and remove items that don't need ordering
     logger.debug(material_needed_dict)
     material_needed_list = []
     for key in material_needed_dict.keys():
-        material_needed_list.append(material_needed_dict[key])
+        if material_needed_dict[key]['qty_to_order'] != 0:
+            material_needed_list.append(material_needed_dict[key])
     logger.debug(material_needed_list)
 
 
     ## Write to csv and email:
-    logger.info('Sending emails')
-    email = EmailMessage(
-        'Full Order List and material list',
-        'Full csv orderlist and material list in attachment.',
-        'sila@suzys.eu',
-        ['sascha@suzys.eu'],
-    )
+    if len(material_needed_list) > 0:
+        logger.info('Sending emails')
+        email = EmailMessage(
+            'Full Order List and material list',
+            'Full csv orderlist and material list in attachment.',
+            'sila@suzys.eu',
+            ['sascha@suzys.eu'],
+        )
 
-    csv_material_list = StringIO()
-    c = csv.DictWriter(csv_material_list, delimiter=';', fieldnames=material_needed_list[0].keys())
-    c.writeheader()
-    [c.writerow(i) for i in material_needed_list]
-    email.attach('material_list.csv', csv_material_list.getvalue(), 'text/csv')
+        csv_material_list = StringIO()
+        c = csv.DictWriter(csv_material_list, delimiter=';', fieldnames=material_needed_list[0].keys())
+        c.writeheader()
+        [c.writerow(i) for i in material_needed_list]
+        email.attach('material_list.csv', csv_material_list.getvalue(), 'text/csv')
 
-    csv_order_list = StringIO()
-    c = csv.DictWriter(csv_order_list, delimiter=';', fieldnames=item_qtys_dict_list[0].keys())
-    [c.writerow(i) for i in item_qtys_dict_list]
-    email.attach('order_list.csv', csv_order_list.getvalue(), 'text/csv')
-
-    email.send()    
+        csv_order_list = StringIO()
+        c = csv.DictWriter(csv_order_list, delimiter=';', fieldnames=item_qtys_dict_list[0].keys())
+        [c.writerow(i) for i in item_qtys_dict_list]
+        email.attach('order_list.csv', csv_order_list.getvalue(), 'text/csv')  
+    else:
+        logger.info('No items need ordering')
+        email = EmailMessage(
+            'Full Order List and material list',
+            'Everything is in stock.  Nothing to order',
+            'sila@suzys.eu',
+            ['sascha@suzys.eu'],
+        )
+    email.send()  
+        
