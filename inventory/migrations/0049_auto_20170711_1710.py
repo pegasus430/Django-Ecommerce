@@ -150,7 +150,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='productmodel',
             name='umbrella_product_model',
-            field=models.ForeignKey(blank=True, on_delete=django.db.models.deletion.CASCADE, to='inventory.UmbrellaProductModel'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='inventory.UmbrellaProductModel'),
             #field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='inventory.UmbrellaProductModel'),
             preserve_default=False,
         ),
