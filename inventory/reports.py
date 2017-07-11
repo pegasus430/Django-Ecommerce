@@ -102,12 +102,12 @@ def send_stock_status_for_order(item_qtys_dict_list):
                 except TypeError:
                     logger.error('Type mismatch bom.quantity_needed = {}, item["qty"] = {}'.format(type(bom.quantity_needed), type(item_qty)))
                     raise
-                    
+
                 try:
                     material_needed_dict[bom.material.sku_supplier] = {
                         'object': bom.material,
                         'supplier': bom.material.supplier.__unicode__(),
-                        'qty_needed': bom.quantity_needed * item['qty'],
+                        'qty_needed': qty_needed,
                         'qty_available': bom.availability,
                         'sku_supplier': bom.material.sku_supplier,
                     }
