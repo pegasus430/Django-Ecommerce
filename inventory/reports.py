@@ -74,7 +74,7 @@ def send_stock_status_for_order(item_qtys_dict_list):
         try:
             product_dict[item['sku']]
         except KeyError:
-            logger.info('Unkown sku {} requested.  Please add it to Sila, or fix the csv'.format(item['sku']))
+            logger.info('Unkown sku {} requested.  Please add it to Sila, or fix the csv'.format(int(item['sku'])))
             missing_skus.append(item['sku'])
 
     if len(missing_skus) > 0:
