@@ -325,15 +325,22 @@ class UmbrellaProductBillOfMaterial(models.Model):
         unique_together = ('material', 'umbrella_product')
         ordering = ('material__supplier', 'material', 'umbrella_product')
 
-    ## Create the same bom for all products in product_set
+    ## Create/update the same bom for all products in product_set
     def save(self, *args, **kwargs):
-        if not self.pk:
-            for product in self.umbrella_product.product_set.all():
-                product_bom = ProductBillOfMaterial.objects.create(
-                    material=self.material,
-                    quantity_needed=self.quantity_needed,
-                    product=product)
+        for product in self.umbrella_product.product_set.all():
+            product_bom, created = ProductBillOfMaterial.objects.get_or_create(
+                material=self.material,
+                product=product)
+            if created:
+                product_bom=quantity_needed=self.quantity_needed
+                product_bom.save()
                 logger.info('Auto-Created ProductBillOfMaterial {}'.format(product_bom.id))
+            elif not created and product_bom.use_default_qty:
+                product_bom=quantity_needed=self.quantity_needed
+                product_bom.save()
+                logger.info('Auto-Updated ProductBillOfMaterial {}'.format(product_bom.id))
+            else:
+                logger.info('SKIPPED Auto-Updated or Create ProductBillOfMaterial {}'.format(product_bom.id))
         super(UmbrellaProductBillOfMaterial, self).save(*args, **kwargs)
 
     ## Delete the same bom for all products in product_set
@@ -459,6 +466,8 @@ class ProductBillOfMaterial(models.Model):
     material = models.ForeignKey(Material)
     quantity_needed = models.FloatField()
     product = models.ForeignKey(Product)
+
+    use_default_qty = models.BooleanField(default=True, verbose_name='Use parent/umbrella qty value')
 
     class Meta:
         unique_together = ('material', 'product')
