@@ -45,7 +45,7 @@ class UmbrellaProductBillOfMaterialInline(admin.TabularInline):
 class UmbrellaProductImageInline(DefaultInline):
     model = UmbrellaProductImage 
 
-class ProductInline(admin.TabularInline):
+class ProductInline(DefaultInline):
     model=Product  
     extra=0
     # fields = ('name', 'umbrella_product_model',)  
