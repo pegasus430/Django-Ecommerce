@@ -53,8 +53,8 @@ class ProductBillOfMaterialInline(admin.TabularInline):
 
 class CollectionAdmin(admin.ModelAdmin):
     inlines = [UmbrellaProductInline]
-    list_display = ['name', 'number','range_type', 'production_location', 'materials_missing']
-    readonly_fields = ('materials_missing',)
+    list_display = ['name', 'number','range_type', 'production_location']
+    # readonly_fields = ()
 
 class SizeAdmin(DefaultAdmin):
     inlines = [SizeBreedsInline]
