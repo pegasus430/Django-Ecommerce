@@ -45,6 +45,14 @@ class UmbrellaProductBillOfMaterialInline(admin.TabularInline):
 class UmbrellaProductImageInline(DefaultInline):
     model = UmbrellaProductImage 
 
+class ProductInline(admin.TabularInline):
+    model=Product  
+    extra=0
+    # fields = ('name', 'umbrella_product_model',)  
+    # exclude = ('description', 'complete', 'active')
+    # readonly_fields = ('colour',)
+    # can_delete = False    
+
 class ProductBillOfMaterialInline(admin.TabularInline):
     model = ProductBillOfMaterial
     readonly_fields = ['cost', 'availability'] #['materials_on_stock',]
@@ -100,7 +108,7 @@ class UmbrellaProductAdmin(admin.ModelAdmin):
     #     'recommended_B2B_price_per_1', 'recommended_B2B_price_per_6', 
     #     'recommended_B2B_price_per_24', 'recommended_B2B_price_per_96', 'materials_missing']  
     # list_filter = ['collection', 'colour', 'model__product_type', 'model__size', 'model__number', 'complete', 'active']
-    inlines = [UmbrellaProductBillOfMaterialInline, UmbrellaProductImageInline]
+    inlines = [ProductInline, UmbrellaProductBillOfMaterialInline, UmbrellaProductImageInline]
     # actions = [copy_product_action]
 
 class UmbrellaProductBillOfMaterialAdmin(admin.ModelAdmin):
