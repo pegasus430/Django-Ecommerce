@@ -186,7 +186,7 @@ class Colour(models.Model):
 class UmbrellaProductModel(models.Model):
     ''' product model '''
     PRODUCT_TYPE_CHOICES = (
-        ('PL', 'Plaid'),
+        ('PL', 'Blanket'),
         ('BA', 'Basket'),
         ('CA', 'Carrier'),
         ('JA', 'Jacket'),
