@@ -35,6 +35,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #'django.contrib.sites',  ## needed for django-allauth
 
+    'django_nose',  ## you want to monitor how much test-code you write, no?
+
     'defaults',
     'inventory',
     'contacts',
@@ -95,6 +97,11 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+NOSE_ARGS = [
+    '--with-coverage',
+    '--cover-package=inventory,contacts,defaults',
+]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/

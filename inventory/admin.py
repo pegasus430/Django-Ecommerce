@@ -2,21 +2,6 @@ from django.contrib import admin
 from defaults.admin import DefaultAdmin, DefaultInline
 
 from .models import *
-from .helpers import copy_product, copy_product_model
-
-######################
-### Custom Actions ###
-######################
-
-def copy_product_action(modeladmin, request, queryset):
-    for obj in queryset:
-        copy_product(obj)
-copy_product_action.short_description = "Copy Product"
-
-def copy_product_model_action(modeladmin, request, queryset):
-    for obj in queryset:
-        copy_product_model(obj)
-copy_product_model_action.short_description = "Copy product-model without patterns"
 
 ###############
 ### Inlines ###
@@ -33,37 +18,41 @@ class MaterialDataSheetInline(DefaultInline):
 class StockLocationItemInline(DefaultInline):
     model=StockLocationItem
 
-class ProductPatternInline(DefaultInline):
-    model=ProductPattern
+class ProductModelPatternInline(DefaultInline):
+    model=ProductModelPattern
 
-class ProductModelImageInline(DefaultInline):
-    model=ProductModelImage
+class UmbrellaProductModelImageInline(DefaultInline):
+    model=UmbrellaProductModelImage
 
-class ProductModelProductionDescriptionInline(DefaultInline):
-    model=ProductModelProductionDescription
+class UmbrellaProductModelProductionDescriptionInline(DefaultInline):
+    model=UmbrellaProductModelProductionDescription
 
-class ProductInline(admin.TabularInline):
-    model=Product  
+class UmbrellaProductInline(admin.TabularInline):
+    model=UmbrellaProduct  
     extra=0
-    # fields = ('name', 'model',)  
+    fields = ('name', 'umbrella_model',)  
     exclude = ('description', 'complete', 'active')
-    readonly_fields = ('colour', 'materials_on_stock_in_production_location',)
+    readonly_fields = ('colour',)
     can_delete = False
 
-class BillOfMaterialInline(admin.TabularInline):
-    model = BillOfMaterial
-    readonly_fields = ['cost', 'availability'] #['materials_on_stock',]
+class UmbrellaProductBillOfMaterialInline(admin.TabularInline):
+    model = UmbrellaProductBillOfMaterial
     extra = 0
 
-class ProductImageInline(DefaultInline):
-    model = ProductImage 
+class UmbrellaProductImageInline(DefaultInline):
+    model = UmbrellaProductImage 
+
+class ProductBillOfMaterialInline(admin.TabularInline):
+    model = ProductBillOfMaterial
+    readonly_fields = ['cost', 'availability'] #['materials_on_stock',]
+    extra = 0    
 
 #####################
 ### Custom Admins ###
 #####################
 
 class CollectionAdmin(admin.ModelAdmin):
-    inlines = [ProductInline]
+    inlines = [UmbrellaProductInline]
     list_display = ['name', 'number','range_type', 'production_location', 'materials_missing']
     readonly_fields = ('materials_missing',)
 
@@ -86,37 +75,65 @@ class MaterialAdmin(DefaultAdmin):
     readonly_fields = ['used_in_collections']
     inlines = [MaterialImageInline, MaterialDataSheetInline, StockLocationItemInline]
 
+class UmbrellaProductModelAdmin(admin.ModelAdmin):
+    # list_display = ['__unicode__', 'product_type', 'number', 'size', 'all_patterns_present', 'product_images_present']
+    # list_filter = ['product_type', 'number', 'size', 'all_patterns_present', 'product_images_present']
+    inlines = [UmbrellaProductModelImageInline, UmbrellaProductModelProductionDescriptionInline]
+    # readonly_fields = ['used_in_collections']
+
 class ProductModelAdmin(admin.ModelAdmin):
-    list_display = ['__unicode__', 'product_type', 'number', 'size', 'all_patterns_present', 'product_images_present']
-    list_filter = ['product_type', 'number', 'size', 'all_patterns_present', 'product_images_present']
-    inlines = [ProductPatternInline, ProductModelImageInline, ProductModelProductionDescriptionInline]
-    readonly_fields = ['used_in_collections']
-    actions = [copy_product_model_action]
+    # list_display = ['__unicode__', 'product_type', 'number', 'size', 'all_patterns_present', 'product_images_present']
+    # list_filter = ['product_type', 'number', 'size', 'all_patterns_present', 'product_images_present']
+    inlines = [ProductModelPatternInline]
+    # readonly_fields = ['used_in_collections']
+
+class UmbrellaProductAdmin(admin.ModelAdmin):
+    # readonly_fields = ('sku', 'recommended_retail_price', 'recommended_B2B_price_per_1',
+    #     'recommended_B2B_price_per_6', 'recommended_B2B_price_per_24',
+    #     'recommended_B2B_price_per_96', 'cost', 'materials_on_stock',
+    #     'materials_on_stock_in_production_location', 'materials_missing')    
+    # list_display = ['name','sku', 'active', 'complete', 
+    #     'materials_on_stock_in_production_location', 'recommended_retail_price', 
+    #     'recommended_B2B_price_per_1', 'recommended_B2B_price_per_6', 
+    #     'recommended_B2B_price_per_24', 'recommended_B2B_price_per_96', 'materials_missing']  
+    # list_filter = ['collection', 'colour', 'model__product_type', 'model__size', 'model__number', 'complete', 'active']
+    inlines = [UmbrellaProductBillOfMaterialInline, UmbrellaProductImageInline]
+    # actions = [copy_product_action]
+
+class UmbrellaProductBillOfMaterialAdmin(admin.ModelAdmin):
+    readonly_fields = []
 
 class ProductAdmin(admin.ModelAdmin):
     readonly_fields = ('sku', 'recommended_retail_price', 'recommended_B2B_price_per_1',
         'recommended_B2B_price_per_6', 'recommended_B2B_price_per_24',
         'recommended_B2B_price_per_96', 'cost', 'materials_on_stock',
-        'materials_on_stock_in_production_location', 'materials_missing')    
+        'materials_on_stock_in_production_location',)    
     list_display = ['name','sku', 'active', 'complete', 
         'materials_on_stock_in_production_location', 'recommended_retail_price', 
         'recommended_B2B_price_per_1', 'recommended_B2B_price_per_6', 
-        'recommended_B2B_price_per_24', 'recommended_B2B_price_per_96', 'materials_missing']  
-    list_filter = ['collection', 'colour', 'model__product_type', 'model__size', 'model__number', 'complete', 'active']
-    inlines = [BillOfMaterialInline, ProductImageInline]
-    actions = [copy_product_action]
+        'recommended_B2B_price_per_24', 'recommended_B2B_price_per_96',]  
+    list_filter = ['umbrella_product__collection', 'umbrella_product__colour', 
+        'umbrella_product__umbrella_product_model__product_type', 'product_model__size',  
+        'product_model__umbrella_product_model__number', 'complete', 'active']
+    inlines = [ProductBillOfMaterialInline]
 
-
-class BillOfMaterialAdmin(admin.ModelAdmin):
+class ProductBillOfMaterialAdmin(admin.ModelAdmin):
     readonly_fields = []
 
 admin.site.register(StockLocation, StockLocationAdmin)
 admin.site.register(Material, MaterialAdmin)
+admin.site.register(MaterialDataSheet)
+admin.site.register(MaterialImage)
 admin.site.register(StockLocationItem, StockLocationItemAdmin)
 admin.site.register(Collection, CollectionAdmin)
 admin.site.register(Size, SizeAdmin)
 admin.site.register(Colour)
-admin.site.register(ProductPattern)
 admin.site.register(ProductModel, ProductModelAdmin)
+admin.site.register(ProductModelPattern)
+admin.site.register(UmbrellaProductModel, UmbrellaProductModelAdmin)
+admin.site.register(UmbrellaProductModelImage)
+admin.site.register(UmbrellaProduct, UmbrellaProductAdmin)
+admin.site.register(UmbrellaProductImage)
+admin.site.register(UmbrellaProductBillOfMaterial, UmbrellaProductBillOfMaterialAdmin)
 admin.site.register(Product, ProductAdmin)
-admin.site.register(BillOfMaterial, BillOfMaterialAdmin)
+admin.site.register(ProductBillOfMaterial, ProductBillOfMaterialAdmin)
