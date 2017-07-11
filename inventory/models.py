@@ -222,7 +222,7 @@ class UmbrellaProductModelProductionDescription(models.Model):
                 null=True)
 
     def __unicode__(self):
-        return '{} for {}'.format(self.name, self.product_model)
+        return '{} for {}'.format(self.name, self.umbrella_product_model)
 
 class UmbrellaProductModelImage(models.Model):
     '''Product model images'''
