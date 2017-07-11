@@ -12,6 +12,8 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+## FIXME:  Add all __unicode__ and other generated strings to tests
+
 ######################
 ### Stock location ###
 ######################
