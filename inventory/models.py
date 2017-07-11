@@ -223,7 +223,7 @@ class UmbrellaProductModel(models.Model):
 
 class UmbrellaProductModelProductionDescription(models.Model):
     '''descriptions for model production'''
-    umbrella_product_model = models.ForeignKey(UmbrellaProductModel)
+    umbrella_product_model = models.ForeignKey(UmbrellaProductModel, blank=True, null=True)
     name = models.CharField(max_length=100, verbose_name='Step name')
     description = models.TextField(verbose_name='What to do and how to do it')
     image = models.FileField(upload_to='media/umbrella_product_models/production_description/images/%Y/%m/%d',
@@ -237,14 +237,14 @@ class UmbrellaProductModelImage(models.Model):
     '''Product model images'''
     description = models.CharField(max_length=100)
     image = models.FileField(upload_to='media/umbrella_product_model/images/%Y/%m/%d')
-    umbrella_product_model = models.ForeignKey(UmbrellaProductModel)
+    umbrella_product_model = models.ForeignKey(UmbrellaProductModel, blank=True, null=True)
 
     def __unicode__(self):
         return self.description
 
 
 class ProductModel(models.Model):
-    umbrella_product_model = models.ForeignKey(UmbrellaProductModel)
+    umbrella_product_model = models.ForeignKey(UmbrellaProductModel, blank=True, null=True)
     size = models.ForeignKey(Size, blank=True, null=True)
 
     def __unicode__(self):
@@ -276,7 +276,7 @@ class UmbrellaProduct(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField(blank=True, null=True)
     collection = models.ForeignKey(Collection)
-    umbrella_product_model = models.ForeignKey(UmbrellaProductModel)
+    umbrella_product_model = models.ForeignKey(UmbrellaProductModel, blank=True, null=True)
     colour = models.ForeignKey(Colour)
 
     active = models.BooleanField(default=True)
