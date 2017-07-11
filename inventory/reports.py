@@ -90,6 +90,7 @@ def send_stock_status_for_order(item_qtys_dict_list):
     logger.debug('Going to read the products needed and create material_needed_dict')
     for item in item_qtys_dict_list:
         product = product_dict[item['sku']]
+        item_qty = int(item['qty'])
 
         for bom in product.billofmaterial_set.all():
             try:
@@ -97,10 +98,11 @@ def send_stock_status_for_order(item_qtys_dict_list):
                 logger.debug('Add additional material requirement {} for {}'.format(bom.material.sku_supplier, product))
             except KeyError:
                 try:
-                    qty_needed = bom.quantity_needed * item['qty'],
+                    qty_needed = bom.quantity_needed * item_qty
                 except TypeError:
-                    logger.error('Type mismatch bom.quantity_needed = {}, item["qty"] = {}'.format(type(bom.quantity_needed), type(item['qty'])))
+                    logger.error('Type mismatch bom.quantity_needed = {}, item["qty"] = {}'.format(type(bom.quantity_needed), type(item_qty)))
                     raise
+                    
                 try:
                     material_needed_dict[bom.material.sku_supplier] = {
                         'object': bom.material,
