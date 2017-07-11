@@ -40,7 +40,7 @@ class UmbrellaProductInline(DefaultInline):
 
 class UmbrellaProductBillOfMaterialInline(admin.TabularInline):
     model = UmbrellaProductBillOfMaterial
-    extra = 5
+    extra = 0
 
 class UmbrellaProductImageInline(DefaultInline):
     model = UmbrellaProductImage 
