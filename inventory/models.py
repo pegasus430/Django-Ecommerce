@@ -326,6 +326,7 @@ class UmbrellaProductBillOfMaterial(models.Model):
         ordering = ('material__supplier', 'material', 'umbrella_product')
 
     ## Create/update the same bom for all products in product_set
+    ##  FIXME:  Add to testingcode, testing for scenario's: - create, - update if not use_default_qty
     def save(self, *args, **kwargs):
         for product in self.umbrella_product.product_set.all():
             product_bom, created = ProductBillOfMaterial.objects.get_or_create(
@@ -344,6 +345,7 @@ class UmbrellaProductBillOfMaterial(models.Model):
         super(UmbrellaProductBillOfMaterial, self).save(*args, **kwargs)
 
     ## Delete the same bom for all products in product_set
+    ##  FIXME:  Add to testingcode, testing for scenario's: - delete, delete not if use_default
     def delete(self, *args, **kwargs):
         for product in self.umbrella_product.product_set.all():
             try:
