@@ -398,7 +398,7 @@ class BillOfMaterial(models.Model):
 
     class Meta:
         unique_together = ('material', 'product')
-        ordering = ('material', 'product')
+        ordering = ('material', 'material__supplier', 'product')
 
 
 
