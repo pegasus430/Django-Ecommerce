@@ -30,7 +30,7 @@ class UmbrellaProductModelProductionDescriptionInline(DefaultInline):
 class UmbrellaProductInline(admin.TabularInline):
     model=UmbrellaProduct  
     extra=0
-    fields = ('name', 'umbrella_model',)  
+    fields = ('name', 'umbrella_product_model',)  
     exclude = ('description', 'complete', 'active')
     readonly_fields = ('colour',)
     can_delete = False
