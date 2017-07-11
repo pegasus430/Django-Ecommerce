@@ -68,6 +68,24 @@ def send_stock_status_for_order(item_qtys_dict_list):
     for product in Product.objects.all():
         product_dict[product.sku] = product
 
+    ## Verify that all of the products are know, or send an email:
+    missing_skus = []
+    for item in item_qtys_dict_list:
+        try:
+            product_dict[item['sku']]
+        except KeyError:
+            logger.info('Unkown sku {} requested.  Please add it to Sila, or fix the csv'.format(item['sku']))
+            missing_skus.append(item['sku'])
+
+    if len(missing_skus) > 0:
+        email = EmailMessage(
+        'Full Order List and material list',
+        'Missing skus: {}'.format(missing_skus),
+        'sila@suzys.eu',
+        ['sascha@suzys.eu'],
+        )
+        email.send()
+
     ## Read all the products needed, and add the qty to the material_needed_dict
     logger.debug('Going to read the products needed and create material_needed_dict')
     for item in item_qtys_dict_list:
@@ -99,8 +117,6 @@ def send_stock_status_for_order(item_qtys_dict_list):
             else:
                 mat_needed['qty_to_order'] = qty_to_order
 
-    
-
     ## flatten the material_needed_dict to material_needed_list and remove items that don't need ordering
     logger.debug(material_needed_dict)
     material_needed_list = []
@@ -108,7 +124,6 @@ def send_stock_status_for_order(item_qtys_dict_list):
         if material_needed_dict[key]['qty_to_order'] != 0:
             material_needed_list.append(material_needed_dict[key])
     logger.debug(material_needed_list)
-
 
     ## Write to csv and email:
     if len(material_needed_list) > 0:
@@ -119,7 +134,6 @@ def send_stock_status_for_order(item_qtys_dict_list):
             'sila@suzys.eu',
             ['sascha@suzys.eu'],
         )
-
         csv_material_list = StringIO()
         c = csv.DictWriter(csv_material_list, delimiter=';', fieldnames=material_needed_list[0].keys())
         c.writeheader()
