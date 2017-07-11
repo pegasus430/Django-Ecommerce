@@ -464,7 +464,7 @@ class Product(models.Model):
 class ProductBillOfMaterial(models.Model):
     ''' Materials in a product '''
     material = models.ForeignKey(Material)
-    quantity_needed = models.FloatField()
+    quantity_needed = models.FloatField(blank=True, null=True)
     product = models.ForeignKey(Product)
 
     use_default_qty = models.BooleanField(default=True, verbose_name='Use parent/umbrella qty value')
