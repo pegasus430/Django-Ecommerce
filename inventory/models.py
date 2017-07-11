@@ -388,6 +388,7 @@ class BillOfMaterial(models.Model):
 
     @property 
     def availability(self):
+        ''' availability in production location '''
         location = self.product.collection.production_location
         quantity_in_stock = StockLocationItem.objects.get(location=location, material=self.material).quantity_in_stock
         return int(quantity_in_stock / self.quantity_needed)
