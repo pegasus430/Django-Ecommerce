@@ -97,6 +97,11 @@ def send_stock_status_for_order(item_qtys_dict_list):
                 logger.debug('Add additional material requirement {} for {}'.format(bom.material.sku_supplier, product))
             except KeyError:
                 try:
+                    qty_needed = bom.quantity_needed * item['qty'],
+                except TypeError:
+                    logger.error('Type mismatch bom.quantity_needed = {}, item["qty"] = {}'.format(type(bom.quantity_needed), type(item['qty'])))
+                    raise
+                try:
                     material_needed_dict[bom.material.sku_supplier] = {
                         'object': bom.material,
                         'supplier': bom.material.supplier.__unicode__(),
@@ -105,7 +110,7 @@ def send_stock_status_for_order(item_qtys_dict_list):
                         'sku_supplier': bom.material.sku_supplier,
                     }
                     logger.debug('Add initial material requirement {} for {}'.format(bom.material.sku_supplier, product))
-                except:
+                except Exception as e:
                     logger.error('There is a problem with one your bom id {}'.format(bom))
                     raise
             
