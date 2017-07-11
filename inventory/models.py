@@ -194,7 +194,7 @@ class UmbrellaProductModel(models.Model):
         ('CU', 'Cushion'),
     )
     name = models.CharField(max_length=100)
-    number = models.CharField(max_length=10)
+    number = models.CharField(max_length=10, unique=True)
     all_patterns_present = models.BooleanField(default=False)
     product_images_present = models.BooleanField(default=False)
     product_type = models.CharField(choices=PRODUCT_TYPE_CHOICES, max_length=2 ,blank=True, null=True)
@@ -380,7 +380,7 @@ class Product(models.Model):
     active = models.BooleanField(default=True)
     complete = models.BooleanField(default=False)
 
-    sku = models.CharField(max_length=15, blank=True, null=True)
+    sku = models.CharField(max_length=15, blank=True, null=True, unique=True)
 
     ## Set sku on any save 
     def save(self, *args, **kwargs):
