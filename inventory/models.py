@@ -273,6 +273,9 @@ class UmbrellaProduct(models.Model):
     active = models.BooleanField(default=True)
     complete = models.BooleanField(default=False)
 
+    class Meta:
+        ordering = ('collection', 'umbrella_product_model__number')
+
     ## Add the sizes automatically if not present after save (always adds anything if you change the model)
     def save(self, *args, **kwargs):
         for product_model in self.umbrella_product_model.productmodel_set.all():
