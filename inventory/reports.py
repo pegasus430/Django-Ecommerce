@@ -110,7 +110,7 @@ def send_stock_status_for_order(item_qtys_dict_list):
                         'qty_needed': qty_needed,
                         'qty_available': bom.availability,
                         'sku_supplier': bom.material.sku_supplier,
-                        'unit_usage': bom.material.unit_usage,
+                        'unit_usage': bom.material.get_unit_usage_display(),
                     }
                     logger.debug('Add initial material requirement {} for {}'.format(bom.material.sku_supplier, product))
                 except Exception as e:
