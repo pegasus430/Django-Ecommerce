@@ -113,7 +113,7 @@ def send_stock_status_for_order(item_qtys_dict_list):
                     }
                     logger.debug('Add initial material requirement {} for {}'.format(bom.material.sku_supplier, product))
                 except Exception as e:
-                    logger.error('There is a problem with one your bom id {}, material id {} or supplier id {}'.format(bom.id, bom.material.id, bom.supplier.id))
+                    logger.error('There is a problem with one your bom id {}, material id {} or product id {}'.format(bom.id, bom.material.id, bom.product.id))
                     raise
             
             mat_needed = material_needed_dict[bom.material.sku_supplier]
