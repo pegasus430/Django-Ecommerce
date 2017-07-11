@@ -332,11 +332,11 @@ class UmbrellaProductBillOfMaterial(models.Model):
                 material=self.material,
                 product=product)
             if created:
-                product_bom=quantity_needed=self.quantity_needed
+                product_bom.quantity_needed=self.quantity_needed
                 product_bom.save()
                 logger.info('Auto-Created ProductBillOfMaterial {}'.format(product_bom.id))
             elif not created and product_bom.use_default_qty:
-                product_bom=quantity_needed=self.quantity_needed
+                product_bom.quantity_needed=self.quantity_needed
                 product_bom.save()
                 logger.info('Auto-Updated ProductBillOfMaterial {}'.format(product_bom.id))
             else:
