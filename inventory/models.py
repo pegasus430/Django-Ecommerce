@@ -390,7 +390,10 @@ class BillOfMaterial(models.Model):
     def availability(self):
         ''' availability in production location '''
         location = self.product.collection.production_location
-        quantity_in_stock = StockLocationItem.objects.get(location=location, material=self.material).quantity_in_stock
+        try:
+            quantity_in_stock = StockLocationItem.objects.get(location=location, material=self.material).quantity_in_stock
+        except StockLocationItem.DoesNotExist:
+            return 0
         return int(quantity_in_stock / self.quantity_needed)
 
     class Meta:
