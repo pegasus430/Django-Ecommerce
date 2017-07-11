@@ -30,7 +30,7 @@ class UmbrellaProductModelProductionDescriptionInline(DefaultInline):
 class ProductModelInline(DefaultInline):
     model=ProductModel
 
-class UmbrellaProductInline(admin.TabularInline):
+class UmbrellaProductInline(DefaultInline):
     model=UmbrellaProduct  
     extra=0
     fields = ('name', 'umbrella_product_model',)  
