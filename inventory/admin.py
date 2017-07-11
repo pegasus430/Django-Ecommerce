@@ -27,6 +27,9 @@ class UmbrellaProductModelImageInline(DefaultInline):
 class UmbrellaProductModelProductionDescriptionInline(DefaultInline):
     model=UmbrellaProductModelProductionDescription
 
+class ProductModelInline(DefaultInline):
+    model=ProductModel
+
 class UmbrellaProductInline(admin.TabularInline):
     model=UmbrellaProduct  
     extra=0
@@ -78,7 +81,7 @@ class MaterialAdmin(DefaultAdmin):
 class UmbrellaProductModelAdmin(admin.ModelAdmin):
     # list_display = ['__unicode__', 'product_type', 'number', 'size', 'all_patterns_present', 'product_images_present']
     # list_filter = ['product_type', 'number', 'size', 'all_patterns_present', 'product_images_present']
-    inlines = [UmbrellaProductModelImageInline, UmbrellaProductModelProductionDescriptionInline]
+    inlines = [ProductModelInline, UmbrellaProductModelImageInline, UmbrellaProductModelProductionDescriptionInline]
     # readonly_fields = ['used_in_collections']
 
 class ProductModelAdmin(admin.ModelAdmin):
