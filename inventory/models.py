@@ -283,6 +283,10 @@ class UmbrellaProduct(models.Model):
             model=self.umbrella_product_model.number,
             colour=self.colour.code)
 
+    @property 
+    def number_of_sizes(self):
+        return len(self.product_set.all())
+
 
 class UmbrellaProductImage(models.Model):
     ''' product image'''

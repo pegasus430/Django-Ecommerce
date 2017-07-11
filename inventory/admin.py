@@ -103,7 +103,7 @@ class UmbrellaProductAdmin(admin.ModelAdmin):
     #     'recommended_B2B_price_per_6', 'recommended_B2B_price_per_24',
     #     'recommended_B2B_price_per_96', 'cost', 'materials_on_stock',
     #     'materials_on_stock_in_production_location', 'materials_missing')    
-    list_display = ['__unicode__','base_sku', 'active', 'complete', 'umbrella_product_model']
+    list_display = ['__unicode__','base_sku', 'active', 'complete', 'umbrella_product_model', 'number_of_sizes']
     list_filter = ['collection', 'colour', 'umbrella_product_model__product_type', 'complete', 'active']
     inlines = [ProductInline, UmbrellaProductBillOfMaterialInline, UmbrellaProductImageInline]
     # actions = [copy_product_action]
