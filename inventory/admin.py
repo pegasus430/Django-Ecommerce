@@ -55,7 +55,7 @@ class ProductInline(DefaultInline):
 
 class ProductBillOfMaterialInline(admin.TabularInline):
     model = ProductBillOfMaterial
-    readonly_fields = ['cost', 'availability'] #['materials_on_stock',]
+    # readonly_fields = ['cost', 'availability'] #['materials_on_stock',]
     extra = 0    
 
 #####################
