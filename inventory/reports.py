@@ -162,7 +162,7 @@ def send_stock_status_for_order(item_qtys_dict_list):
             c.writeheader()
             for item in material_needed_list:
                 if item['supplier'] == supplier:
-                    c.writerow(i)
+                    c.writerow(item)
             email.attach('material_list_{}.csv'.format(supplier), csv_material_list.getvalue(), 'text/csv')
             del csv_material_list
             del c
