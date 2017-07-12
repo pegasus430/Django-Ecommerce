@@ -138,7 +138,12 @@ def send_stock_status_for_order(item_qtys_dict_list):
     for key in material_needed_dict.keys():
         if material_needed_dict[key]['qty_to_order'] != 0:
             material_needed_list.append(material_needed_dict[key])
-    logger.debug(material_needed_list)
+    # logger.debug(material_needed_list)
+
+    ## create a list of suppliers from this list
+    material_needed_supplier_list = set()
+    [material_needed_supplier_list.add(i['supplier']) for i in material_needed_list]
+
 
     ## Write to csv and email:
     if len(material_needed_list) > 0:
@@ -149,11 +154,16 @@ def send_stock_status_for_order(item_qtys_dict_list):
             'sila@suzys.eu',
             ['sascha@suzys.eu'],
         )
-        csv_material_list = StringIO()
-        c = csv.DictWriter(csv_material_list, delimiter=';', fieldnames=material_needed_list[0].keys())
-        c.writeheader()
-        [c.writerow(i) for i in material_needed_list]
-        email.attach('material_list.csv', csv_material_list.getvalue(), 'text/csv')
+
+        for supplier in material_needed_supplier_list:
+            csv_material_list = StringIO()
+            c = csv.DictWriter(csv_material_list, delimiter=';', fieldnames=material_needed_list[0].keys())
+            c.writeheader()
+            for item in material_needed_list:
+                if item['supplier'] == supplier:
+                    c.writerow(i)
+            email.attach('material_list_{}.csv'.format(supplier), csv_material_list.getvalue(), 'text/csv')
+
 
         csv_order_list = StringIO()
         c = csv.DictWriter(csv_order_list, delimiter=';', fieldnames=item_qtys_dict_list[0].keys())
