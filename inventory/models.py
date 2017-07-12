@@ -204,6 +204,7 @@ class UmbrellaProductModel(models.Model):
     original_umbrella_product_model = models.ForeignKey('self', blank=True, null=True)
 
     ## When saving, you need to save of of the nested attached products. So they may re-assign the sku
+    ## FIXME: Write test for override below
     def save(self, *args, **kwargs):
         for product_model in self.productmodel_set.all():
             for prod in product_model.product_set.all():
