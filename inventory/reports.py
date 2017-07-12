@@ -79,9 +79,14 @@ def send_stock_status_for_order(item_qtys_dict_list):
 
     if len(missing_skus) > 0:
         logger.info('Sending email with missing skus')
+
+        msg = 'Missing skus:\n'
+        for missing in missing_skus:
+            msg += '-{}'.format(missing)
+        
         email = EmailMessage(
         'Full Order List and material list',
-        'Missing skus: {}'.format(missing_skus),
+        'msg',
         'sila@suzys.eu',
         ['sascha@suzys.eu'],
         )
