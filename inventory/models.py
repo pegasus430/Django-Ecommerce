@@ -290,6 +290,11 @@ class UmbrellaProduct(models.Model):
     ## Add the sizes automatically if not present after save (always adds anything if you change the model)
     def save(self, *args, **kwargs):
         if self.umbrella_product_model != self.__original_umbrella_product_model:
+            logger.info('{}: umbrella_product_model was changed from {} to {}.  Creating new matching items'.format(
+                self.name,
+                self.__original_umbrella_product_model,
+                self.umbrella_product_model,
+                ))
             for product_model in self.umbrella_product_model.productmodel_set.all():
                 try:
                     Product.objects.get(umbrella_product=self, product_model=product_model)
