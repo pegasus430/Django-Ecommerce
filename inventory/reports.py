@@ -86,6 +86,7 @@ def send_stock_status_for_order(item_qtys_dict_list):
         ['sascha@suzys.eu'],
         )
         email.send()
+        raise KeyError('There are missing skus - see email')
 
     ## Read all the products needed, and add the qty to the material_needed_dict
     logger.debug('Going to read the products needed and create material_needed_dict')
