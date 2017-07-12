@@ -208,7 +208,7 @@ class UmbrellaProductModel(models.Model):
         for product_model in self.productmodel_set.all():
             for prod in product_model.product_set.all():
                 prod.save()
-        super(UmbrellaProduct, self).save(*args, **kwargs)
+        super(UmbrellaProductModel, self).save(*args, **kwargs)
 
     @property
     def used_in_collections(self):
