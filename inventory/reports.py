@@ -63,18 +63,18 @@ def send_stock_status_for_order(item_qtys_dict_list):
     material_needed_dict = {}
 
     ## Build product_dict to contain all product as we cannot search on sku
-    logger.debug('Going to build product_dict')
-    product_dict = {}
-    for product in Product.objects.all():
-        product_dict[product.sku] = product
+    # logger.debug('Going to build product_dict')
+    # product_dict = {}
+    # for product in Product.objects.all():
+        # product_dict[product.sku] = product
 
     ## Verify that all of the products are know, or send an email:
     missing_skus = []
     for item in item_qtys_dict_list:
         try:
-            product_dict[item['sku']]
-        except KeyError:
-            logger.info('Unkown sku {} requested.  Please add it to Sila, or fix the csv'.format(int(item['sku'])))
+            Product.objects.get(sku=item['sku'])
+        except Product.DoesNotExist:
+            logger.info('Unkown sku {} requested.  Please add it to Sila, or fix the csv'.format(item['sku']))
             missing_skus.append(item['sku'])
 
     if len(missing_skus) > 0:
@@ -89,10 +89,10 @@ def send_stock_status_for_order(item_qtys_dict_list):
     ## Read all the products needed, and add the qty to the material_needed_dict
     logger.debug('Going to read the products needed and create material_needed_dict')
     for item in item_qtys_dict_list:
-        product = product_dict[item['sku']]
+        product = Product.objects.get(sku=item['sku'])
         item_qty = int(item['qty'])
 
-        for bom in product.billofmaterial_set.all():
+        for bom in product.productbillofmaterial_set.all():
             try:
                 qty_needed = bom.quantity_needed * item_qty
             except TypeError:
