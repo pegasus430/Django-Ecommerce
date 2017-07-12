@@ -126,7 +126,7 @@ def send_stock_status_for_order(item_qtys_dict_list):
             
             mat_needed = material_needed_dict[bom.material.sku_supplier]
 
-            qty_to_order = int(round(mat_needed['qty_needed'] - mat_needed['qty_available']),0)
+            qty_to_order = int(round(mat_needed['qty_needed'] - mat_needed['qty_available'],0))
             if qty_to_order < 0:
                 mat_needed['qty_to_order'] = 0
             else:
