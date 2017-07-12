@@ -114,7 +114,7 @@ def send_stock_status_for_order(item_qtys_dict_list):
                     material_needed_dict[bom.material.sku_supplier] = {
                         'object': bom.material,
                         'supplier': bom.material.supplier.__unicode__(),
-                        'qty_needed': qty_needed,
+                        'qty_needed': int(qty_needed),
                         'qty_available': bom.availability,
                         'sku_supplier': bom.material.sku_supplier,
                         'unit_usage': bom.material.get_unit_usage_display(),
@@ -126,7 +126,7 @@ def send_stock_status_for_order(item_qtys_dict_list):
             
             mat_needed = material_needed_dict[bom.material.sku_supplier]
 
-            qty_to_order = mat_needed['qty_needed'] - mat_needed['qty_available']
+            qty_to_order = int(mat_needed['qty_needed'] - mat_needed['qty_available'])
             if qty_to_order < 0:
                 mat_needed['qty_to_order'] = 0
             else:
