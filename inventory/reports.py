@@ -164,6 +164,8 @@ def send_stock_status_for_order(item_qtys_dict_list):
                 if item['supplier'] == supplier:
                     c.writerow(i)
             email.attach('material_list_{}.csv'.format(supplier), csv_material_list.getvalue(), 'text/csv')
+            del csv_material_list
+            del c
 
         csv_order_list = StringIO()
         c = csv.DictWriter(csv_order_list, delimiter=';', fieldnames=item_qtys_dict_list[0].keys())
