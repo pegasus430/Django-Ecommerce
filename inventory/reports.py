@@ -133,7 +133,7 @@ def send_stock_status_for_order(item_qtys_dict_list):
                 mat_needed['qty_to_order'] = qty_to_order
 
     ## flatten the material_needed_dict to material_needed_list and remove items that don't need ordering
-    logger.debug(material_needed_dict)
+    # logger.debug(material_needed_dict)
     material_needed_list = []
     for key in material_needed_dict.keys():
         if material_needed_dict[key]['qty_to_order'] != 0:
@@ -143,7 +143,7 @@ def send_stock_status_for_order(item_qtys_dict_list):
     ## create a list of suppliers from this list
     material_needed_supplier_list = set()
     [material_needed_supplier_list.add(i['supplier']) for i in material_needed_list]
-    logger.debug('Created supplier list {}'.format(material_needed_supplier_list))
+    logger.debug('Created supplier list.')
 
 
     ## Write to csv and email:
