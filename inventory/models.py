@@ -283,13 +283,18 @@ class UmbrellaProduct(models.Model):
     class Meta:
         ordering = ('collection', 'umbrella_product_model__number', 'colour')
 
+    def __init__(self, *args, **kwargs):
+        super(UmbrellaProduct, self).__init__(*args, **kwargs)
+        self.__original_umbrella_product_model = self.umbrella_product_model
+
     ## Add the sizes automatically if not present after save (always adds anything if you change the model)
     def save(self, *args, **kwargs):
-        for product_model in self.umbrella_product_model.productmodel_set.all():
-            try:
-                Product.objects.get(umbrella_product=self, product_model=product_model)
-            except Product.DoesNotExist:
-                Product.objects.create(umbrella_product=self, product_model=product_model)
+        if self.umbrella_product_model != self.__original_umbrella_product_model:
+            for product_model in self.umbrella_product_model.productmodel_set.all():
+                try:
+                    Product.objects.get(umbrella_product=self, product_model=product_model)
+                except Product.DoesNotExist:
+                    Product.objects.create(umbrella_product=self, product_model=product_model)
         super(UmbrellaProduct, self).save(*args, **kwargs)
 
     def __unicode__(self):
