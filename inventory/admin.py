@@ -124,6 +124,7 @@ class ProductAdmin(admin.ModelAdmin):
         'umbrella_product__umbrella_product_model__product_type', 'product_model__size',  
         'product_model__umbrella_product_model__number', 'complete', 'active']
     inlines = [ProductBillOfMaterialInline]
+    search_fields = ['sku',]
 
 class ProductBillOfMaterialAdmin(admin.ModelAdmin):
     readonly_fields = []
