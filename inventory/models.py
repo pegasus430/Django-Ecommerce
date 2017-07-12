@@ -203,8 +203,12 @@ class UmbrellaProductModel(models.Model):
     description = models.TextField(blank=True, null=True)
     original_umbrella_product_model = models.ForeignKey('self', blank=True, null=True)
 
-    # class Meta:
-    #     unique_together = ('number', 'size')  
+    ## When saving, you need to save of of the nested attached products. So they may re-assign the sku
+    def save(self, *args, **kwargs):
+        for product_model in um_model.productmodel_set.all():
+            for prod in product_model.product_set.all():
+                prod.save()
+        super(UmbrellaProduct, self).save(*args, **kwargs)
 
     @property
     def used_in_collections(self):
