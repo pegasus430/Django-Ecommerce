@@ -87,19 +87,22 @@ class ModelsTestCase(TestCase):
         collection = Collection.objects.get(number='99')
         self.assertTrue(collection in mat.used_in_collections)
 
-    def test_collection_materials_missing(self):
-        collection = Collection.objects.get(number='99')
-        self.assertTrue(collection.materials_missing)
+    ## Function was removed from Collection model.  It was inprecise.
+    # def test_collection_materials_missing(self):
+    #     collection = Collection.objects.get(number='99')
+    #     self.assertTrue(collection.materials_missing)
 
     def test_umbrella_product_model(self):
         umbrella_product_model = UmbrellaProductModel.objects.get(name='Test Umbrella ProductModel')
         collection = Collection.objects.get(number='99')
         self.assertEqual([collection], umbrella_product_model.used_in_collections)
 
+    ## FIXME:  All auto-creations of BOM in any direction needs to be redone in a seppearte TestCase.  
+    ## This is too messy and inprecise
     def test_umbrella_product_bill_of_materials_auto_create_delete_product_bill_of_materials(self):
         bom = Product.objects.last().productbillofmaterial_set.all()
-        ## Should be 0 as the Product was created after the UmbrellaProductBillOfMaterials during setUp
-        self.assertTrue(len(bom) == 0)  
+        ## Should be 1 as the all UmbrellaBillOfMaterials should be added, even with a later creations.
+        self.assertTrue(len(bom) == 1)  
 
         ## add new bom to umbrella_product
         umbrella_product = UmbrellaProduct.objects.get(name='Test Plad')
@@ -116,11 +119,11 @@ class ModelsTestCase(TestCase):
         bom_item = ProductBillOfMaterial.objects.last()
 
         ## Check
-        self.assertTrue(len(bom) == 1) 
+        self.assertTrue(len(bom) == 2) 
         self.assertEqual(bom_item.quantity_needed, 100)
         self.assertEqual(bom_item.material, mat)
 
-        ## Create new Product.  This should contain 1 bom
+        ## Create new Product.  This should contain 2 boms
         size = Size.objects.create(
             full_size='Small',
             short_size='S',
@@ -135,14 +138,14 @@ class ModelsTestCase(TestCase):
             )
         bom = Product.objects.last().productbillofmaterial_set.all()
         print len(bom)
-        self.assertTrue(len(bom) == 1)
+        self.assertTrue(len(bom) == 2)
 
         ## Delete umbrella_bom
         umbrella_product_bom.delete()
         bom = Product.objects.last().productbillofmaterial_set.all()
 
         ## check
-        self.assertTrue(len(bom) == 0)
+        self.assertTrue(len(bom) == 1)
 
     def test_product_sku(self):
         product = Product.objects.last()

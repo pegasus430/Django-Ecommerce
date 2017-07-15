@@ -203,7 +203,7 @@ class UmbrellaProductModel(models.Model):
     description = models.TextField(blank=True, null=True)
     original_umbrella_product_model = models.ForeignKey('self', blank=True, null=True)
 
-    ## When saving, you need to save of of the nested attached products. So they may re-assign the sku
+    ## When saving, you need to save all of the nested attached products. So they may re-assign the sku
     ## FIXME: Write test for override below
     def save(self, *args, **kwargs):
         for product_model in self.productmodel_set.all():
@@ -507,7 +507,7 @@ class ProductBillOfMaterial(models.Model):
             quantity_in_stock = StockLocationItem.objects.get(location=location, material=self.material).quantity_in_stock
         except StockLocationItem.DoesNotExist:
             return 0
-        return int(quantity_in_stock / self.quantity_needed)
+        return round(quantity_in_stock / self.quantity_needed, 2)
 
 
 
