@@ -20,5 +20,10 @@ class Supplier(models.Model):
     def __unicode__(self):
         return self.business_name
 
+    @property
+    def is_supplier(self):
+        if len(self.material_set.all()) > 0:
+            return True
+
     class Meta:
-        ordering = ('business_name',)    
+        ordering = ('business_name',)
