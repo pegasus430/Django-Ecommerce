@@ -155,3 +155,20 @@ class ModelsTestCase(TestCase):
         product_bill_of_material = ProductBillOfMaterial.objects.last()
         self.assertTrue(type(product_bill_of_material.availability) == float)
 
+    ### FIXME:  Ad test for StockLocationMovement
+    def test_stock_location_movement(self):
+        mat = Material.objects.get(sku='92GB2029')
+        location = StockLocation.objects.get(name='Knokke')
+        stock_item = StockLocationItem.objects.get(material=mat, location=location)
+
+        ## reduce stock by 100 - expected result stock_item - 100
+        expected = stock_item.quantity_in_stock - 100
+        StockLocationMovement.objects.create(material=mat, stock_location=location, qty_change=-100)
+        stock_item.refresh_from_db()
+        self.assertEqual(expected, stock_item.quantity_in_stock)
+
+        ## incrase by 200 - expected result stock_item + 200
+        expected = stock_item.quantity_in_stock + 200
+        StockLocationMovement.objects.create(material=mat, stock_location=location, qty_change=200)
+        stock_item.refresh_from_db()
+        self.assertEqual(expected, stock_item.quantity_in_stock)

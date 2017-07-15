@@ -509,6 +509,37 @@ class ProductBillOfMaterial(models.Model):
             return 0
         return round(quantity_in_stock / self.quantity_needed, 2)
 
+#######################
+### Srock MOvements ###
+#######################
+class StockLocationMovement(models.Model):
+    material  = models.ForeignKey(Material)
+    stock_location = models.ForeignKey(StockLocation)
+    qty_change = models.FloatField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        ## If StockMovement is new, update or create the stocklocation.
+        if not self.pk:
+            logger.debug('Changing stock for {} in {} with {}'.format(
+                self.material, self.stock_location, self.qty_change))
+
+            item, created = StockLocationItem.objects.get_or_create(
+                material=self.material,
+                location=self.stock_location)
+
+            if created:
+                item.quantity_in_stock = self.qty_change
+            else:
+                item.quantity_in_stock += self.qty_change
+            item.save()
+        super(StockLocationMovement, self).save(*args, **kwargs)
+
+    def __unicode__(self):
+        return 'Changed qty of {} in {} with {}'.format(
+            self.material, self.stock_location, self.qty_change)
 
 
 ###############
@@ -527,3 +558,4 @@ def on_creation_generate_boms_from_umbrella_product(sender, instance, created, *
             logger.info('Auto-Created ProductBillOfMaterial on Product.Create {}'.format(product_bom.id))
 
         
+

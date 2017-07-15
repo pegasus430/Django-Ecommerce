@@ -130,6 +130,7 @@ class ProductBillOfMaterialAdmin(admin.ModelAdmin):
     readonly_fields = []
 
 admin.site.register(StockLocation, StockLocationAdmin)
+admin.site.register(StockLocationMovement)
 admin.site.register(Material, MaterialAdmin)
 admin.site.register(MaterialDataSheet)
 admin.site.register(MaterialImage)
