@@ -6,7 +6,7 @@ from django.db import models
 ## Contacts ##
 ##############
 
-class Supplier(models.Model):
+class Relation(models.Model):
     business_name = models.CharField(max_length=100)
     contact_name = models.CharField(max_length=100, blank=True, null=True)
     contact_phone = models.CharField(max_length=100, blank=True, null=True)

@@ -6,7 +6,7 @@ from django.db.models.signals import post_save
 
 from .helpers import calc_price, ROUND_DIGITS
 
-from contacts.models import Supplier
+from contacts.models import Relation
 
 import logging
 logger = logging.getLogger(__name__)
@@ -72,7 +72,7 @@ class Material(models.Model):
 
     est_delivery_time = models.CharField(max_length=100, blank=True, null=True)
 
-    supplier = models.ForeignKey(Supplier)
+    supplier = models.ForeignKey(Relation)
 
     class Meta:
         ordering = ('name',)
