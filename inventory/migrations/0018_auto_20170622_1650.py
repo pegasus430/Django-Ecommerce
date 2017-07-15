@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='material',
             name='supplier',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='contacts.Supplier'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='contacts.Relation'),
         ),
         migrations.DeleteModel(
             name='Supplier',

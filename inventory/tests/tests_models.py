@@ -2,77 +2,11 @@ from django.test import TestCase
 
 from inventory.models import *
 
+from . import initial_data
+
 class ModelsTestCase(TestCase):
     def setUp(self):
-        StockLocation.objects.create(name='Knokke')
-        StockLocation.objects.create(name='Gent')
-
-        Supplier.objects.create(business_name='Supplier Name')
-
-        Material.objects.create(
-            sku='92GB2029',
-            sku_supplier='AAADDB',
-            name='Test Material',
-            mat_type='FAB',
-            cost_per_usage_unit=9.9,
-            unit_usage='ME',
-            unit_purchase='RO',
-            unit_usage_in_purchase='30',
-            est_delivery_time='3 weeks',
-            supplier=Supplier.objects.last(),
-            )
-        StockLocationItem.objects.create(
-            location=StockLocation.objects.get(name='Knokke'),
-            material=Material.objects.get(sku_supplier='AAADDB'),
-            quantity_in_stock=200
-            )
-
-        Collection.objects.create(
-            name='Collection Test',
-            number='99',
-            range_type='LUX',
-            production_location=StockLocation.objects.get(name='Knokke')
-            )
-
-        Size.objects.create(
-            full_size='Large',
-            short_size='L',
-            measurements='Dogs, length 30cm',
-            )
-
-        Colour.objects.create(
-            name='Blue',
-            code='BL',
-            )
-
-        UmbrellaProductModel.objects.create(
-            name='Test Umbrella ProductModel',
-            number='001',
-            product_type='PL',
-            )
-
-        ProductModel.objects.create(
-            umbrella_product_model=UmbrellaProductModel.objects.get(name='Test Umbrella ProductModel'),
-            size=Size.objects.last(),
-            )
-
-        UmbrellaProduct.objects.create(
-            name='Test Plad',
-            collection=Collection.objects.last(),
-            umbrella_product_model=UmbrellaProductModel.objects.last(),
-            colour= Colour.objects.get(code='BL'),
-            )
-
-        UmbrellaProductBillOfMaterial.objects.create(
-            material=Material.objects.last(),
-            quantity_needed=0.9,
-            umbrella_product=UmbrellaProduct.objects.last()
-            )
-
-        Product.objects.create(
-            umbrella_product=UmbrellaProduct.objects.last(),
-            product_model=ProductModel.objects.last()
-            )
+        initial_data.create()
         
     def test_stocklocation_name(self):
         self.assertEqual(str(StockLocation.objects.get(name='Knokke')), 'Knokke')
@@ -87,7 +21,7 @@ class ModelsTestCase(TestCase):
         collection = Collection.objects.get(number='99')
         self.assertTrue(collection in mat.used_in_collections)
 
-    ## Function was removed from Collection model.  It was inprecise.
+    ## Function was removed from Collection model.  It was in-precise.
     # def test_collection_materials_missing(self):
     #     collection = Collection.objects.get(number='99')
     #     self.assertTrue(collection.materials_missing)
@@ -108,7 +42,7 @@ class ModelsTestCase(TestCase):
         umbrella_product = UmbrellaProduct.objects.get(name='Test Plad')
         mat = Material.objects.create(sku='bbb', sku_supplier='aaa', name='Test Material 2',
             mat_type='FAB', cost_per_usage_unit=9.9, unit_usage='ME', unit_purchase='RO',
-            unit_usage_in_purchase='30', est_delivery_time='3 weeks', supplier=Supplier.objects.last(),
+            unit_usage_in_purchase='30', est_delivery_time='3 weeks', supplier=Relation.objects.last(),
             )
         umbrella_product_bom = UmbrellaProductBillOfMaterial.objects.create(
             material=mat,
@@ -155,7 +89,7 @@ class ModelsTestCase(TestCase):
         product_bill_of_material = ProductBillOfMaterial.objects.last()
         self.assertTrue(type(product_bill_of_material.availability) == float)
 
-    ### FIXME:  Ad test for StockLocationMovement
+    ### FIXME:  Add test for StockLocationMovement
     def test_stock_location_movement(self):
         mat = Material.objects.get(sku='92GB2029')
         location = StockLocation.objects.get(name='Knokke')
