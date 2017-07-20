@@ -56,8 +56,8 @@ class PurchaseOrder(models.Model):
 class PurchaseOrderItem(models.Model):
     purchase_order = models.ForeignKey(PurchaseOrder)
     material = models.ForeignKey(Material)
-    qty = models.IntegerField()
-    _qty_delivered = models.IntegerField(default=0)
+    qty = models.FloatField()
+    _qty_delivered = models.FloatField(default=0)
     unit_price = models.FloatField(blank=True, null=True)
     added_to_temp_stock = models.BooleanField(default=False)
     fully_delivered = models.BooleanField(default=False)
