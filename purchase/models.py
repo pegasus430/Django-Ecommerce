@@ -118,7 +118,6 @@ class Delivery(models.Model):
                 StockLocationOnItsWayMovement.objects.create(stock_location=stocklocation,
                     material=item.material,qty_change=temp_qty_change)
 
-
                 po_item = PurchaseOrderItem.objects.get(
                     purchase_order=self.purchase_order,
                     material=item.material)
