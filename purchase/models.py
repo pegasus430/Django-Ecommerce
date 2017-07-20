@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 
-from inventory.models import Material, StockLocation, StockLocationMovement
+from inventory.models import Material, StockLocation, StockLocationMovement, StockLocationOnItsWayMovement
 from contacts.models import OwnAddress, Relation
 
 import logging
@@ -30,11 +30,28 @@ class PurchaseOrder(models.Model):
         return 'Purchase Order {}'.format(self.supplier)
 
 
+    def save(self, *args, **kwargs):
+        ## If purchase order is marked as WA.  Add all of the items to on_its_way_stock, 
+        if self.status == 'WA':
+            logger.debug('Going to add temporary stock for {}'.format(self))
+
+            for item in self.purchaseorderitem_set.filter(added_to_temp_stock=False):
+                stocklocation = self.ship_to
+                StockLocationOnItsWayMovement.objects.create(stock_location=stocklocation,
+                    material=item.material,qty_change=item.qty)
+                item.added_to_temp_stock = True
+                item.save()
+
+        super(PurchaseOrder, self).save(*args, **kwargs)
+    
+
+
 class PurchaseOrderItem(models.Model):
     purchase_order = models.ForeignKey(PurchaseOrder)
     material = models.ForeignKey(Material)
     qty = models.IntegerField()
     unit_price = models.FloatField(blank=True, null=True)
+    added_to_temp_stock = models.BooleanField(default=False)
 
     def __unicode__(self):
         return '{} times {} for {}'.format(
@@ -73,6 +90,8 @@ class Delivery(models.Model):
                 stocklocation = self.purchase_order.ship_to
                 StockLocationMovement.objects.create(stock_location=stocklocation,
                     material=item.material,qty_change=item.qty)
+                StockLocationOnItsWayMovement.objects.create(stock_location=stocklocation,
+                    material=item.material,qty_change=item.qty * -1)
                 item.added_to_stock = True
                 item.save()
 

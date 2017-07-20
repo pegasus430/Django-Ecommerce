@@ -74,7 +74,7 @@ class StockLocationAdmin(admin.ModelAdmin):
     inlines = [StockLocationItemInline]
 
 class StockLocationItemAdmin(admin.ModelAdmin):
-    list_display = ['material', 'quantity_in_stock', 'location']
+    list_display = ['material', 'quantity_in_stock', 'quantity_on_its_way', 'location']
     list_filter = ['location']
     search_fields = ['material']
     ordering = ('material', 'location')

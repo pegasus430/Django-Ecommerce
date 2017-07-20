@@ -124,6 +124,7 @@ class StockLocationItem(models.Model):
     location = models.ForeignKey(StockLocation)
     material = models.ForeignKey(Material)
     quantity_in_stock = models.FloatField()
+    quantity_on_its_way = models.FloatField()
 
     def __unicode__(self):
         return '{} {} of {} available in {}'.format(
@@ -540,6 +541,36 @@ class StockLocationMovement(models.Model):
     def __unicode__(self):
         return 'Changed qty of {} in {} with {}'.format(
             self.material, self.stock_location, self.qty_change)
+
+
+class StockLocationOnItsWayMovement(models.Model):
+    material  = models.ForeignKey(Material)
+    stock_location = models.ForeignKey(StockLocation)
+    qty_change = models.FloatField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        ## If StockMovement is new, update or create the stocklocation.
+        if not self.pk:
+            logger.debug('Changing stock for {} in {} with {}'.format(
+                self.material, self.stock_location, self.qty_change))
+
+            item, created = StockLocationItem.objects.get_or_create(
+                material=self.material,
+                location=self.stock_location)
+
+            if created:
+                item.quantity_on_its_way = self.qty_change
+            else:
+                item.quantity_on_its_way += self.qty_change
+            item.save()
+        super(StockLocationOnItsWayMovement, self).save(*args, **kwargs)
+
+    def __unicode__(self):
+        return 'Changed qty of {} in {} with {}'.format(
+            self.material, self.stock_location, self.qty_change)        
 
 
 ###############
