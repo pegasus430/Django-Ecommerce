@@ -12,6 +12,9 @@ class PurchaseOrderItemInline(DefaultInline):
 class PurchaseOrderConfirmationAttachmentInline(DefaultInline):
     model = PurchaseOrderConfirmationAttachment
 
+class DeliveryInline(DefaultInline):
+    model = Delivery
+
 class DeliveryItemInline(DefaultInline):
     model = DeliveryItem
 
@@ -23,7 +26,7 @@ class DeliveryAttachmentInline(DefaultInline):
 #####################
 class PurchaseOrderAdmin(DefaultAdmin):
     readonly_fields = ['order_value', 'created_at', 'updated_at']
-    inlines = [PurchaseOrderItemInline, PurchaseOrderConfirmationAttachmentInline]
+    inlines = [PurchaseOrderItemInline, PurchaseOrderConfirmationAttachmentInline, DeliveryInline]
 
 class DeliveryAdmin(DefaultAdmin):
     inlines = [DeliveryItemInline, DeliveryAttachmentInline]
