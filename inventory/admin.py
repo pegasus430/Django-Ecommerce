@@ -83,7 +83,7 @@ class MaterialAdmin(DefaultAdmin):
     list_display = ['name', 'sku_supplier', 'supplier', 'cost_per_usage_unit', 'usage_units_on_stock']
     list_filter = ['supplier', 'mat_type']
     search_fields = ['name', 'supplier__business_name', 'sku_supplier', 'sku']
-    readonly_fields = ['used_in_collections']
+    readonly_fields = ['used_in_collections', 'used_in_products']
     inlines = [MaterialImageInline, MaterialDataSheetInline, StockLocationItemInline]
 
 class UmbrellaProductModelAdmin(admin.ModelAdmin):

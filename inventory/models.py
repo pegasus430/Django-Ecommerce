@@ -99,6 +99,13 @@ class Material(models.Model):
             collections.add(bom.umbrella_product.collection)
         return list(collections)
 
+    @property 
+    def used_in_products(self):
+        products = set()
+        for bom in ProductBillOfMaterial.objects.filter(material=self):
+            products.add(bom.product)
+        return list(products)
+
 
 class MaterialImage(models.Model):
     ''' Images to go with a Material '''
