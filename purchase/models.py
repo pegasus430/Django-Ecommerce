@@ -43,7 +43,12 @@ class PurchaseOrder(models.Model):
                 item.save()
 
         super(PurchaseOrder, self).save(*args, **kwargs)
-    
+
+    def order_value(self):
+        value = 0.0
+        for item in self.purchaseorderitem_set.all():
+            value += item.total_price
+        return value
 
 
 class PurchaseOrderItem(models.Model):
