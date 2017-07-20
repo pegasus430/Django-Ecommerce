@@ -64,6 +64,11 @@ class PurchaseOrderItem(models.Model):
         return self.qty * self.unit_price
 
 
+class PurchaseOrderConfirmationAttachment(models.Model):
+    purchase_order = models.ForeignKey(PurchaseOrder)
+    confirmation_attachment = models.FileField(upload_to='media/purchase/confirmation/%Y/%m/%d')
+
+
 class Delivery(models.Model):
     STATUS_CHOICES = (
         ('DR', 'Draft'),
