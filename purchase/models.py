@@ -99,7 +99,7 @@ class Delivery(models.Model):
     status = models.CharField(choices=STATUS_CHOICES, default='DR', max_length=2)
 
     def __unicode__(self):
-        return 'Deliver for {}'.format(self.purchase_order)
+        return 'Delivery for {}'.format(self.purchase_order)
 
     def save(self, *args, **kwargs):
         ## if delivery is new, aut-add all products
@@ -133,8 +133,10 @@ class Delivery(models.Model):
                 item.added_to_stock = True
                 item.save()
 
-
         super(Delivery, self).save(*args, **kwargs)
+
+    class Meta:
+        verbose_name_plural = "delieveries"
 
 
 class DeliveryAttachment(models.Model):
