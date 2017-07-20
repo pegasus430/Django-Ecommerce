@@ -23,6 +23,7 @@ class DeliveryAttachmentInline(DefaultInline):
 #####################
 class PurchaseOrderAdmin(DefaultAdmin):
     readonly_fields = ['order_value', 'created_at', 'updated_at']
+    list_display = ['__unicode__', 'status']
     inlines = [PurchaseOrderItemInline, PurchaseOrderConfirmationAttachmentInline]
 
 class DeliveryAdmin(DefaultAdmin):

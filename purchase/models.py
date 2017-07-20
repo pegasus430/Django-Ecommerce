@@ -55,8 +55,10 @@ class PurchaseOrderItem(models.Model):
     purchase_order = models.ForeignKey(PurchaseOrder)
     material = models.ForeignKey(Material)
     qty = models.IntegerField()
+    _qty_delivered = models.IntegerField(blank=True, null=True)
     unit_price = models.FloatField(blank=True, null=True)
     added_to_temp_stock = models.BooleanField(default=False)
+    fully_delivered = models.BooleanField(default=False)
 
     def __unicode__(self):
         return '{} times {} for {}'.format(
@@ -68,6 +70,8 @@ class PurchaseOrderItem(models.Model):
         ## If purchase order is marked as WA.  Add all of the items to on_its_way_stock, 
         if not self.unit_price:
             self.unit_price = self.material.cost_per_usage_unit
+
+        self.fully_delivered = len(self.purchaseorderitem_set.filter(fully_delivered=True)) == len(self.purchaseorderitem_set.all())
         super(PurchaseOrderItem, self).save(*args, **kwargs)
 
     @property
@@ -106,10 +110,24 @@ class Delivery(models.Model):
                 stocklocation = self.purchase_order.ship_to
                 StockLocationMovement.objects.create(stock_location=stocklocation,
                     material=item.material,qty_change=item.qty)
+
+                temp_qty_change = PurchaseOrderItem.objects.get(material=item.material,
+                    purchase_order=self.purchase_order).qty * -1  ## deliveries are not always correct. So use PO value
                 StockLocationOnItsWayMovement.objects.create(stock_location=stocklocation,
-                    material=item.material,qty_change=item.qty * -1)
+                    material=item.material,qty_change=temp_qty_change)
+
+
+                po_item = PurchaseOrderItem.objects.get(
+                    purchase_order=self.purchase_order,
+                    material=item.material)
+                po_item._qty_delivered += item.qty
+                if po_item._qty_delivered >= po_item.qty:
+                    po_item.fully_delivered = True
+                po_item.save()
+
                 item.added_to_stock = True
                 item.save()
+
 
         super(Delivery, self).save(*args, **kwargs)
 
