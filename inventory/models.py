@@ -510,7 +510,7 @@ class ProductBillOfMaterial(models.Model):
         return round(quantity_in_stock / self.quantity_needed, 2)
 
 #######################
-### Srock MOvements ###
+### Srock Movements ###
 #######################
 class StockLocationMovement(models.Model):
     material  = models.ForeignKey(Material)
