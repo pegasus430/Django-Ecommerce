@@ -41,7 +41,9 @@ class PurchaseOrder(models.Model):
                     material=item.material,qty_change=item.qty)
                 item.added_to_temp_stock = True
                 item.save()
-
+        if len(self.purchaseorderitem_set.filter(fully_delivered=True)) == len(self.purchaseorderitem_set.all()):
+            self.status = 'DL'
+            
         super(PurchaseOrder, self).save(*args, **kwargs)
 
     def order_value(self):
@@ -55,7 +57,7 @@ class PurchaseOrderItem(models.Model):
     purchase_order = models.ForeignKey(PurchaseOrder)
     material = models.ForeignKey(Material)
     qty = models.IntegerField()
-    _qty_delivered = models.IntegerField(blank=True, null=True)
+    _qty_delivered = models.IntegerField(default=0)
     unit_price = models.FloatField(blank=True, null=True)
     added_to_temp_stock = models.BooleanField(default=False)
     fully_delivered = models.BooleanField(default=False)
@@ -71,7 +73,6 @@ class PurchaseOrderItem(models.Model):
         if not self.unit_price:
             self.unit_price = self.material.cost_per_usage_unit
 
-        self.fully_delivered = len(self.purchaseorderitem_set.filter(fully_delivered=True)) == len(self.purchaseorderitem_set.all())
         super(PurchaseOrderItem, self).save(*args, **kwargs)
 
     @property
