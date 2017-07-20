@@ -44,7 +44,8 @@ class PurchaseOrder(models.Model):
                     material=item.material,qty_change=item.qty)
                 item.added_to_temp_stock = True
                 item.save()
-        if len(self.purchaseorderitem_set.filter(fully_delivered=True)) == len(self.purchaseorderitem_set.all()):
+        if len(self.purchaseorderitem_set.all()) > 0 and\
+                len(self.purchaseorderitem_set.filter(fully_delivered=True)) == len(self.purchaseorderitem_set.all()):
             self.status = 'DL'
 
         super(PurchaseOrder, self).save(*args, **kwargs)
