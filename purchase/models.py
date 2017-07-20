@@ -59,6 +59,12 @@ class PurchaseOrderItem(models.Model):
             self.material,
             self.purchase_order.supplier)
 
+    def save(self, *args, **kwargs):
+        ## If purchase order is marked as WA.  Add all of the items to on_its_way_stock, 
+        if not self.unit_price:
+            self.unit_price = self.material.cost_per_usage_unit
+        super(PurchaseOrderItem, self).save(*args, **kwargs)
+
     @property
     def total_price(self):
         return self.qty * self.unit_price
