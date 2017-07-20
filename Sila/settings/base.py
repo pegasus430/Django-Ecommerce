@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'defaults',
     'inventory',
     'contacts',
+    'purchase',
+    #'sales',
 
     #'huey.contrib.djhuey', 
 ]

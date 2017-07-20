@@ -18,3 +18,11 @@ def calc_price(product, lux_markup, classic_markup, price_markup, rrp=False):
         markup = price_markup
         
     return round(start_price * markup, ROUND_DIGITS)
+
+
+def inventory_reduce_by_product(product):
+    '''
+    Reduce the StockItemLocations according to the BOM of the given product.
+    '''
+    pass
+    
