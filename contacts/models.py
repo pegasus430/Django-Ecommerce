@@ -5,13 +5,13 @@ from django.db import models
 
 class AbstractAddress(models.Model):
     address1 = models.CharField(max_length=100)
-    address2 = models.CharField(max_length=100)
+    address2 = models.CharField(max_length=100, blank=True, null=True)
     city = models.CharField(max_length=100)
     postcode = models.CharField(max_length=100)
     country = models.CharField(max_length=100)
 
-    address_invoice = models.BooleanField()
-    address_shipping = models.BooleanField()
+    address_invoice = models.BooleanField(default=False)
+    address_shipping = models.BooleanField(default=False)
 
     class Meta:
         abstract = True
@@ -60,7 +60,7 @@ class RelationAddress(AbstractAddress):
     
 class OwnAddress(AbstractAddress):
     company_name = models.CharField(max_length=100)
-    vat = models.CharField(max_length=100)
+    vat = models.CharField(max_length=100, blank=True, null=True)
 
     def __unicode__(self):
         return '{} {} {}'.format(

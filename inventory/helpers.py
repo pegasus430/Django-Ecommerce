@@ -24,5 +24,8 @@ def inventory_reduce_by_product(product):
     '''
     Reduce the StockItemLocations according to the BOM of the given product.
     '''
-    pass
-    
+    for bom in product.productbillofmaterials_set.all():
+        location = product.umbrella_product.collection.production_location
+        StockLocationMovement.objects.create(material=bom.material,
+            stock_location=location, qty_change=bom.quantity_needed * -1)
+    return True
