@@ -19,7 +19,7 @@ class PurchaseOrder(models.Model):
     )
 
     supplier = models.ForeignKey(Relation)
-    ivoice_to = models.ForeignKey(OwnAddress)
+    invoice_to = models.ForeignKey(OwnAddress)
     ship_to = models.ForeignKey(StockLocation)
 
     created_at = models.DateTimeField(auto_now_add=True)
