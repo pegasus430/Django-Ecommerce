@@ -109,7 +109,8 @@ class Delivery(models.Model):
                 DeliveryItem.objects.create(delivery=self, material=item.material, qty=item.qty)
 
         ## If delivery is marked as confimed.  Add all of the items to stock, and set order to delivered
-        if self.status == 'CO':
+        if self.status == 'CO' and\
+            not self.purchase_order.fully_delivered:
             logger.debug('Going to update stock for {}'.format(self.purchase_order))
 
             for item in self.deliveryitem_set.filter(added_to_stock=False):
