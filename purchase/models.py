@@ -25,10 +25,12 @@ class PurchaseOrder(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    supplier_reference = models.CharField(max_length=100, null=True, blank=True)
+
     status = models.CharField(choices=STATUS_CHOICES, default='DR', max_length=2)
 
     def __unicode__(self):
-        return 'Purchase Order {}'.format(self.supplier)
+        return 'Purchase Order {} {} ref:{}'.format(self.supplier, self.created_at, self.supplier_reference)
 
 
     def save(self, *args, **kwargs):
