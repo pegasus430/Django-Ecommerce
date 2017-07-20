@@ -43,7 +43,7 @@ class PurchaseOrder(models.Model):
                 item.save()
         if len(self.purchaseorderitem_set.filter(fully_delivered=True)) == len(self.purchaseorderitem_set.all()):
             self.status = 'DL'
-            
+
         super(PurchaseOrder, self).save(*args, **kwargs)
 
     def order_value(self):
@@ -141,5 +141,5 @@ class DeliveryAttachment(models.Model):
 class DeliveryItem(models.Model):
     delivery = models.ForeignKey(Delivery)
     material = models.ForeignKey(Material)
-    qty = models.IntegerField()
+    qty = models.FloatField()
     added_to_stock = models.BooleanField(default=False)
