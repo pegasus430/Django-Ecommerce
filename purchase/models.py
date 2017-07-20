@@ -26,6 +26,7 @@ class PurchaseOrder(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     supplier_reference = models.CharField(max_length=100, null=True, blank=True)
+    est_delivery = models.DateField(null=True, blank=True)
 
     status = models.CharField(choices=STATUS_CHOICES, default='DR', max_length=2)
 
