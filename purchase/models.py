@@ -15,6 +15,7 @@ class PurchaseOrder(models.Model):
         ('WC', 'Waiting for confirmation'),
         ('WA', 'Waiting delivery'),
         ('DL', 'Delivered'),
+        ('IN', 'Invoice added'),
     )
 
     supplier = models.ForeignKey(Relation)
