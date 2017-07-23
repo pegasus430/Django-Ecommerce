@@ -87,9 +87,10 @@ class MaterialAdmin(DefaultAdmin):
     inlines = [MaterialImageInline, MaterialDataSheetInline, StockLocationItemInline]
 
 class UmbrellaProductModelAdmin(admin.ModelAdmin):
-    # list_display = ['__unicode__', 'product_type', 'number', 'size', 'all_patterns_present', 'product_images_present']
-    # list_filter = ['product_type', 'number', 'size', 'all_patterns_present', 'product_images_present']
+    list_display = ['__unicode__', 'product_type', 'number', 'all_patterns_present', 'product_images_present']
+    list_filter = ['product_type', 'number', 'all_patterns_present', 'product_images_present']
     inlines = [ProductModelInline, UmbrellaProductModelImageInline, UmbrellaProductModelProductionDescriptionInline]
+    search_fields = ['name']
     # readonly_fields = ['used_in_collections']
 
 class ProductModelAdmin(admin.ModelAdmin):
