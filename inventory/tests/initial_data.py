@@ -1,3 +1,6 @@
+from inventory.models import *
+from contacts.models import *
+
 def create():
     StockLocation.objects.create(name='Knokke')
     StockLocation.objects.create(name='Gent')

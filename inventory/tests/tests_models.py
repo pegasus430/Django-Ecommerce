@@ -3,6 +3,7 @@ from django.test import TestCase
 from inventory.models import *
 
 from . import initial_data
+# import initial_data
 
 class ModelsTestCase(TestCase):
     def setUp(self):

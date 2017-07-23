@@ -17,7 +17,7 @@ class ModelsTestCase(TestCase):
             current_stock_in_production_location[bom.material] = bom.availability
             StockLocationMovement.objects.create(
                 material=bom.material, stock_location=product.umbrella_product.collection.production_location,
-                qty_change=quantity_needed * times_to_reduce)
+                qty_change=bom.quantity_needed * times_to_reduce)
 
         product.refresh_from_db()
         for bom in product.productbillofmaterial_set.all():

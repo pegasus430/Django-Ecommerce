@@ -102,7 +102,7 @@ USE_TZ = True
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 NOSE_ARGS = [
     '--with-coverage',
-    '--cover-package=inventory,contacts,defaults',
+    '--cover-package=inventory,contacts,defaults,purchase',
 ]
 
 # Static files (CSS, JavaScript, Images)

@@ -1,7 +1,7 @@
 from .base import TEMPLATES, INSTALLED_APPS, MIDDLEWARE_CLASSES
 
 ENVIRONMENT = 'Production'
-DEBUG = True
+DEBUG = False
 TEMPLATES[0]['OPTIONS']['debug'] = DEBUG
 
 SECRET_KEY = '7nn(g(lb*8!r_+cc3m8bjxm#xu!q)6fidwgg&$p$6a+alm+x'
