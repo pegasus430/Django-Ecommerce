@@ -253,6 +253,7 @@ class UmbrellaProductModelImage(models.Model):
 class ProductModel(models.Model):
     umbrella_product_model = models.ForeignKey(UmbrellaProductModel)
     size = models.ForeignKey(Size, blank=True, null=True)
+    size_description = models.TextField(blank=True, null=True)
 
     def __unicode__(self):
         return '{}, size: {}'.format(self.umbrella_product_model, self.size)
