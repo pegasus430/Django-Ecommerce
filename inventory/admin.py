@@ -94,9 +94,10 @@ class UmbrellaProductModelAdmin(admin.ModelAdmin):
     # readonly_fields = ['used_in_collections']
 
 class ProductModelAdmin(admin.ModelAdmin):
-    # list_display = ['__unicode__', 'product_type', 'number', 'size', 'all_patterns_present', 'product_images_present']
-    # list_filter = ['product_type', 'number', 'size', 'all_patterns_present', 'product_images_present']
+    list_display = ['__unicode__', 'umbrella_product_model', 'size', 'umbrella_product_model__number']
+    list_filter = ['umbrella_product_model__number']
     inlines = [ProductModelPatternInline]
+    search_fields = ['umbrella_product_model__number', '__unicode__']
     # readonly_fields = ['used_in_collections']
 
 class UmbrellaProductAdmin(admin.ModelAdmin):
