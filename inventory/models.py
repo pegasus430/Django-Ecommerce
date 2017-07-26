@@ -261,11 +261,11 @@ class ProductModel(models.Model):
 
     @property
     def total_pattern_surface_area(self):
-        '''return sum of all pattern surface areas'''
+        '''return sum of all pattern surface areas and add 20pctn loss margin'''
         total = 0.0
         for pattern in self.productmodelpattern_set.all():
             total += pattern.surface_area
-        return total
+        return total * 1.2
 
 
 class ProductModelPattern(models.Model):
