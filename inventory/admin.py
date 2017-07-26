@@ -94,7 +94,7 @@ class UmbrellaProductModelAdmin(admin.ModelAdmin):
     # readonly_fields = ['used_in_collections']
 
 class ProductModelAdmin(admin.ModelAdmin):
-    list_display = ['__unicode__', 'all_patterns_present', 'get_umbrella_poroduct_model_number']
+    list_display = ['__unicode__', 'all_patterns_present', 'get_umbrella_poroduct_model_number', 'total_pattern_surface_area']
     list_filter = ['all_patterns_present', 'umbrella_product_model__number']
     inlines = [ProductModelPatternInline]
     def get_umbrella_poroduct_model_number(self, obj):
