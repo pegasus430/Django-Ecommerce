@@ -94,11 +94,14 @@ class UmbrellaProductModelAdmin(admin.ModelAdmin):
     # readonly_fields = ['used_in_collections']
 
 class ProductModelAdmin(admin.ModelAdmin):
-    list_display = ['__unicode__', 'all_patterns_present']
-    list_filter = ['all_patterns_present']
+    list_display = ['__unicode__', 'all_patterns_present', 'get_umbrella_poroduct_model_number']
+    list_filter = ['all_patterns_present', 'umbrella_product_model__number']
     inlines = [ProductModelPatternInline]
-    # search_fields = ['umbrella_product_model__number', '__unicode__']
-    # readonly_fields = ['used_in_collections']
+    def get_umbrella_poroduct_model_number(self, obj):
+        return obj.umbrella_product_model.number
+    get_umbrella_poroduct_model_number.admin_order_field  = 'Model Number'  #Allows column order sorting
+    get_umbrella_poroduct_model_number.short_description = 'Model Number'  #Renames column head
+
 
 class UmbrellaProductAdmin(admin.ModelAdmin):
     # readonly_fields = ('sku', 'recommended_retail_price', 'recommended_B2B_price_per_1',
