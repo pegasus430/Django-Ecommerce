@@ -206,7 +206,7 @@ class UmbrellaProductModel(models.Model):
     )
     name = models.CharField(max_length=100)
     number = models.CharField(max_length=10, unique=True)
-    all_patterns_present = models.BooleanField(default=False)
+    # all_patterns_present = models.BooleanField(default=False)
     product_images_present = models.BooleanField(default=False)
     product_type = models.CharField(choices=PRODUCT_TYPE_CHOICES, max_length=2 ,blank=True, null=True)
     description = models.TextField(blank=True, null=True)
@@ -254,6 +254,7 @@ class ProductModel(models.Model):
     umbrella_product_model = models.ForeignKey(UmbrellaProductModel)
     size = models.ForeignKey(Size, blank=True, null=True)
     size_description = models.TextField(blank=True, null=True)
+    all_patterns_present = models.BooleanField(default=False)
 
     def __unicode__(self):
         return '{}, size: {}'.format(self.umbrella_product_model, self.size)
