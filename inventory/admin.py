@@ -97,24 +97,27 @@ class ProductModelAdmin(admin.ModelAdmin):
     list_display = ['__unicode__', 'all_patterns_present', 'get_umbrella_poroduct_model_number', 'total_pattern_surface_area']
     list_filter = ['all_patterns_present', 'umbrella_product_model__number']
     inlines = [ProductModelPatternInline]
+
     def get_umbrella_poroduct_model_number(self, obj):
         return obj.umbrella_product_model.number
     get_umbrella_poroduct_model_number.admin_order_field  = 'Model Number'  #Allows column order sorting
     get_umbrella_poroduct_model_number.short_description = 'Model Number'  #Renames column head
 
 
-class UmbrellaProductAdmin(admin.ModelAdmin):
-    # readonly_fields = ('sku', 'recommended_retail_price', 'recommended_B2B_price_per_1',
-    #     'recommended_B2B_price_per_6', 'recommended_B2B_price_per_24',
-    #     'recommended_B2B_price_per_96', 'cost', 'materials_on_stock',
-    #     'materials_on_stock_in_production_location', 'materials_missing')    
-    list_display = ['__unicode__','base_sku', 'active', 'complete', 'umbrella_product_model', 'number_of_sizes']
-    list_filter = ['collection', 'colour', 'umbrella_product_model__product_type', 'complete', 'active']
+class UmbrellaProductAdmin(admin.ModelAdmin):    
+    list_display = ['__unicode__','base_sku', 'active', 'complete', 'get_umbrella_product_model_number', 'number_of_sizes']
+    list_filter = ['collection', 'colour', 'umbrella_product_model__product_type', 'umbrella_product_model__number', 'complete', 'active']
     inlines = [ProductInline, UmbrellaProductBillOfMaterialInline, UmbrellaProductImageInline]
-    # actions = [copy_product_action]
+
+    def get_umbrella_product_model_number(self, obj):
+        return obj.umbrella_product_model.number
+    get_umbrella_product_model_number.admin_order_field = 'Model Number'
+    get_umbrella_product_model_number.short_description= 'Model Number'
+
 
 class UmbrellaProductBillOfMaterialAdmin(admin.ModelAdmin):
     readonly_fields = []
+
 
 class ProductAdmin(admin.ModelAdmin):
     readonly_fields = ('sku', 'recommended_retail_price', 'recommended_B2B_price_per_1',
@@ -131,8 +134,10 @@ class ProductAdmin(admin.ModelAdmin):
     inlines = [ProductBillOfMaterialInline]
     search_fields = ['sku',]
 
+
 class ProductBillOfMaterialAdmin(admin.ModelAdmin):
     readonly_fields = []
+
 
 admin.site.register(StockLocation, StockLocationAdmin)
 admin.site.register(StockLocationMovement)

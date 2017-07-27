@@ -291,27 +291,53 @@ class UmbrellaProduct(models.Model):
     active = models.BooleanField(default=True)
     complete = models.BooleanField(default=False)
 
+    __original_umbrella_product_model = None
+    __original_colour = None
+
     class Meta:
         ordering = ('collection', 'umbrella_product_model__number', 'colour')
 
+    ## FIXME:  When you change the umbrella product model, change all of the product models
     def __init__(self, *args, **kwargs):
         super(UmbrellaProduct, self).__init__(*args, **kwargs)
-        self.__original_umbrella_product_model = self.umbrella_product_model
+        try:
+            self.__original_umbrella_product_model = self.umbrella_product_model
+        except:
+            self.__original_umbrella_product_model = None
+
+        try:
+            self.__original_colour = self.colour
+        except:
+            self.__original_colour = None
 
     ## Add the sizes automatically if not present after save (always adds anything if you change the model)
     def save(self, *args, **kwargs):
+        super(UmbrellaProduct, self).save(*args, **kwargs)
+        ## Create new products when a model changes to a new one.
         if self.umbrella_product_model != self.__original_umbrella_product_model:
             logger.info('{}: umbrella_product_model was changed from {} to {}.  Creating new matching items'.format(
                 self.name,
                 self.__original_umbrella_product_model,
                 self.umbrella_product_model,
                 ))
+            ## Find the new product_models in the new umbrelap_product_model and generate the products
             for product_model in self.umbrella_product_model.productmodel_set.all():
                 try:
                     Product.objects.get(umbrella_product=self, product_model=product_model)
                 except Product.DoesNotExist:
                     Product.objects.create(umbrella_product=self, product_model=product_model)
+
+        ## Regenerate skus when a umbrellaproduct-colour changes
+        if self.colour != self.__original_colour:
+            logger.info('{}: colour was changed from {} to {}.  Regenerating product skus'.format(
+                self.name,
+                self.__original_colour,
+                self.colour,
+                ))
+            for product in self.product_set.all():
+                product.save()
         super(UmbrellaProduct, self).save(*args, **kwargs)
+        self.__original_umbrella_product_model = self.umbrella_product_model
 
     def __unicode__(self):
         return self.name
