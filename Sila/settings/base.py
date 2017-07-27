@@ -93,7 +93,7 @@ WSGI_APPLICATION = 'Sila.wsgi.application'
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
-LANGUAGE_CODE = 'nl-be'
+LANGUAGE_CODE = 'en-gb'
 TIME_ZONE = 'Europe/Brussels'
 USE_I18N = True
 USE_L10N = True
