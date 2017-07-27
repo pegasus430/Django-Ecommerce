@@ -267,11 +267,18 @@ class ProductModel(models.Model):
             total += pattern.surface_area
         return total * 1.2
 
+    @property 
+    def number_of_patterns(self):
+        ''' return the number of patterns present '''
+        return len(self.productmodelpattern_set.all())
+
 
 class ProductModelPattern(models.Model):
     name = models.CharField(max_length=100)
-    pattern_image = models.FileField(upload_to='media/product_model/patterns/image/%Y/%m/%d')
-    pattern_vector = models.FileField(upload_to='media/product_model/patterns/vector/%Y/%m/%d')
+    pattern_image = models.FileField(upload_to='media/product_model/patterns/image/%Y/%m/%d', 
+        verbose_name='Pattern PDF-file')
+    pattern_vector = models.FileField(upload_to='media/product_model/patterns/vector/%Y/%m/%d',
+        verbose_name='Pattern DXF-file')
     product = models.ForeignKey(ProductModel)
     surface_area = models.FloatField(default=0, verbose_name='Surface Area in cm2')
     description = models.TextField(blank=True, null=True)
