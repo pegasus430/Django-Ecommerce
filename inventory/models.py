@@ -443,6 +443,10 @@ class Product(models.Model):
 
     sku = models.CharField(max_length=15, blank=True, null=True, unique=True)
 
+    class Meta:
+        ordering = ('sku', 'product_model')
+
+
     ## Set sku on any save 
     def save(self, *args, **kwargs):
         self.sku = '{}-{}'.format(self.umbrella_product.base_sku, self.product_model.size.short_size)
@@ -453,7 +457,7 @@ class Product(models.Model):
         return '{} {}'.format(self.umbrella_product, self.product_model.size)
     
     def __unicode__(self):
-        return self.name
+        return '{} {}'.format(self.sku, self.name)
 
 
     @property 
