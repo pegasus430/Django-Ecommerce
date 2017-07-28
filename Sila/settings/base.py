@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'purchase',
     #'sales',
     'transport',
+    'production',
 
     #'huey.contrib.djhuey', 
 ]
