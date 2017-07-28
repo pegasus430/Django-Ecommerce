@@ -256,6 +256,9 @@ class ProductModel(models.Model):
     size_description = models.TextField(blank=True, null=True)
     all_patterns_present = models.BooleanField(default=False)
 
+    class Meta:
+        ordering = ('umbrella_product_model', 'size')
+
     def __unicode__(self):
         return '{}, size: {}'.format(self.umbrella_product_model, self.size)
 
@@ -445,7 +448,6 @@ class Product(models.Model):
 
     class Meta:
         ordering = ('sku', 'product_model')
-
 
     ## Set sku on any save 
     def save(self, *args, **kwargs):
