@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'contacts',
     'purchase',
     #'sales',
+    'transport',
 
     #'huey.contrib.djhuey', 
 ]
@@ -102,7 +103,7 @@ USE_TZ = True
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 NOSE_ARGS = [
     '--with-coverage',
-    '--cover-package=inventory,contacts,defaults,purchase',
+    '--cover-package=inventory,contacts,defaults,purchase,transport',
 ]
 
 # Static files (CSS, JavaScript, Images)
