@@ -64,6 +64,9 @@ class PurchaseOrderItem(models.Model):
     added_to_temp_stock = models.BooleanField(default=False)
     fully_delivered = models.BooleanField(default=False)
 
+    class Meta:
+        unique_together = ('purchase_order', 'material')
+
     def __unicode__(self):
         return '{} times {} for {}'.format(
             self.qty,

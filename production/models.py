@@ -33,3 +33,7 @@ class ProductionOrderItem(models.Model):
     production_order = models.ForeignKey(ProductionOrder)
     product = models.ForeignKey(Product)
     qty = models.IntegerField()
+
+    class Meta:
+        unique_together = ('production_order', 'product')
+
