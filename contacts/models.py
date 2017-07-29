@@ -15,9 +15,7 @@ class AbstractAddress(models.Model):
 
     class Meta:
         abstract = True
-
-
-    
+ 
 
 ##############
 ## Contacts ##

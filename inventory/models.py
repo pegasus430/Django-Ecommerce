@@ -500,35 +500,6 @@ class Product(models.Model):
             total_cost += bom.cost
         return total_cost
 
-    @property
-    def recommended_B2B_price_per_96(self):
-        return calc_price(self, lux_markup=3, classic_markup=1.35, price_markup=1.50)
-    recommended_B2B_price_per_96.fget.short_description = u'Per 96'
-
-    @property
-    def recommended_B2B_price_per_24(self):
-        return calc_price(self, lux_markup=4, classic_markup=1.4, price_markup=1.55)
-    recommended_B2B_price_per_24.fget.short_description = u'Per 24'    
-
-    @property
-    def recommended_B2B_price_per_6(self):
-        return calc_price(self, lux_markup=4.5, classic_markup=1.5, price_markup=1.65)
-    recommended_B2B_price_per_6.fget.short_description = u'Per 6'
-
-    @property
-    def recommended_B2B_price_per_1(self):
-        return calc_price(self, lux_markup=7, classic_markup=2.5, price_markup=2)
-    recommended_B2B_price_per_1.fget.short_description = u'Per 1'
-
-    @property
-    def recommended_retail_price(self):
-        ## calculate marge - B2B price_per_1 * shop_margin * VAT
-        rrp_markup = 2.4 * 1.21
-        rrp = calc_price(self, lux_markup=rrp_markup, classic_markup=rrp_markup, price_markup=rrp_markup, rrp=True)
-        ## round up to nearst 5 and return
-        return int(5 * round(float(rrp)/5))
-    recommended_retail_price.fget.short_description = u'RRP'
-
 
 class ProductBillOfMaterial(models.Model):
     ''' Materials in a product '''
