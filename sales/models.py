@@ -49,22 +49,23 @@ class PriceListItem(models.Model):
         return u'{}'.format(self.product)
 
     def save(self, *args, **kwargs):
-        if not self.per_1:
-            self.per_1 = calc_price(self, lux_markup=7, classic_markup=2.5, price_markup=2)
+        if not self.pk:
+            if not self.per_1:
+                self.per_1 = calc_price(self, lux_markup=7, classic_markup=2.5, price_markup=2)
 
-        if not self.per_6:
-            self.per_6 = calc_price(self, lux_markup=4.5, classic_markup=2, price_markup=1.65)
+            if not self.per_6:
+                self.per_6 = calc_price(self, lux_markup=4.5, classic_markup=2, price_markup=1.65)
 
-        if not self.per_12:
-            self.per_12 = calc_price(self, lux_markup=4, classic_markup=1.9, price_markup=1.55)
+            if not self.per_12:
+                self.per_12 = calc_price(self, lux_markup=4, classic_markup=1.9, price_markup=1.55)
 
-        if not self.per_48:
-            self.per_48 = calc_price(self, lux_markup=3, classic_markup=1.7, price_markup=1.4)
+            if not self.per_48:
+                self.per_48 = calc_price(self, lux_markup=3, classic_markup=1.7, price_markup=1.4)
 
-        if not self.rrp:
-            rrp_markup = 2.4 * 1.21
-            self.rrp = calc_price(self, lux_markup=rrp_markup, classic_markup=rrp_markup, price_markup=rrp_markup, rrp=True)
-
+            if not self.rrp:
+                rrp_markup = 2.4 * 1.21
+                self.rrp = calc_price(self, lux_markup=rrp_markup, classic_markup=rrp_markup, price_markup=rrp_markup, rrp=True)
+                
         super(PriceListItem, self).save(*args, **kwargs)
 
 
