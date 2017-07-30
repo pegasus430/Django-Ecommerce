@@ -25,7 +25,7 @@ class PriceListAdmin(DefaultAdmin):
 	inlines = [PriceListItemInline]
 
 class PriceListItemAdmin(DefaultAdmin):
-	list_display = ['__unicode__', 'price_list', 'rrp', 'per_1', 'per_6', 'per_12', 'per_48']
+	list_display = ['__unicode__', 'product__sku', 'price_list', 'rrp', 'per_1', 'per_6', 'per_12', 'per_48']
 	list_filter = ['price_list']
 	search_fields = ['__unicode__']
 
