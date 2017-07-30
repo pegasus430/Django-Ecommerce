@@ -31,7 +31,6 @@ class PriceListItemAdmin(DefaultAdmin):
 
     def get_sku(self, obj):
         return obj.product.sku
-    # get_sku.admin_order_field  = 'SKU'  #Allows column order sorting
     get_sku.short_description = 'SKU'  #Renames column head
 
 
