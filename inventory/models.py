@@ -462,35 +462,35 @@ class Product(models.Model):
         return '{} {}'.format(self.sku, self.name)
 
 
-    @property 
-    def materials_on_stock(self):
-        '''Show the stock status on each location per product-need'''
-        ## FIXME:  This entire function should be eliminated and use the one from Material
-        stock_status = {}
-        for location in StockLocation.objects.all():
-            stock_status[location.name] = True
-            amount_available = []
-            for bom in self.productbillofmaterial_set.all():
-                try: 
-                    item_in_location = StockLocationItem.objects.get(location=location, material=bom.material)
-                    amount_available.append(item_in_location.quantity_in_stock / bom.quantity_needed)
-                except StockLocationItem.DoesNotExist:
-                    amount_available.append(0)
-            try:
-                stock_status[location.name] = int(min(amount_available)) ## int rounds down
-            except ValueError:
-                stock_status[location.name] = 0
+    # @property 
+    # def materials_on_stock(self):
+    #     '''Show the stock status on each location per product-need'''
+    #     ## FIXME:  This entire function should be eliminated and use the one from Material
+    #     stock_status = {}
+    #     for location in StockLocation.objects.all():
+    #         stock_status[location.name] = True
+    #         amount_available = []
+    #         for bom in self.productbillofmaterial_set.all():
+    #             try: 
+    #                 item_in_location = StockLocationItem.objects.get(location=location, material=bom.material)
+    #                 amount_available.append(item_in_location.quantity_in_stock / bom.quantity_needed)
+    #             except StockLocationItem.DoesNotExist:
+    #                 amount_available.append(0)
+    #         try:
+    #             stock_status[location.name] = int(min(amount_available)) ## int rounds down
+    #         except ValueError:
+    #             stock_status[location.name] = 0
 
-        return stock_status
+    #     return stock_status
 
-    @property 
-    def materials_on_stock_in_production_location(self):
-        '''Show the stock status in the production-location'''
-        stock = self.materials_on_stock
-        for key in stock:
-            if key == self.umbrella_product.collection.production_location.name:
-                return stock[key]
-    materials_on_stock_in_production_location.fget.short_description = u'Avail. Prod.'                
+    # @property 
+    # def materials_on_stock_in_production_location(self):
+    #     '''Show the stock status in the production-location'''
+    #     stock = self.materials_on_stock
+    #     for key in stock:
+    #         if key == self.umbrella_product.collection.production_location.name:
+    #             return stock[key]
+    # materials_on_stock_in_production_location.fget.short_description = u'Avail. Prod.'                
 
     @property 
     def cost(self):

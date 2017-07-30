@@ -55,7 +55,6 @@ class ProductInline(DefaultInline):
 
 class ProductBillOfMaterialInline(admin.TabularInline):
     model = ProductBillOfMaterial
-    # readonly_fields = ['cost', 'availability'] #['materials_on_stock',]
     extra = 0    
 
 #####################
@@ -120,10 +119,8 @@ class UmbrellaProductBillOfMaterialAdmin(admin.ModelAdmin):
 
 
 class ProductAdmin(admin.ModelAdmin):
-    readonly_fields = ('sku', 'cost', 'materials_on_stock',
-        'materials_on_stock_in_production_location',)    
-    list_display = ['name','sku', 'active', 'complete', 
-        'materials_on_stock_in_production_location']  
+    readonly_fields = ('sku', 'cost')    
+    list_display = ['name','sku', 'active', 'complete', ]  
     list_filter = ['umbrella_product__collection', 'umbrella_product__colour', 
         'umbrella_product__umbrella_product_model__product_type', 'product_model__size',  
         'product_model__umbrella_product_model__number', 'complete', 'active']
