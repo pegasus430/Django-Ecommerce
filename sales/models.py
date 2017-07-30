@@ -7,6 +7,9 @@ from .helpers import calc_price
 from inventory.models import Product, StockLocation
 from contacts.models import Relation, RelationAddress
 
+import logging
+logger = logging.getLogger(__name__)
+
 class PriceList(models.Model):
     STATUS_CHOICES = (
         ('DR', 'Draft'),

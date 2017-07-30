@@ -82,7 +82,6 @@ class MaterialAdmin(DefaultAdmin):
     list_display = ['name', 'sku_supplier', 'supplier', 'cost_per_usage_unit', 'usage_units_on_stock']
     list_filter = ['supplier', 'mat_type']
     search_fields = ['name', 'supplier__business_name', 'sku_supplier', 'sku']
-    readonly_fields = ['used_in_collections', 'used_in_products']
     inlines = [MaterialImageInline, MaterialDataSheetInline, StockLocationItemInline]
 
 class UmbrellaProductModelAdmin(admin.ModelAdmin):
@@ -90,7 +89,6 @@ class UmbrellaProductModelAdmin(admin.ModelAdmin):
     list_filter = ['product_type', 'number', 'product_images_present']
     inlines = [ProductModelInline, UmbrellaProductModelImageInline, UmbrellaProductModelProductionDescriptionInline]
     search_fields = ['name']
-    # readonly_fields = ['used_in_collections']
 
 class ProductModelAdmin(admin.ModelAdmin):
     list_display = ['__unicode__', 'all_patterns_present', 'get_umbrella_poroduct_model_number', 'total_pattern_surface_area', 'number_of_patterns']

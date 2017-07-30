@@ -34,5 +34,6 @@ bin/gunicorn  ${DJANGO_WSGI_MODULE}:application \
   --workers $NUM_WORKERS \
   --bind=unix:$SOCKFILE \
   --log-level=debug \
+  --timeout 90 \
   --log-file=$LOGFILE
 #  --daemon

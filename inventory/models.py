@@ -92,19 +92,19 @@ class Material(models.Model):
                 stock_status[location.name] = 0
         return stock_status
 
-    @property
-    def used_in_collections(self):
-        collections = set()
-        for bom in self.umbrellaproductbillofmaterial_set.all():
-            collections.add(bom.umbrella_product.collection)
-        return list(collections)
+    # @property
+    # def used_in_collections(self):
+    #     collections = set()
+    #     for bom in self.umbrellaproductbillofmaterial_set.all():
+    #         collections.add(bom.umbrella_product.collection)
+    #     return list(collections)
 
-    @property 
-    def used_in_products(self):
-        products = set()
-        for bom in ProductBillOfMaterial.objects.filter(material=self):
-            products.add(bom.product)
-        return list(products)
+    # @property 
+    # def used_in_products(self):
+    #     products = set()
+    #     for bom in ProductBillOfMaterial.objects.filter(material=self):
+    #         products.add(bom.product)
+    #     return list(products)
 
 
 class MaterialImage(models.Model):
@@ -460,7 +460,6 @@ class Product(models.Model):
     
     def __unicode__(self):
         return '{} {}'.format(self.sku, self.name)
-
 
     # @property 
     # def materials_on_stock(self):
