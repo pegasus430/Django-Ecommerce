@@ -73,6 +73,9 @@ class PurchaseOrderItem(models.Model):
             self.material,
             self.purchase_order.supplier)
 
+    def sku_supplier(self):
+        return self.material.sku_supplier
+
     def save(self, *args, **kwargs):
         ## If purchase order is marked as WA.  Add all of the items to on_its_way_stock, 
         if not self.unit_price:

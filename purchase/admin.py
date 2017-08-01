@@ -7,6 +7,7 @@ from .models import *
 ### Inines ###
 ##############
 class PurchaseOrderItemInline(DefaultInline):
+    readonly_fields = ['sku_supplier']
     model = PurchaseOrderItem
 
 class PurchaseOrderConfirmationAttachmentInline(DefaultInline):
