@@ -69,6 +69,7 @@ ROOT_URLCONF = 'Sila.urls'
 #Admins see https://docs.djangoproject.com/en/dev/ref/settings/#admins
 ADMINS = [
     ("Admin", 'sascha.dobbelaere@gmail.com'),
+    ("Admin", 'sascha@suzys.eu'),
 ]
 
 MANAGERS = ADMINS
@@ -178,7 +179,7 @@ LOGGING = {
             'address': '/dev/log',
             'formatter': 'verbose',
         },
-        Warning messages are sent to admin emails
+        # Warning messages are sent to admin emails
         'mail_admins': {
             'level': 'WARNING',
             'filters': ['require_debug_false'],
