@@ -170,28 +170,28 @@ LOGGING = {
             'filename': '/tmp/django.log',
             'formatter': 'verbose',
         },        
-        # # Send info messages to syslog
-        # 'syslog':{
-        #     'level':'INFO',
-        #     'class': 'logging.handlers.SysLogHandler',
-        #     'facility': SysLogHandler.LOG_LOCAL2,
-        #     'address': '/dev/log',
-        #     'formatter': 'verbose',
-        # },
-        # Warning messages are sent to admin emails
-        # 'mail_admins': {
-        #     'level': 'WARNING',
-        #     'filters': ['require_debug_false'],
-        #     'class': 'django.utils.log.AdminEmailHandler',
-        # },
+        # Send info messages to syslog
+        'syslog':{
+            'level':'INFO',
+            'class': 'logging.handlers.SysLogHandler',
+            'facility': SysLogHandler.LOG_LOCAL2,
+            'address': '/dev/log',
+            'formatter': 'verbose',
+        },
+        Warning messages are sent to admin emails
+        'mail_admins': {
+            'level': 'WARNING',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler',
+        },
     },
     'loggers': {
-        # This is the "catch all" logger
-        # '': {
-        #     'handlers': ['console', 'mail_admins'],
-        #     'level': 'DEBUG',
-        #     'propagate': False,
-        # },
+        This is the "catch all" logger
+        '': {
+            'handlers': ['console', 'syslog', 'mail_admins'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
         'inventory': {
             'handlers': ['console', 'file'],
             'level': 'DEBUG',
