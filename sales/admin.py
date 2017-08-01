@@ -27,7 +27,7 @@ class PriceListAdmin(DefaultAdmin):
 class PriceListItemAdmin(DefaultAdmin):
     list_display = ['__unicode__', 'get_sku', 'price_list', 'rrp', 'per_1', 'per_6', 'per_12', 'per_48']
     list_filter = ['price_list']
-    search_fields = ['__unicode__']
+    search_fields = ['product__sku']
 
     def get_sku(self, obj):
         return obj.product.sku
