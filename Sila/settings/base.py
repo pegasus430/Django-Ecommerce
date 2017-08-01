@@ -187,7 +187,7 @@ LOGGING = {
         },
     },
     'loggers': {
-        This is the "catch all" logger
+        # This is the "catch all" logger
         '': {
             'handlers': ['console', 'syslog', 'mail_admins'],
             'level': 'WARNING',
