@@ -15,6 +15,7 @@ class ProductionOrderItemInline(DefaultInline):
 class ProductionOrderAdmin(DefaultAdmin):
 	inlines = [ProductionOrderItemInline]
 	readonly_fields = ['missing_materials']
+	list_display = ['__unicode__', 'status']
 
 class ProductionOrderItemAdmin(DefaultAdmin):
 	pass
