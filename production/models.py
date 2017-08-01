@@ -21,6 +21,7 @@ class ProductionOrder(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     reference = models.CharField(max_length=20, blank=True, null=True, unique=True)
+    status = models.CharField(choices=STATUS_CHOICES, max_length=2, default='DR')
 
     def __unicode__(self):
         return 'Production Order {} {} ref:{}'.format(self.production_location, self.created_at, self.reference)
