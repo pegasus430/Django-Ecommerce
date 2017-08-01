@@ -181,7 +181,7 @@ LOGGING = {
         # },
         # Warning messages are sent to admin emails
         'mail_admins': {
-            'level': 'WARNING',
+            'level': 'ERROR',
             'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler',
         },
@@ -190,7 +190,7 @@ LOGGING = {
         # This is the "catch all" logger
         '': {
             'handlers': ['console', 'mail_admins'],
-            'level': 'WARNING',
+            'level': 'ERROR',
             'propagate': False,
         },
         'inventory': {
