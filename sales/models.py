@@ -34,6 +34,7 @@ class PriceList(models.Model):
             super(PriceList, self).save(*args, **kwargs)
             for product in Product.objects.filter(active=True):
                 PriceListItem.objects.create(price_list=self, product=product)
+        super(PriceList, self).save(*args, **kwargs)
 
 
 class PriceListItem(models.Model):
