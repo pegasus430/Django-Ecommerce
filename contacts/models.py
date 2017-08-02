@@ -27,22 +27,14 @@ class Relation(models.Model):
     contact_phone = models.CharField(max_length=100, blank=True, null=True)
     contact_mobile = models.CharField(max_length=100, blank=True, null=True)
     contact_email = models.CharField(max_length=100, blank=True, null=True)
+    is_supplier = models.BooleanField(default=False)
+    is_client = models.BooleanField(default=False)
     
     class Meta:
         ordering = ('business_name',)
     
     def __unicode__(self):
         return self.business_name
-
-    @property
-    def is_supplier(self):
-        if len(self.material_set.all()) > 0:
-            return True
-
-    @property 
-    def is_client(self):
-        if len(self.salesorder_set.all()) > 0:
-            return True
 
 
 class RelationAddress(AbstractAddress):

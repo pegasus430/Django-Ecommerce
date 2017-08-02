@@ -80,9 +80,9 @@ class SalesOrder(models.Model):
         ('SH', 'Shipped'),
     )
 
-    client = models.ForeignKey(Relation)
-    invoice_to = models.ForeignKey(RelationAddress, related_name='invoice_to')
-    ship_to = models.ForeignKey(RelationAddress, related_name='ship_to')
+    client = models.ForeignKey(Relation,  limit_choices_to={'is_client': True})
+    invoice_to = models.ForeignKey(RelationAddress, related_name='invoice_to', limit_choices_to={'is_client': True})
+    ship_to = models.ForeignKey(RelationAddress, related_name='ship_to', limit_choices_to={'is_client': True})
     ship_from = models.ForeignKey(StockLocation)
 
     created_at = models.DateTimeField(auto_now_add=True)
