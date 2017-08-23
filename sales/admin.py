@@ -2,7 +2,11 @@ from django.contrib import admin
 from defaults.admin import DefaultAdmin, DefaultInline
 
 from .models import *
-from .helpers import clear_b2b_prices_admin_action, clear_b2b_per1plus_prices_admin_action, set_prices_admin_action
+from .helpers import clear_b2b_prices_admin_action,\
+    clear_b2b_per1plus_prices_admin_action,\
+    set_prices_admin_action,\
+    export_pricelist_pdf_admin_action,\
+    export_pricelist_csv_admin_action
 
 ###############
 ### Inlines ###
@@ -24,12 +28,15 @@ class SalesOrderProductAdmin(DefaultAdmin):
 
 class PriceListAdmin(DefaultAdmin):
     inlines = [PriceListItemInline]
+    actions = [export_pricelist_pdf_admin_action, export_pricelist_csv_admin_action]
 
 class PriceListItemAdmin(DefaultAdmin):
     list_display = ['__unicode__', 'get_sku', 'price_list', 'rrp', 'per_1', 'per_6', 'per_12', 'per_48', 'get_cost']
     list_filter = ['price_list']
     search_fields = ['product__sku']
-    actions = [clear_b2b_prices_admin_action, set_prices_admin_action, clear_b2b_per1plus_prices_admin_action]
+    actions = [clear_b2b_prices_admin_action, 
+        set_prices_admin_action, 
+        clear_b2b_per1plus_prices_admin_action,]
 
     def get_sku(self, obj):
         return obj.product.sku

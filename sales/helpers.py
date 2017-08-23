@@ -1,3 +1,6 @@
+from .reports import export_pricelist_pdf, export_pricelist_csv
+
+
 ROUND_DIGITS = 2
 
 ### TODELETE:  Too complicated approach.  
@@ -68,3 +71,14 @@ def clear_b2b_per1plus_prices_admin_action(modeladmin, request, queryset):
         q.save()
     return True
 clear_b2b_per1plus_prices_admin_action.short_description = "Remove prices per 6, 12 and 48. - Don't touch per1"
+
+def export_pricelist_pdf_admin_action(modeladmin, request, queryset):
+    for q in queryset:
+        return export_pricelist_pdf(q)
+export_pricelist_pdf_admin_action.short_description = 'Export pricelist to pdf'
+
+
+def export_pricelist_csv_admin_action(modeladmin, request, queryset):
+    for q in queryset:
+        return export_pricelist_csv(q)
+export_pricelist_csv_admin_action.short_description = 'Export pricelist to csv'
