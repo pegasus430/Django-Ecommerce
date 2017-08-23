@@ -54,5 +54,6 @@ def clear_b2b_prices_admin_action(modeladmin, request, queryset):
         q.per_6 = None
         q.per_12 = None
         q.per_48 = None
-        return q.save()
+        q.save()
+    return True
 clear_b2b_prices_admin_action.short_description = 'Remove prices per 6, 12 and 48.'
