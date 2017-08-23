@@ -10,7 +10,7 @@ import csv
 
 from collections import OrderedDict
 
-from .helpers import ROUND_DIGITS
+from .variables import ROUND_DIGITS
 
 
 def get_pricelist_price_data(pricelist):
