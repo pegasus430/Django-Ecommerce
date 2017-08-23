@@ -21,7 +21,7 @@ def get_pricelist_price_data(pricelist):
     - per 48
     '''
     data = []
-    for item in pricelist.pricelistitem_set.all().order_by('product__sku'):
+    for item in pricelist.pricelistitem_set.filter(product__active=True).order_by('product__sku'):
         d = OrderedDict()
         d['sku'] = item.product.sku
         d['name'] = item.product.name
