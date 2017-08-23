@@ -58,3 +58,9 @@ def materials_on_stock_in_production_location(product):
     for key in stock:
         if key == product.umbrella_product.collection.production_location.name:
             return stock[key]
+
+
+### Admin helper ###
+def product_mark_inactive(demodeladmin, request, queryset):
+    queryset.update(active=False)
+product_mark_inactive.short_description = "Mark selected products as inactive."
