@@ -51,9 +51,10 @@ set_prices_admin_action.short_description = 'Set base-prices.  You need rrp to b
 
 def clear_b2b_prices_admin_action(modeladmin, request, queryset):
     for q in queryset:
+        q.per_1 = None
         q.per_6 = None
         q.per_12 = None
         q.per_48 = None
         q.save()
     return True
-clear_b2b_prices_admin_action.short_description = 'Remove prices per 6, 12 and 48.'
+clear_b2b_prices_admin_action.short_description = 'Remove prices per 1, 6, 12 and 48.'
