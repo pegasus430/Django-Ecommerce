@@ -64,3 +64,7 @@ def materials_on_stock_in_production_location(product):
 def product_mark_inactive(demodeladmin, request, queryset):
     queryset.update(active=False)
 product_mark_inactive.short_description = "Mark selected products as inactive."
+
+def product_mark_active(demodeladmin, request, queryset):
+    queryset.update(active=True)
+product_mark_active.short_description = "Mark selected products as active."
