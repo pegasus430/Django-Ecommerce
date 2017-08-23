@@ -31,7 +31,7 @@ def set_prices(pricelist_item):
         return False
 
     if not pricelist_item.per_1 or float(pricelist_item.per_1) == 0.0:
-        pricelist_item.per_1 = pricelist_item.rrp * 0.35
+        pricelist_item.per_1 = pricelist_item.rrp * 0.4
 
     if not pricelist_item.per_6 or float(pricelist_item.per_6) == 0.0:
         pricelist_item.per_6 = pricelist_item.per_1 * 0.9
@@ -82,3 +82,9 @@ def export_pricelist_csv_admin_action(modeladmin, request, queryset):
     for q in queryset:
         return export_pricelist_csv(q)
 export_pricelist_csv_admin_action.short_description = 'Export pricelist to csv'
+
+
+def export_costlist_csv_admin_action(modeladmin, request, queryset):
+    for q in queryset:
+        return export_pricelist_csv(q)
+export_costlist_csv_admin_action.short_description = 'Export cost and price to csv'

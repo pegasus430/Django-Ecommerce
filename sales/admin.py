@@ -6,7 +6,8 @@ from .helpers import clear_b2b_prices_admin_action,\
     clear_b2b_per1plus_prices_admin_action,\
     set_prices_admin_action,\
     export_pricelist_pdf_admin_action,\
-    export_pricelist_csv_admin_action
+    export_pricelist_csv_admin_action,\
+    export_costlist_csv_admin_action
 
 ###############
 ### Inlines ###
@@ -28,7 +29,7 @@ class SalesOrderProductAdmin(DefaultAdmin):
 
 class PriceListAdmin(DefaultAdmin):
     inlines = [PriceListItemInline]
-    actions = [export_pricelist_pdf_admin_action, export_pricelist_csv_admin_action]
+    actions = [export_pricelist_pdf_admin_action, export_pricelist_csv_admin_action, export_costlist_csv_admin_action]
 
 class PriceListItemAdmin(DefaultAdmin):
     list_display = ['__unicode__', 'get_sku', 'price_list', 'rrp', 'per_1', 'per_6', 'per_12', 'per_48', 'get_cost']

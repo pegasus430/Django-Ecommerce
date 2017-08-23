@@ -13,7 +13,7 @@ from collections import OrderedDict
 from .variables import ROUND_DIGITS
 
 
-def get_pricelist_price_data(pricelist):
+def get_pricelist_price_data(pricelist, include_cost=False):
     '''return a list of ordered dicts with price-data:
     - sku
     - rrp
@@ -32,22 +32,26 @@ def get_pricelist_price_data(pricelist):
         d['per 6'] = round(item.per_6, ROUND_DIGITS)
         d['per 12'] = round(item.per_12, ROUND_DIGITS)
         d['per 48'] = round(item.per_48, ROUND_DIGITS)
+        if include_cost:
+            d['cost'] = round(item.product.cost, ROUND_DIGITS)
         data.append(d)
     return data
 
 
-def export_pricelist_csv(pricelist):
+def export_pricelist_csv(pricelist, include_cost=False):
     ''' export a pricelist to csv'''
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="pricelist_suzys.csv"'
 
-    data = get_pricelist_price_data(pricelist)
+    data = get_pricelist_price_data(pricelist, include_cost=include_cost)
 
     c = csv.DictWriter(response, fieldnames=data[0].keys(), delimiter=';')
     c.writeheader()
     [c.writerow(i) for i in data]
 
     return response
+
+
 
 
 def export_pricelist_pdf(pricelist):
