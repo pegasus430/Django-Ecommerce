@@ -10,6 +10,8 @@ import csv
 
 from collections import OrderedDict
 
+from .helpers import ROUND_DIGITS
+
 
 def get_pricelist_price_data(pricelist):
     '''return a list of ordered dicts with price-data:
@@ -25,11 +27,11 @@ def get_pricelist_price_data(pricelist):
         d = OrderedDict()
         d['sku'] = item.product.sku
         d['name'] = item.product.name
-        d['RRP'] = item.rrp
-        d['per 1'] = item.per_1
-        d['per 6'] = item.per_6
-        d['per 12'] = item.per_12
-        d['per 48'] = item.per_48
+        d['RRP'] = round(item.rrp, ROUND_DIGITS)
+        d['per 1'] = round(item.per_1, ROUND_DIGITS)
+        d['per 6'] = round(item.per_6, ROUND_DIGITS)
+        d['per 12'] = round(item.per_12, ROUND_DIGITS)
+        d['per 48'] = round(item.per_48, ROUND_DIGITS)
         data.append(d)
     return data
 
