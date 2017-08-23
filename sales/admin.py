@@ -25,13 +25,17 @@ class PriceListAdmin(DefaultAdmin):
     inlines = [PriceListItemInline]
 
 class PriceListItemAdmin(DefaultAdmin):
-    list_display = ['__unicode__', 'get_sku', 'price_list', 'rrp', 'per_1', 'per_6', 'per_12', 'per_48']
+    list_display = ['__unicode__', 'get_sku', 'price_list', 'rrp', 'per_1', 'per_6', 'per_12', 'per_48', 'get_cost']
     list_filter = ['price_list']
     search_fields = ['product__sku']
 
     def get_sku(self, obj):
         return obj.product.sku
     get_sku.short_description = 'SKU'  #Renames column head
+
+    def get_cost(self, obj):
+        return obj.product.cost 
+    get_cost.short_description = 'Cost'
 
 
 admin.site.register(SalesOrder, SalesOrderAdmin)
