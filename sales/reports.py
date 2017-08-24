@@ -27,6 +27,7 @@ def get_pricelist_price_data(pricelist, include_cost=False):
         d = OrderedDict()
         d['sku'] = item.product.sku
         d['name'] = item.product.name
+        d['size'] = item.product.product_model.size_description
         d['RRP'] = round(item.rrp, ROUND_DIGITS)
         d['per 1'] = round(item.per_1, ROUND_DIGITS)
         d['per 6'] = round(item.per_6, ROUND_DIGITS)
