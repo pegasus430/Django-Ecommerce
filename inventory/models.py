@@ -253,7 +253,8 @@ class UmbrellaProductModelImage(models.Model):
 class ProductModel(models.Model):
     umbrella_product_model = models.ForeignKey(UmbrellaProductModel)
     size = models.ForeignKey(Size, blank=True, null=True)
-    size_description = models.TextField(blank=True, null=True)
+    size_description = models.TextField(blank=True, null=True, verbose_name="Commercial size description")
+    size_detail = models.TextField(blank=True, null=True, verbose_name="Internal size description")
     all_patterns_present = models.BooleanField(default=False)
 
     class Meta:
