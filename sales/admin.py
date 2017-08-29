@@ -22,7 +22,7 @@ class PriceListItemInline(DefaultInline):
 ### Custom Admins ###
 #####################
 class SalesOrderAdmin(DefaultAdmin):
-    list_display = ['status']
+    list_display = ['__unicode__', 'status']
     inlines = [SalesOrderProductInline]
     readonly_fields = ['total_order_value']
 
