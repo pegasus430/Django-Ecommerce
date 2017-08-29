@@ -95,6 +95,13 @@ class SalesOrder(models.Model):
     def __unicode__(self):
         return 'Order #{} for {}'.format(self.id, self.client)
 
+    @property
+    def total_order_value(self):
+        value = 0
+        for i in self.salesorderproduct_set.all():
+            value += i.total_price
+        return value
+
 
 class SalesOrderProduct(models.Model):
     sales_order = models.ForeignKey(SalesOrder)
@@ -104,7 +111,6 @@ class SalesOrderProduct(models.Model):
 
     def __unicode__(self):
         return u'{}x {}, order: {}'.format(self.qty, self.product, self.sales_order)
-
 
     @property
     def total_price(self):
