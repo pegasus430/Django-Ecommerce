@@ -23,6 +23,7 @@ class PriceListItemInline(DefaultInline):
 #####################
 class SalesOrderAdmin(DefaultAdmin):
     inlines = [SalesOrderProductInline]
+    readonly_fields = ['total_order_value']
 
 class SalesOrderProductAdmin(DefaultAdmin):
     list_display = ['product', 'qty', 'unit_price']
