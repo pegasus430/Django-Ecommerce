@@ -11,7 +11,7 @@ from barcode.writer import ImageWriter
 def box_barcode_label_38x90(product):
     '''return barcode pdf data for a product barcode on the box'''
     product_ean = product.ean_code
-    product_title = product.umbrella_product.collection
+    product_title = product.umbrella_product
     product_colour = product.umbrella_product.colour
     product_size = product.product_model.size
     product_sku = product.sku
