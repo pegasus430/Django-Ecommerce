@@ -24,8 +24,8 @@ def box_barcode_label_38x90(product):
     page_margin = 0*mm
     page_height = page_real_height - page_margin
     page_width = page_real_width - page_margin
-    line_height = 3*mm
-    font_size = 9
+    line_height = 2.8*mm
+    font_size = 8
 
     p = canvas.Canvas(buffer)
     p.setPageSize((page_real_width, page_real_height))
