@@ -9,7 +9,14 @@ from io import BytesIO
 
 
 def box_barcode_label_38x90(product):
-    '''return barcode pdf data for a product barcode on the box'''
+    '''
+    Return barcode pdf for a product barcode on the box including:
+    - ean-code
+    - umbrella product name
+    - colour
+    - size
+    - sku
+     '''
     product_ean = product.ean_code
     product_title = product.umbrella_product
     product_colour = product.umbrella_product.colour
