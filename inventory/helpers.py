@@ -1,4 +1,9 @@
+from django.http import HttpResponse
+
 from copy import deepcopy
+
+from .labels import box_barcode_label_38x90
+
 
 ROUND_DIGITS = 2
 
@@ -60,11 +65,25 @@ def materials_on_stock_in_production_location(product):
             return stock[key]
 
 
+def print_box_barcode_admin(product):
+    '''helper function to return the admin-data from the pdf generation'''
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="box_barcode_{}.pdf"'.format(product.sku)
+
+    response.write(box_barcode_label_38x90(product))
+    return response
+
+
 ### Admin helper ###
-def product_mark_inactive(demodeladmin, request, queryset):
+def product_mark_inactive(modeladmin, request, queryset):
     queryset.update(active=False)
 product_mark_inactive.short_description = "Mark selected products as inactive."
 
-def product_mark_active(demodeladmin, request, queryset):
+def product_mark_active(modeladmin, request, queryset):
     queryset.update(active=True)
 product_mark_active.short_description = "Mark selected products as active."
+
+def print_box_barcode(modeladmin, request, queryset):
+    for q in queryset:
+        return print_box_barcode_admin(q)
+print_box_barcode.short_description = 'Print box 38x90 barcode'

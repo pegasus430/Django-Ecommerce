@@ -2,7 +2,7 @@ from django.contrib import admin
 from defaults.admin import DefaultAdmin, DefaultInline
 
 from .models import *
-from .helpers import product_mark_inactive, product_mark_active
+from .helpers import product_mark_inactive, product_mark_active, print_box_barcode
 
 ###############
 ### Inlines ###
@@ -125,7 +125,7 @@ class ProductAdmin(admin.ModelAdmin):
         'product_model__umbrella_product_model__number', 'complete', 'active']
     inlines = [ProductBillOfMaterialInline]
     search_fields = ['sku',]
-    actions = [product_mark_inactive, product_mark_active]
+    actions = [product_mark_inactive, product_mark_active, print_box_barcode]
 
 
 class ProductBillOfMaterialAdmin(admin.ModelAdmin):
