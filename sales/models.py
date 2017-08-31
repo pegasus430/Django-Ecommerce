@@ -104,7 +104,7 @@ class SalesOrder(models.Model):
             value += i.total_price
 
         if self.discount_pct:
-            value = value * (self.discount_pct / 100)
+            value -= value * (self.discount_pct / 100)
             
         return value
 
