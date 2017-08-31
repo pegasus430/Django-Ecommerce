@@ -29,6 +29,7 @@ class Relation(models.Model):
     contact_email = models.CharField(max_length=100, blank=True, null=True)
     is_supplier = models.BooleanField(default=False)
     is_client = models.BooleanField(default=False)
+    vat_number = models.CharField(max_length=100, blank=True, null=True)
     
     class Meta:
         ordering = ('business_name',)
