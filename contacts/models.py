@@ -21,6 +21,14 @@ class AbstractAddress(models.Model):
 ## Contacts ##
 ##############
 
+class Agent(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.CharField(max_length=100)
+
+    def __unicode__(self):
+        return self.name
+
+
 class Relation(models.Model):
     business_name = models.CharField(max_length=100)
     contact_name = models.CharField(max_length=100, blank=True, null=True)
@@ -30,6 +38,7 @@ class Relation(models.Model):
     is_supplier = models.BooleanField(default=False)
     is_client = models.BooleanField(default=False)
     vat_number = models.CharField(max_length=100, blank=True, null=True)
+    agent = models.ForeignKey(Agent, blank=True, null=True)
     
     class Meta:
         ordering = ('business_name',)
