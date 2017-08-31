@@ -92,6 +92,8 @@ class SalesOrder(models.Model):
 
     status = models.CharField(choices=STATUS_CHOICES, max_length=2, default='DR')
 
+    discount_pct = models.FloatField(blank=True, null=True)
+
     def __unicode__(self):
         return 'Order #{} for {}'.format(self.id, self.client)
 
@@ -100,6 +102,10 @@ class SalesOrder(models.Model):
         value = 0
         for i in self.salesorderproduct_set.all():
             value += i.total_price
+
+        if self.discount_pct:
+            value = value * (self.discount_pct / 100)
+            
         return value
 
 

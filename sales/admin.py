@@ -22,9 +22,12 @@ class PriceListItemInline(DefaultInline):
 ### Custom Admins ###
 #####################
 class SalesOrderAdmin(DefaultAdmin):
-    list_display = ['__unicode__', 'status']
+    list_display = ['__unicode__', 'status', 'get_total_order_value']
     inlines = [SalesOrderProductInline]
     readonly_fields = ['total_order_value']
+
+    def get_total_order_value(self, obj):
+        return obj.total_order_value
 
 class SalesOrderProductAdmin(DefaultAdmin):
     list_display = ['product', 'qty', 'unit_price']
