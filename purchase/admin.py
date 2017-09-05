@@ -28,7 +28,7 @@ class PurchaseOrderAdmin(DefaultAdmin):
     inlines = [PurchaseOrderItemInline, PurchaseOrderConfirmationAttachmentInline]
 
 class DeliveryAdmin(DefaultAdmin):
-	list_display = ['__unicode__', 'status']
+    list_display = ['__unicode__', 'status']
     inlines = [DeliveryItemInline, DeliveryAttachmentInline]
 
 
