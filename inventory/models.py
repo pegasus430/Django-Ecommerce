@@ -132,6 +132,7 @@ class StockLocationItem(models.Model):
     material = models.ForeignKey(Material)
     quantity_in_stock = models.FloatField(default=0.0)
     quantity_on_its_way = models.FloatField(default=0.0)
+    comment = models.TextField()
 
     def __unicode__(self):
         return '{} {} of {} available in {}'.format(
