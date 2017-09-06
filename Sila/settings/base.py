@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'sales',
     'transport',
     'production',
+    
+    'xero_local',
 
     #'huey.contrib.djhuey', 
 ]
