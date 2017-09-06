@@ -76,7 +76,7 @@ class StockLocationAdmin(admin.ModelAdmin):
 class StockLocationItemAdmin(admin.ModelAdmin):
     list_display = ['material', 'quantity_in_stock', 'quantity_on_its_way', 'location']
     list_filter = ['location']
-    search_fields = ['material']
+    search_fields = ['material', 'comment']
     ordering = ('material', 'location')
 
 class MaterialAdmin(DefaultAdmin):
