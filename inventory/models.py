@@ -64,6 +64,9 @@ class Material(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField(blank=True, null=True)
     mat_type = models.CharField(max_length=3, choices=MAT_TYPE_SELECTIONS, verbose_name="Material type")
+
+    roll_width = models.CharField(max_length=3, verbose_name='Roll width in cm', blank=True, null=True)
+    fabric_width = models.CharField(max_length=3, verbose_name='Fabric width in cm', blank=True, null=True)
     
     cost_per_usage_unit = models.FloatField()
     unit_usage = models.CharField(max_length=2, choices=UNIT_USAGE_SELECTIONS, verbose_name="Usage unit")
