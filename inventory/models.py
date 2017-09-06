@@ -109,12 +109,12 @@ class Material(models.Model):
 
 class MaterialImage(models.Model):
     ''' Images to go with a Material '''
-    name = models.CharField(max_length=100)
+    # name = models.CharField(max_length=100)
     material = models.ForeignKey(Material)
     image = models.FileField(upload_to='media/materials/images/%Y/%m/%d')
 
     def __unicode__(self):
-        return '{} {}'.format(self.name, self.material)
+        return 'Image for {}'.format(self.material)
 
 
 class MaterialDataSheet(models.Model):
