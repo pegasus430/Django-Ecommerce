@@ -1,6 +1,6 @@
 from operator import itemgetter
 
-COUNTRY_CHOICE = [
+COUNTRY_CHOICES = [
     ('DE', 'Germany'),
     ('BE', 'Belgium'),
     ('FR', 'France'),
@@ -14,4 +14,4 @@ COUNTRY_CHOICE = [
     ('RU', 'Russia'),
     ('GB', 'Great Brittain'),
 ]
-COUNTRY_CHOICE.sort(key=itemgetter(1,0))
+COUNTRY_CHOICES.sort(key=itemgetter(1,0))

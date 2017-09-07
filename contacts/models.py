@@ -3,17 +3,14 @@ from __future__ import unicode_literals
 
 from django.db import models
 
-from .countries import COUNTRY_CHOICE
+from .countries import COUNTRY_CHOICES
 
 class AbstractAddress(models.Model):
     address1 = models.CharField(max_length=100)
     address2 = models.CharField(max_length=100, blank=True, null=True)
     city = models.CharField(max_length=100)
     postcode = models.CharField(max_length=100)
-    country = models.CharField(max_length=100, choices=COUNTRY_CHOICE)
-
-    address_invoice = models.BooleanField(default=False)
-    address_shipping = models.BooleanField(default=False)
+    country = models.CharField(max_length=2, choices=COUNTRY_CHOICES)
 
     class Meta:
         abstract = True
@@ -51,6 +48,9 @@ class Relation(AbstractAddress):
 
 class RelationAddress(AbstractAddress):
     relation = models.ForeignKey(Relation)
+
+    address_invoice = models.BooleanField(default=False)
+    address_shipping = models.BooleanField(default=False)    
 
     def __unicode__(self):
         return '{} {} {}'.format(
