@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     #'django.contrib.sites',  ## needed for django-allauth
 
     'django_nose',  ## you want to monitor how much test-code you write, no?
+    'taggit',
 
     'defaults',
     'inventory',

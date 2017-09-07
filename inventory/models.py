@@ -8,6 +8,8 @@ from .helpers import calc_price, ROUND_DIGITS
 
 from contacts.models import Relation
 
+from taggit.managers import TaggableManager
+
 import logging
 logger = logging.getLogger(__name__)
 
@@ -76,6 +78,9 @@ class Material(models.Model):
     est_delivery_time = models.CharField(max_length=100, blank=True, null=True)
 
     supplier = models.ForeignKey(Relation, limit_choices_to={'is_supplier': True})
+
+    tags = TaggableManager()
+
 
     class Meta:
         ordering = ('name',)
