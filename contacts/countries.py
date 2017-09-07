@@ -13,5 +13,6 @@ COUNTRY_CHOICES = [
     ('NO', 'Norway'),
     ('RU', 'Russia'),
     ('GB', 'Great Brittain'),
+    ('CZ', 'Czech Republic'),
 ]
 COUNTRY_CHOICES.sort(key=itemgetter(1,0))
