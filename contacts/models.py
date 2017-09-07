@@ -6,10 +6,10 @@ from django.db import models
 from .countries import COUNTRY_CHOICES
 
 class AbstractAddress(models.Model):
-    address1 = models.CharField(max_length=100)
+    address1 = models.CharField(max_length=100, blank=True, null=True)
     address2 = models.CharField(max_length=100, blank=True, null=True)
-    city = models.CharField(max_length=100)
-    postcode = models.CharField(max_length=100)
+    city = models.CharField(max_length=100, blank=True, null=True)
+    postcode = models.CharField(max_length=100, blank=True, null=True)
     country = models.CharField(max_length=2, choices=COUNTRY_CHOICES)
 
     class Meta:
