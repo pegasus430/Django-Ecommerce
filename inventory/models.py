@@ -75,7 +75,7 @@ class Material(models.Model):
 
     est_delivery_time = models.CharField(max_length=100, blank=True, null=True)
 
-    supplier = models.ForeignKey(Relation)
+    supplier = models.ForeignKey(Relation, limit_choices_to={'is_supplier': True})
 
     class Meta:
         ordering = ('name',)

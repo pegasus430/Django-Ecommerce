@@ -49,9 +49,6 @@ class Relation(AbstractAddress):
 class RelationAddress(AbstractAddress):
     relation = models.ForeignKey(Relation)
 
-    address_invoice = models.BooleanField(default=False)
-    address_shipping = models.BooleanField(default=False)    
-
     def __unicode__(self):
         return '{} {} {}'.format(
             self.relation,
