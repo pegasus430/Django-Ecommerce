@@ -109,6 +109,7 @@ class Delivery(models.Model):
         if not self.pk:
             super(Delivery, self).save(*args, **kwargs)
             for item in self.purchase_order.purchaseorderitem_set.all():
+                ## TODO: make qty data dynamic, only that are not delivered, and only qty to be received
                 DeliveryItem.objects.create(delivery=self, material=item.material, qty=item.qty)
 
         ## If delivery is marked as confimed.  Add all of the items to stock, and set order to delivered

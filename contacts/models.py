@@ -3,12 +3,14 @@ from __future__ import unicode_literals
 
 from django.db import models
 
+from .countries import COUNTRY_CHOICE
+
 class AbstractAddress(models.Model):
     address1 = models.CharField(max_length=100)
     address2 = models.CharField(max_length=100, blank=True, null=True)
     city = models.CharField(max_length=100)
     postcode = models.CharField(max_length=100)
-    country = models.CharField(max_length=100)
+    country = models.CharField(max_length=100, choices=COUNTRY_CHOICE)
 
     address_invoice = models.BooleanField(default=False)
     address_shipping = models.BooleanField(default=False)
@@ -21,7 +23,7 @@ class AbstractAddress(models.Model):
 ## Contacts ##
 ##############
 
-class Agent(models.Model):
+class Agent(AbstractAddress):
     name = models.CharField(max_length=100)
     email = models.CharField(max_length=100)
 
@@ -29,7 +31,7 @@ class Agent(models.Model):
         return self.name
 
 
-class Relation(models.Model):
+class Relation(AbstractAddress):
     business_name = models.CharField(max_length=100)
     contact_name = models.CharField(max_length=100, blank=True, null=True)
     contact_phone = models.CharField(max_length=100, blank=True, null=True)
