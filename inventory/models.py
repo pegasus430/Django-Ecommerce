@@ -79,7 +79,7 @@ class Material(models.Model):
 
     supplier = models.ForeignKey(Relation, limit_choices_to={'is_supplier': True})
 
-    tags = TaggableManager()
+    tags = TaggableManager(blank=True)
 
 
     class Meta:
