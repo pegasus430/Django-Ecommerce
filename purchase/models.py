@@ -101,6 +101,8 @@ class Delivery(models.Model):
     purchase_order = models.ForeignKey(PurchaseOrder)
     status = models.CharField(choices=STATUS_CHOICES, default='DR', max_length=2)
 
+    delivered = models.DateField(null=True, blank=True)
+
     def __unicode__(self):
         return 'Delivery for {}'.format(self.purchase_order)
 
