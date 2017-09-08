@@ -248,8 +248,10 @@ def return_stock_status_for_order(purchaseorder_queryset):
         # logger.debug(material_needed_dict)
         material_needed_list = []
         for key in material_needed_dict.keys():
-            if material_needed_dict[key]['qty_to_order'] != 0:
-                material_needed_list.append(material_needed_dict[key])
+            material_needed_list.append(material_needed_dict[key])
+            # if material_needed_dict[key]['qty_to_order'] != 0:
+            #     material_needed_list.append(material_needed_dict[key])
+            
         # logger.debug(material_needed_list)
 
         # ## create a list of suppliers from this list
