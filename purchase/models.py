@@ -30,6 +30,8 @@ class PurchaseOrder(models.Model):
 
     status = models.CharField(choices=STATUS_CHOICES, default='DR', max_length=2)
 
+    transport_cost = models.FloatField(default=0.0)
+
     def __unicode__(self):
         return 'Purchase Order {} {} ref:{}'.format(self.supplier, self.created_at, self.supplier_reference)
 
