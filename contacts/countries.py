@@ -8,6 +8,7 @@ COUNTRY_CHOICES = [
     ('CH', 'Switzerland'),
     ('DK', 'Denmark'),
     ('NL', 'Netherlands'),
+    ('PL', 'Poland'),
     ('AT', 'Austria'),
     ('IT', 'Italy'),
     ('NO', 'Norway'),
