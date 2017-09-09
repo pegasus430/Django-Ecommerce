@@ -14,6 +14,7 @@ class PurchaseOrder(models.Model):
         ('DR', 'Draft'),
         ('WC', 'Waiting for confirmation'),
         ('WA', 'Waiting delivery'),
+        ('PL', 'Partially Delivered'),
         ('DL', 'Delivered'),
         ('IN', 'Invoice added'),
     )
@@ -144,7 +145,9 @@ class Delivery(models.Model):
                 purchase_order = self.purchase_order
                 if len(purchase_order.purchaseorderitem_set.filter(fully_delivered=True)) == len(purchase_order.purchaseorderitem_set.all()):
                     purchase_order.status = 'DL'
-                    purchase_order.save()
+                else:
+                    purchase_order.status = 'PL'
+                purchase_order.save()
 
         super(Delivery, self).save(*args, **kwargs)
 
