@@ -3,6 +3,7 @@ from django.conf import settings
 from reportlab.lib.pagesizes import A4
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle
 from reportlab.lib.units import mm
+from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_CENTER
 
@@ -12,10 +13,12 @@ import os
 from io import BytesIO
 from datetime import datetime
 
+
 def stylesheet():
     ''' Override the getSampleStyleSheet, and add own styles'''
     styles = getSampleStyleSheet()
     styles.add(ParagraphStyle(name='BodyTextCenter', parent=styles['BodyText'], alignment=TA_CENTER))
+    styles.add(ParagraphStyle(name='Bold', parent=styles['BodyText'], fontName='Helvetica-Bold'))
     return styles
 
 def print_letterhead(canvas, doc):
@@ -47,11 +50,12 @@ def print_internal_transport_picking_list(internal_transport):
     '''
 
     buffer = BytesIO()
+    margin = 20*mm
     doc = SimpleDocTemplate(buffer,
-            rightMargin=20*mm,
-            leftMargin=20*mm,
-            topMargin=20*mm,
-            bottomMargin=20*mm,
+            rightMargin=margin,
+            leftMargin=margin,
+            topMargin=margin,
+            bottomMargin=margin,
             pagesize=A4)
 
     # Our container for 'Flowable' objects
@@ -69,16 +73,19 @@ def print_internal_transport_picking_list(internal_transport):
 
     ## Build item table
     table_data = []
-    table_data.append(
-        ['Product', 'SKU', 'qty', 'unit']
-    )
+    table_data.append([Paragraph(i, styles['Bold']) for i in ['Product', 'SKU', 'Qty', 'Unit',]])
+    table_width = doc.width - margin
     for item in internal_transport.internaltransportmaterial_set.all():
         table_data.append([
             Paragraph(str(item.material), styles['BodyText']), 
             Paragraph(str(item.material.sku), styles['BodyText']), 
             Paragraph(str(item.qty), styles['BodyText']), 
             Paragraph(str(item.material.get_unit_usage_display()), styles['BodyText'])])
-    elements.append(Table(table_data, colWidths=[60*mm, 60*mm, 20*mm, 25*mm]))
+    table = Table(table_data, colWidths=[table_width*0.4, table_width*0.4, table_width*0.2, table_width*0.2])
+    table.setStyle(TableStyle([
+        ('LINEBELOW', (0,0), (4,0), 1, colors.black),  ## Add line below headers
+    ]))
+    elements.append(table)
 
     ## Build the pdf
     doc.build(elements, onFirstPage=print_letterhead, onLaterPages=print_letterhead)
