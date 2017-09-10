@@ -34,7 +34,6 @@ class Agent(AbstractAddress):
     def __unicode__(self):
         return self.name
 
-
 class RelationAddress(AbstractAddress):
     relation = models.ForeignKey('Relation')
     default = models.BooleanField(default=False)
@@ -82,7 +81,6 @@ class Relation(AbstractAddress):
             set_value = getattr(self, field)
             setattr(address, field, set_value)
         address.save()
-
 
     
 class OwnAddress(AbstractAddress):
