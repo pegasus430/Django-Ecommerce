@@ -10,18 +10,19 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_CENTER
 
 from transport.models import InternalTransport
+from defaults.printing import stylesheet
 
 import os
 from io import BytesIO
 from datetime import datetime
 
 
-def stylesheet():
-    ''' Override the getSampleStyleSheet, and add own styles'''
-    styles = getSampleStyleSheet()
-    styles.add(ParagraphStyle(name='BodyTextCenter', parent=styles['BodyText'], alignment=TA_CENTER))
-    styles.add(ParagraphStyle(name='Bold', parent=styles['BodyText'], fontName='Helvetica-Bold'))
-    return styles
+# def stylesheet():
+#     ''' Override the getSampleStyleSheet, and add own styles'''
+#     styles = getSampleStyleSheet()
+#     styles.add(ParagraphStyle(name='BodyTextCenter', parent=styles['BodyText'], alignment=TA_CENTER))
+#     styles.add(ParagraphStyle(name='Bold', parent=styles['BodyText'], fontName='Helvetica-Bold'))
+#     return styles
 
 def print_letterhead(canvas, doc):
     ''' add letterhead to the page'''

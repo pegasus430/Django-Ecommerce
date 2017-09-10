@@ -2,7 +2,7 @@ from django.contrib import admin
 from defaults.admin import DefaultAdmin, DefaultInline
 
 from .models import *
-from .helpers import product_mark_inactive, product_mark_active, print_box_barcode
+from .helpers import product_mark_inactive, product_mark_active, print_box_barcode, print_stock_label_38x90
 
 ###############
 ### Inlines ###
@@ -83,6 +83,7 @@ class MaterialAdmin(DefaultAdmin):
     list_display = ['name', 'sku_supplier', 'supplier', 'cost_per_usage_unit', 'usage_units_on_stock']
     list_filter = ['supplier', 'mat_type']
     search_fields = ['name', 'supplier__business_name', 'sku_supplier', 'sku']
+    actions = [print_stock_label_38x90]
     inlines = [MaterialImageInline, MaterialDataSheetInline, StockLocationItemInline]
 
 class UmbrellaProductModelAdmin(admin.ModelAdmin):

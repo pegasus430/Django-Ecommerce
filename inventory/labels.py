@@ -4,8 +4,38 @@ from reportlab.lib.units import mm
 from reportlab.graphics.barcode import eanbc
 from reportlab.graphics.shapes import Drawing 
 from reportlab.graphics import renderPDF
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle, PageBreak
+
+from defaults.printing import stylesheet
 
 from io import BytesIO
+
+def stock_label_38x90(materials):
+    '''
+    return label pdf for a simple box sku label
+    '''
+    buffer = BytesIO()
+
+    margin = 10*mm
+    doc = SimpleDocTemplate(buffer,
+            rightMargin=margin,
+            leftMargin=margin,
+            topMargin=margin,
+            bottomMargin=margin,
+            pagesize=(90*mm, 38*mm))
+
+    elements = []
+    styles = stylesheet()
+
+    for mat in materials:
+        elements.append(Paragraph(mat.name, styles['BodyText']))
+        elements.append(Paragraph(mat.sku, styles['BodyText']))
+        elements.append(PageBreak())
+
+    doc.build(elements)
+    pdf = buffer.getvalue()
+    buffer.close()
+    return pdf    
 
 
 def box_barcode_label_38x90(product):
