@@ -54,7 +54,7 @@ def print_internal_transport_picking_list(internal_transport):
     doc = SimpleDocTemplate(buffer,
             rightMargin=margin,
             leftMargin=margin,
-            topMargin=margin,
+            topMargin=50*mm,
             bottomMargin=margin,
             pagesize=A4)
 
@@ -65,7 +65,6 @@ def print_internal_transport_picking_list(internal_transport):
     ## Add some title
     title = 'Picking List #{}'.format(internal_transport.id)
     elements.append(Paragraph(title, styles['Title']))
-    elements.append(Paragraph('<br /><br /><br /><br />', styles['BodyText']))
     elements.append(Paragraph('Shipping Date: {}'.format(internal_transport.shipping_date), styles['BodyText']))
     elements.append(Paragraph('Shipped From: {} {}'.format(internal_transport.from_location, internal_transport.from_location.own_address.get_country_display()), styles['BodyText']))
     elements.append(Paragraph('Shipped To: {} {}'.format(internal_transport.to_location, internal_transport.to_location.own_address.get_country_display()), styles['BodyText']))
