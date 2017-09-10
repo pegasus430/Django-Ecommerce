@@ -41,7 +41,7 @@ def print_internal_transport_picking_list(internal_transport):
         ['Product', 'SKU', 'qty', 'unit']
     )
     for item in internal_transport.internaltransportmaterial_set.all():
-        table_data.append([item.material, item.material.sku, item.qty, item.material.usage_unit])
+        table_data.append([item.material, item.material.sku, item.qty, item.material.unit_usage])
     elements.append(Table(table_data, colWidths=50*mm))
 
     ## Build the pdf
