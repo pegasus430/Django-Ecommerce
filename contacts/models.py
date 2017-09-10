@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 
 from django.db import models
 
+from defaults.helpers import get_model_fields
+
 from .countries import COUNTRY_CHOICES
 
 class AbstractAddress(models.Model):
@@ -33,6 +35,28 @@ class Agent(AbstractAddress):
         return self.name
 
 
+class RelationAddress(AbstractAddress):
+    relation = models.ForeignKey('Relation')
+    default = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return '{} {} {}'.format(
+            self.relation,
+            self.address1,
+            self.city)
+
+    def save(self, *args, **kwargs):
+        ## there should only be 1 default
+        try:
+            RelationAddress.objects.get(
+                relation=self.relation,
+                default=True)
+        except RelationAddress.MultipleObjectsReturned:
+            raise Exception('There can only be 1 default address')
+        except RelationAddress.DoesNotExist:
+            pass
+        super(RelationAddress, self).save(*args, **kwargs)
+
 class Relation(AbstractAddress):
     is_supplier = models.BooleanField(default=False)
     is_client = models.BooleanField(default=False)
@@ -45,16 +69,20 @@ class Relation(AbstractAddress):
     def __unicode__(self):
         return self.business_name
 
+    def save(self, *args, **kwargs):
+        super(Relation, self).save(*args, **kwargs)
+        ## Auto-create/update the RelationAddress
+        address, created = RelationAddress.objects.get_or_create(
+            relation=self,
+            default=True)
 
-class RelationAddress(AbstractAddress):
-    relation = models.ForeignKey(Relation)
+        dont_compare_fields = ['is_client', 'is_supplier', 'vat_number', 'agent_id']
+        compare_fields = [item for item in get_model_fields(self) if item not in dont_compare_fields]
+        for field in compare_fields:
+            set_value = getattr(self, field)
+            setattr(address, field, set_value)
+        address.save()
 
-    def __unicode__(self):
-        return '{} {} {}'.format(
-            self.relation,
-            self.address1,
-            self.city)
-    
 
     
 class OwnAddress(AbstractAddress):
