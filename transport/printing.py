@@ -4,6 +4,8 @@ from reportlab.lib.pagesizes import A4
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle
 from reportlab.lib.units import mm
 from reportlab.lib import colors
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_CENTER
 
@@ -62,6 +64,9 @@ def print_internal_transport_picking_list(internal_transport):
     elements = []
     styles = stylesheet()
 
+    # Add font for unicode
+    pdfmetrics.registerFont(TTFont('Arial', os.path.join(settings.STATIC_ROOT, 'pdf/Arial.ttf')))
+
     ## Add some title
     title = 'Picking List #{}'.format(internal_transport.id)
     elements.append(Paragraph(title, styles['Title']))
@@ -72,15 +77,17 @@ def print_internal_transport_picking_list(internal_transport):
 
     ## Build item table
     table_data = []
-    table_data.append([Paragraph(i, styles['Bold']) for i in ['Product', 'SKU', 'Qty', 'Unit',]])
+    table_data.append([Paragraph(i, styles['Bold']) for i in ['Product', 'SKU', 'Qty', 'Unit', '']])
     table_width = doc.width - margin
     for item in internal_transport.internaltransportmaterial_set.all():
         table_data.append([
             Paragraph(str(item.material), styles['BodyText']), 
             Paragraph(str(item.material.sku), styles['BodyText']), 
             Paragraph(str(item.qty), styles['BodyText']), 
-            Paragraph(str(item.material.get_unit_usage_display()), styles['BodyText'])])
-    table = Table(table_data, colWidths=[table_width*0.4, table_width*0.4, table_width*0.2, table_width*0.2])
+            Paragraph(str(item.material.get_unit_usage_display()), styles['BodyText']),
+            Paragraph(u'<font name="Arial">\u25A1</font>', styles['BodyText']),
+        ])
+    table = Table(table_data, colWidths=[table_width*0.4, table_width*0.4, table_width*0.175, table_width*0.175, table_width*0.05])
     table.setStyle(TableStyle([
         ('LINEBELOW', (0,0), (4,0), 1, colors.black),  ## Add line below headers
     ]))
