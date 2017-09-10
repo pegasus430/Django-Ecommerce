@@ -6,6 +6,11 @@ from django.db import models
 from .countries import COUNTRY_CHOICES
 
 class AbstractAddress(models.Model):
+    business_name = models.CharField(max_length=100)
+    contact_name = models.CharField(max_length=100, blank=True, null=True)
+    contact_phone = models.CharField(max_length=100, blank=True, null=True)
+    contact_mobile = models.CharField(max_length=100, blank=True, null=True)
+    contact_email = models.CharField(max_length=100, blank=True, null=True)
     address1 = models.CharField(max_length=100, blank=True, null=True)
     address2 = models.CharField(max_length=100, blank=True, null=True)
     city = models.CharField(max_length=100, blank=True, null=True)
@@ -29,11 +34,6 @@ class Agent(AbstractAddress):
 
 
 class Relation(AbstractAddress):
-    business_name = models.CharField(max_length=100)
-    contact_name = models.CharField(max_length=100, blank=True, null=True)
-    contact_phone = models.CharField(max_length=100, blank=True, null=True)
-    contact_mobile = models.CharField(max_length=100, blank=True, null=True)
-    contact_email = models.CharField(max_length=100, blank=True, null=True)
     is_supplier = models.BooleanField(default=False)
     is_client = models.BooleanField(default=False)
     vat_number = models.CharField(max_length=100, blank=True, null=True)
