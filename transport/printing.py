@@ -45,8 +45,8 @@ def print_internal_transport_picking_list(internal_transport):
             Paragraph(str(item.material), styles['BodyText']), 
             Paragraph(str(item.material.sku), styles['BodyText']), 
             Paragraph(str(item.qty), styles['BodyText']), 
-            Paragraph(str(item.material.unit_usage), styles['BodyText'])])
-    elements.append(Table(table_data, colWidths=[70*mm, 70*mm, 20*mm, 20*mm]))
+            Paragraph(str(item.material.get_unit_usage_display()), styles['BodyText'])])
+    elements.append(Table(table_data, colWidths=[70*mm, 70*mm, 20*mm, 25*mm]))
 
     ## Build the pdf
     doc.build(elements)
