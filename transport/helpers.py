@@ -22,7 +22,7 @@ def print_stock_label_38x90_admin(queryset):
     	for item in internal_transport.internaltransportmaterial_set.all():
     		materials.append(item.material)
 
-    response.write(stock_label_38x90(materials)
+    response.write(stock_label_38x90(materials))
     return response
 
 

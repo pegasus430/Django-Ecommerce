@@ -26,7 +26,7 @@ def stock_label_38x90(materials):
 
     for mat in materials:
         elements.append(Paragraph(mat.name, styles['BodyText']))
-        elements.append(Paragraph(mat.sku, styles['BodyText']))
+        elements.append(Paragraph('sku: {}'.format(mat.sku), styles['BodyText']))
         elements.append(PageBreak())
 
     doc.build(elements)
