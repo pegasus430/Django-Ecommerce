@@ -6,7 +6,7 @@ from django.db.models.signals import post_save
 
 from .helpers import calc_price, ROUND_DIGITS
 
-from contacts.models import Relation
+from contacts.models import Relation, OwnAddress
 
 from taggit.managers import TaggableManager
 
@@ -22,6 +22,7 @@ logger = logging.getLogger(__name__)
 
 class StockLocation(models.Model):
     name = models.CharField(max_length=100, verbose_name='Location name')
+    own_address = models.ForeignKey(OwnAddress, blank=True, null=True)
 
     def __unicode__(self):
         return self.name
