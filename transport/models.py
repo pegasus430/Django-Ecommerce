@@ -51,5 +51,8 @@ class InternalTransportMaterial(models.Model):
     material = models.ForeignKey(Material)
     qty = models.FloatField()
 
+    class Meta:
+        ordering = ('material',) 
+
 
 # class InternalTransportProduct(models.Model):
