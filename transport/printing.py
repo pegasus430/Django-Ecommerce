@@ -33,7 +33,7 @@ def print_internal_transport_picking_list(internal_transport):
     ## Add some title
     title = 'Picking List {} - {}'.format(internal_transport.id, datetime.now().strftime("%d %m %Y"))
     elements.append(Paragraph(title, styles['Title']))
-    elements.append(Paragraph('', styles['BodyText']))
+    elements.append(Paragraph('<br /><br />', styles['BodyText']))
 
     ## Build item table
     table_data = []
@@ -41,8 +41,12 @@ def print_internal_transport_picking_list(internal_transport):
         ['Product', 'SKU', 'qty', 'unit']
     )
     for item in internal_transport.internaltransportmaterial_set.all():
-        table_data.append([item.material, item.material.sku, item.qty, item.material.unit_usage])
-    elements.append(Table(table_data, colWidths=50*mm))
+        table_data.append([
+            Paragraph(str(item.material), styles['BodyText']), 
+            Paragraph(str(item.material.sku), styles['BodyText']), 
+            Paragraph(str(item.qty), styles['BodyText']), 
+            Paragraph(str(item.material.unit_usage), styles['BodyText'])])
+    elements.append(Table(table_data, colWidths=[70*mm, 70*mm, 20*mm, 20*mm]))
 
     ## Build the pdf
     doc.build(elements)
