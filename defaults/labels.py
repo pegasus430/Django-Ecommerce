@@ -13,7 +13,7 @@ def stock_label_38x90(materials):
     '''
     buffer = BytesIO()
 
-    margin = 10*mm
+    margin = 5*mm
     doc = SimpleDocTemplate(buffer,
             rightMargin=margin,
             leftMargin=margin,
