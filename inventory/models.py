@@ -6,7 +6,9 @@ from django.db.models.signals import post_save
 
 from .helpers import calc_price, ROUND_DIGITS
 
-from contacts.models import Relation
+from contacts.models import Relation, OwnAddress
+
+from taggit.managers import TaggableManager
 
 import logging
 logger = logging.getLogger(__name__)
@@ -20,6 +22,7 @@ logger = logging.getLogger(__name__)
 
 class StockLocation(models.Model):
     name = models.CharField(max_length=100, verbose_name='Location name')
+    own_address = models.ForeignKey(OwnAddress, blank=True, null=True)
 
     def __unicode__(self):
         return self.name
@@ -64,6 +67,9 @@ class Material(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField(blank=True, null=True)
     mat_type = models.CharField(max_length=3, choices=MAT_TYPE_SELECTIONS, verbose_name="Material type")
+
+    roll_width = models.CharField(max_length=3, verbose_name='Roll width in cm', blank=True, null=True)
+    fabric_width = models.CharField(max_length=3, verbose_name='Fabric width in cm', blank=True, null=True)
     
     cost_per_usage_unit = models.FloatField()
     unit_usage = models.CharField(max_length=2, choices=UNIT_USAGE_SELECTIONS, verbose_name="Usage unit")
@@ -72,7 +78,10 @@ class Material(models.Model):
 
     est_delivery_time = models.CharField(max_length=100, blank=True, null=True)
 
-    supplier = models.ForeignKey(Relation)
+    supplier = models.ForeignKey(Relation, limit_choices_to={'is_supplier': True})
+
+    tags = TaggableManager(blank=True)
+
 
     class Meta:
         ordering = ('name',)
@@ -91,30 +100,16 @@ class Material(models.Model):
             except StockLocationItem.DoesNotExist:
                 stock_status[location.name] = 0
         return stock_status
-
-    # @property
-    # def used_in_collections(self):
-    #     collections = set()
-    #     for bom in self.umbrellaproductbillofmaterial_set.all():
-    #         collections.add(bom.umbrella_product.collection)
-    #     return list(collections)
-
-    # @property 
-    # def used_in_products(self):
-    #     products = set()
-    #     for bom in ProductBillOfMaterial.objects.filter(material=self):
-    #         products.add(bom.product)
-    #     return list(products)
-
+        
 
 class MaterialImage(models.Model):
     ''' Images to go with a Material '''
-    name = models.CharField(max_length=100)
+    # name = models.CharField(max_length=100)
     material = models.ForeignKey(Material)
     image = models.FileField(upload_to='media/materials/images/%Y/%m/%d')
 
     def __unicode__(self):
-        return '{} {}'.format(self.name, self.material)
+        return 'Image for {}'.format(self.material)
 
 
 class MaterialDataSheet(models.Model):
@@ -132,6 +127,7 @@ class StockLocationItem(models.Model):
     material = models.ForeignKey(Material)
     quantity_in_stock = models.FloatField(default=0.0)
     quantity_on_its_way = models.FloatField(default=0.0)
+    comment = models.TextField(null=True, blank=True)
 
     def __unicode__(self):
         return '{} {} of {} available in {}'.format(
@@ -461,36 +457,6 @@ class Product(models.Model):
     
     def __unicode__(self):
         return '{} {}'.format(self.sku, self.name)
-
-    # @property 
-    # def materials_on_stock(self):
-    #     '''Show the stock status on each location per product-need'''
-    #     ## FIXME:  This entire function should be eliminated and use the one from Material
-    #     stock_status = {}
-    #     for location in StockLocation.objects.all():
-    #         stock_status[location.name] = True
-    #         amount_available = []
-    #         for bom in self.productbillofmaterial_set.all():
-    #             try: 
-    #                 item_in_location = StockLocationItem.objects.get(location=location, material=bom.material)
-    #                 amount_available.append(item_in_location.quantity_in_stock / bom.quantity_needed)
-    #             except StockLocationItem.DoesNotExist:
-    #                 amount_available.append(0)
-    #         try:
-    #             stock_status[location.name] = int(min(amount_available)) ## int rounds down
-    #         except ValueError:
-    #             stock_status[location.name] = 0
-
-    #     return stock_status
-
-    # @property 
-    # def materials_on_stock_in_production_location(self):
-    #     '''Show the stock status in the production-location'''
-    #     stock = self.materials_on_stock
-    #     for key in stock:
-    #         if key == self.umbrella_product.collection.production_location.name:
-    #             return stock[key]
-    # materials_on_stock_in_production_location.fget.short_description = u'Avail. Prod.'                
 
     @property 
     def cost(self):

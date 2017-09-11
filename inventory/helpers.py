@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from copy import deepcopy
 
 from .labels import box_barcode_label_38x90
+from defaults.labels import stock_label_38x90
 
 
 ROUND_DIGITS = 2
@@ -74,6 +75,16 @@ def print_box_barcode_admin(product):
     return response
 
 
+def print_stock_label_38x90_admin(materials):
+    ''' helper function to return all of the labels for stock-identifying'''
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="stock_labels.pdf"'
+
+    response.write(stock_label_38x90(materials))
+    return response
+
+
+
 ### Admin helper ###
 def product_mark_inactive(modeladmin, request, queryset):
     queryset.update(active=False)
@@ -87,3 +98,7 @@ def print_box_barcode(modeladmin, request, queryset):
     for q in queryset:
         return print_box_barcode_admin(q)
 print_box_barcode.short_description = 'Print box 38x90 barcode'
+
+def print_stock_label_38x90(modeladmin, request, queryset):
+    return print_stock_label_38x90_admin(queryset)
+print_stock_label_38x90.short_description = 'Print stock labels 38x90'

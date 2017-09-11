@@ -3,29 +3,6 @@ from .reports import export_pricelist_pdf, export_pricelist_csv
 
 ROUND_DIGITS = 2
 
-### TODELETE:  Too complicated approach.  
-# def calc_price(productlist_item, lux_markup, classic_markup, price_markup, rrp=False):
-#     range_type = productlist_item.product.umbrella_product.collection.range_type
-
-#     if rrp:
-#         start_price = productlist_item.per_6
-#     else:
-#         start_price = productlist_item.product.cost
-    
-#     if range_type == 'LUX':
-#         markup = lux_markup
-#     elif range_type == 'CLA':
-#         markup = classic_markup
-#     elif range_type == 'PRI':
-#         markup = price_markup
-    
-#     price = round(start_price * markup, ROUND_DIGITS)
-#     if rrp:
-#         return int(5 * round(float(price)/5))
-#     else:
-#         return price
-
-
 def set_prices(pricelist_item):
     if not pricelist_item.rrp:
         return False
@@ -43,6 +20,27 @@ def set_prices(pricelist_item):
         pricelist_item.per_48 = pricelist_item.per_1 * 0.7
     
     return pricelist_item.save()
+
+
+def get_correct_sales_order_item_price(pricelist_item, qty):
+    '''Return the price that matches the right qty for the product'''
+    ## Filter available price tiers
+    tier_identifier = 'per_'
+    price_tiers = []
+    for key in pricelist_item.__dict__.keys():
+        if key.startswith(tier_identifier):
+            price_tiers.append(int(key.split('_')[-1]))
+    price_tiers.sort(reverse=True)
+
+    ## try to match one
+    for tier in price_tiers:
+        if qty >= tier:
+            price = getattr(pricelist_item, '{}{}'.format(tier_identifier, tier))
+            if not price or price == None or price == '':
+                pass
+            else:
+                return price
+
 
 
 ## Admin helper ##

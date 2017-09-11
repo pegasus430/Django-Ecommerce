@@ -7,6 +7,8 @@ from django.db import models
 from inventory.models import Product, StockLocation
 from contacts.models import Relation, RelationAddress
 
+from .helpers import get_correct_sales_order_item_price
+
 import logging
 logger = logging.getLogger(__name__)
 
@@ -49,28 +51,6 @@ class PriceListItem(models.Model):
     def __unicode__(self):
         return u'{}'.format(self.product)
 
-    ## TODELETE: Too complicated approach. 
-    # def save(self, *args, **kwargs):
-    #     if not self.pk:
-    #         if not self.per_1:
-    #             self.per_1 = calc_price(self, lux_markup=7, classic_markup=2.5, price_markup=2)
-
-    #         if not self.per_6:
-    #             self.per_6 = calc_price(self, lux_markup=4.5, classic_markup=2, price_markup=1.65)
-
-    #         if not self.per_12:
-    #             self.per_12 = calc_price(self, lux_markup=4, classic_markup=1.9, price_markup=1.55)
-
-    #         if not self.per_48:
-    #             self.per_48 = calc_price(self, lux_markup=3, classic_markup=1.7, price_markup=1.4)
-
-    #         if not self.rrp:
-    #             rrp_markup = 2.4 * 1.21
-    #             self.rrp = calc_price(self, lux_markup=rrp_markup, classic_markup=rrp_markup, price_markup=rrp_markup, rrp=True)
-                
-    #     super(PriceListItem, self).save(*args, **kwargs)
-
-
 class SalesOrder(models.Model):
     STATUS_CHOICES = (
         ('DR', 'Draft'),
@@ -83,7 +63,7 @@ class SalesOrder(models.Model):
     )
 
     client = models.ForeignKey(Relation,  limit_choices_to={'is_client': True})
-    invoice_to = models.ForeignKey(RelationAddress, related_name='invoice_to')
+    # invoice_to = models.ForeignKey(RelationAddress, related_name='invoice_to')
     ship_to = models.ForeignKey(RelationAddress, related_name='ship_to')
     ship_from = models.ForeignKey(StockLocation)
 
@@ -113,7 +93,7 @@ class SalesOrderProduct(models.Model):
     sales_order = models.ForeignKey(SalesOrder)
     product = models.ForeignKey(PriceListItem,  limit_choices_to={'price_list__status': 'AC'})
     qty = models.IntegerField()
-    unit_price = models.FloatField()
+    unit_price = models.FloatField(blank=True, null=True)
 
     def __unicode__(self):
         return u'{}x {}, order: {}'.format(self.qty, self.product, self.sales_order)
@@ -121,3 +101,8 @@ class SalesOrderProduct(models.Model):
     @property
     def total_price(self):
         return self.qty * self.unit_price
+
+    def save(self, *args, **kwargs):
+        ## Find the right price.
+        self.unit_price = get_correct_sales_order_item_price(self.product, self.qty)
+        super(SalesOrderProduct, self).save(*args, **kwargs)

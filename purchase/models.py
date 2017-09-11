@@ -14,6 +14,7 @@ class PurchaseOrder(models.Model):
         ('DR', 'Draft'),
         ('WC', 'Waiting for confirmation'),
         ('WA', 'Waiting delivery'),
+        ('PL', 'Partially Delivered'),
         ('DL', 'Delivered'),
         ('IN', 'Invoice added'),
     )
@@ -29,6 +30,8 @@ class PurchaseOrder(models.Model):
     est_delivery = models.DateField(null=True, blank=True)
 
     status = models.CharField(choices=STATUS_CHOICES, default='DR', max_length=2)
+
+    transport_cost = models.FloatField(default=0.0)
 
     def __unicode__(self):
         return 'Purchase Order {} {} ref:{}'.format(self.supplier, self.created_at, self.supplier_reference)
@@ -101,6 +104,8 @@ class Delivery(models.Model):
     purchase_order = models.ForeignKey(PurchaseOrder)
     status = models.CharField(choices=STATUS_CHOICES, default='DR', max_length=2)
 
+    delivered = models.DateField(null=True, blank=True)
+
     def __unicode__(self):
         return 'Delivery for {}'.format(self.purchase_order)
 
@@ -109,6 +114,7 @@ class Delivery(models.Model):
         if not self.pk:
             super(Delivery, self).save(*args, **kwargs)
             for item in self.purchase_order.purchaseorderitem_set.all():
+                ## TODO: make qty data dynamic, only that are not delivered, and only qty to be received
                 DeliveryItem.objects.create(delivery=self, material=item.material, qty=item.qty)
 
         ## If delivery is marked as confimed.  Add all of the items to stock, and set order to delivered
@@ -139,7 +145,9 @@ class Delivery(models.Model):
                 purchase_order = self.purchase_order
                 if len(purchase_order.purchaseorderitem_set.filter(fully_delivered=True)) == len(purchase_order.purchaseorderitem_set.all()):
                     purchase_order.status = 'DL'
-                    purchase_order.save()
+                else:
+                    purchase_order.status = 'PL'
+                purchase_order.save()
 
         super(Delivery, self).save(*args, **kwargs)
 
