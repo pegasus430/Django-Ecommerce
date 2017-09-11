@@ -69,10 +69,13 @@ class SalesOrder(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    estimated_delivery = models.DateField(blank=True, null=True)
 
     status = models.CharField(choices=STATUS_CHOICES, max_length=2, default='DR')
 
     discount_pct = models.FloatField(blank=True, null=True)
+    invoice_number = models.CharField(max_length=100, blank=True, null=True)
+    _xero_invoice_id = models.CharField(max_length=100, blank=True, null=True)
 
     def __unicode__(self):
         return 'Order #{} for {}'.format(self.id, self.client)

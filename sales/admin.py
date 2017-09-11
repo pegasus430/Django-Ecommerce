@@ -7,7 +7,8 @@ from .helpers import clear_b2b_prices_admin_action,\
     set_prices_admin_action,\
     export_pricelist_pdf_admin_action,\
     export_pricelist_csv_admin_action,\
-    export_costlist_csv_admin_action
+    export_costlist_csv_admin_action,\
+    create_sales_invoice
 
 ###############
 ### Inlines ###
@@ -25,6 +26,7 @@ class SalesOrderAdmin(DefaultAdmin):
     list_display = ['__unicode__', 'status', 'get_total_order_value']
     inlines = [SalesOrderProductInline]
     readonly_fields = ['total_order_value']
+    actions = [create_sales_invoice]
 
     def get_total_order_value(self, obj):
         return obj.total_order_value

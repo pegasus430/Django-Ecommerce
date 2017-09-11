@@ -56,6 +56,7 @@ class RelationAddress(AbstractAddress):
         except RelationAddress.DoesNotExist:
             pass
         super(RelationAddress, self).save(*args, **kwargs)
+        
 
 class Relation(AbstractAddress):
     VAT_REGIME_CHOICES = (

@@ -7,6 +7,9 @@ import os
 
 from django.conf import settings
 
+import logging
+logger = logging.getLogger(__name__)
+
 rsa_keyfile_path = os.path.join(settings.BASE_DIR, 'xero_local/certs/privatekey.pem')
 #rsa_keyfile_path = os.path.join(settings.BASE_DIR, 'xero_local/certs/publickey.cer')
 
@@ -15,6 +18,54 @@ with open(rsa_keyfile_path) as keyfile:
 
 credentials = PrivateCredentials(secrets.CONSUMER_KEY, rsa_key)
 xero_session = Xero(credentials)
+
+
+def create_invoice(salesorder):
+    ''' create an invoice for a sales-order'''
+    contact = xero_session.contacts.get(salesorder.client._xero_contact_id)[0]
+    data = {
+        'Type': 'ACCREC',
+        'Status': 'DRAFT',
+        'Contact': contact,
+        'CurrencyCode': contact['DefaultCurrency'],
+        'LineItems': [],
+
+    }
+
+    ## Add item lines
+    for item in salesorder.salesorderproduct_set.all():
+        description = str(item.product).split(' ', 1)
+        description.reverse()
+        description = '\n'.join(description)
+
+        data['LineItems'].append({
+            'Description': description,
+            'Quantity': item.qty,
+            'UnitAmount': item.unit_price,
+            'TaxType': salesorder.client.vat_regime,
+            'AccountCode': item.product.product.umbrella_product.accounting_code,
+        })
+
+    ## Add estimate delivery line
+    try:
+        date = salesorder.estimated_delivery.strftime('%d %B')
+    except AttributeError:
+        date = 'Unkown'
+
+    data['LineItems'].append({
+        'Description': 'Estimated delivery: {}'.format(date),
+    })
+
+    logger.debug('Prepped data for invoice {}'.format(data))
+    if salesorder._xero_invoice_id is None or\
+            salesorder._xero_invoice_id == '':
+        logger.debug('Creating new invoice')
+        inv = xero_session.invoices.put(data)[0]
+        return (inv['InvoiceNumber'], inv['InvoiceID'])
+    else:
+        logger.debug('Skipped Creating new invoice, already known')
+        return (salesorder.invoice_number, salesorder._xero_invoice_id)
+
 
 def update_create_relation(relation):
     '''update or create a relation in Xero
