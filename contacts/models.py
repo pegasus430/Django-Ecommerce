@@ -61,7 +61,7 @@ class Relation(AbstractAddress):
     is_client = models.BooleanField(default=False)
     vat_number = models.CharField(max_length=100, blank=True, null=True)
     agent = models.ForeignKey(Agent, blank=True, null=True)
-    xero_contact_id = models.CharField(max_length=100, blank=True, null=True)
+    _xero_contact_id = models.CharField(max_length=100, blank=True, null=True)
     
     class Meta:
         ordering = ('business_name',)
