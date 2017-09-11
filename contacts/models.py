@@ -1,14 +1,15 @@
-
 from __future__ import unicode_literals
 
 from django.db import models
 
 from defaults.helpers import get_model_fields
+from xero_local import api as xero_api
 
 from .countries import COUNTRY_CHOICES
 
 class AbstractAddress(models.Model):
     business_name = models.CharField(max_length=100)
+    contact_first_name = models.CharField(max_length=100, blank=True, null=True)
     contact_name = models.CharField(max_length=100, blank=True, null=True)
     contact_phone = models.CharField(max_length=100, blank=True, null=True)
     contact_mobile = models.CharField(max_length=100, blank=True, null=True)
@@ -57,9 +58,16 @@ class RelationAddress(AbstractAddress):
         super(RelationAddress, self).save(*args, **kwargs)
 
 class Relation(AbstractAddress):
+    VAT_REGIME_CHOICES = (
+        ('NONE', 'Non-EU'),
+        ('ECZROUTPUT', 'With EU VAT-number'),
+        ('OUTPUT2', 'Default'),
+    )
     is_supplier = models.BooleanField(default=False)
     is_client = models.BooleanField(default=False)
     vat_number = models.CharField(max_length=100, blank=True, null=True)
+    vat_regime = models.CharField(max_length=20, default='OUTPUT2', choices=VAT_REGIME_CHOICES)
+    payment_days = models.IntegerField(default=0, verbose_name="Days to pay invoice")
     agent = models.ForeignKey(Agent, blank=True, null=True)
     _xero_contact_id = models.CharField(max_length=100, blank=True, null=True)
     
@@ -70,7 +78,14 @@ class Relation(AbstractAddress):
         return self.business_name
 
     def save(self, *args, **kwargs):
+        ## Update/Create Xero               
+        response = xero_api.update_create_relation(self)
+        if response != self._xero_contact_id:
+            self._xero_contact_id = response
+
+        ## Run your save
         super(Relation, self).save(*args, **kwargs)
+
         ## Auto-create/update the RelationAddress
         address, created = RelationAddress.objects.get_or_create(
             relation=self,
