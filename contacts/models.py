@@ -14,6 +14,7 @@ class AbstractAddress(models.Model):
     contact_phone = models.CharField(max_length=100, blank=True, null=True)
     contact_mobile = models.CharField(max_length=100, blank=True, null=True)
     contact_email = models.CharField(max_length=100, blank=True, null=True)
+    website = models.URLField(blank=True, null=True)
     address1 = models.CharField(max_length=100, blank=True, null=True)
     address2 = models.CharField(max_length=100, blank=True, null=True)
     city = models.CharField(max_length=100, blank=True, null=True)
