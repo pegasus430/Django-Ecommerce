@@ -28,6 +28,7 @@ def create_invoice(salesorder):
         'Status': 'DRAFT',
         'Contact': contact,
         'CurrencyCode': contact['DefaultCurrency'],
+        'Reference': salesorder.client_reference,
         'LineItems': [],
 
     }
