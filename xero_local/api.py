@@ -34,7 +34,7 @@ def create_invoice(salesorder):
 
     ## Add Ref
     if salesorder.client_reference is not None:
-        data['Reference']: salesorder.client_reference
+        data['Reference'] = salesorder.client_reference
 
     ## Add item lines
     for item in salesorder.salesorderproduct_set.all():
