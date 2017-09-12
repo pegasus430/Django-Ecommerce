@@ -58,7 +58,7 @@ def washinglabel(product):
     
     buffer = BytesIO()
 
-    margin = 0*mm
+    margin = 1*mm
     doc = SimpleDocTemplate(buffer,
             rightMargin=margin,
             leftMargin=margin,

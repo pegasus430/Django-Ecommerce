@@ -84,16 +84,23 @@ def print_stock_label_38x90_admin(materials):
     return response
 
 
-def print_washinglabel_admin(product):
+def print_washinglabel_admin(products):
     ''' helper function to print washinglabels for products'''
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="stock_labels.pdf"'
-
-    response.write(washinglabel(product))
+    import StringIO, zipfile
+    outfile = StringIO.StringIO()
+    with zipfile.ZipFile(outfile, 'w') as zf:
+        for product in products:
+            zf.writestr("{}.pdf".format(product.sku), washinglabel(product))
+    
+    response = HttpResponse(outfile.getvalue(), content_type="application/octet-stream")
+    response['Content-Disposition'] = 'attachment; filename=washing_labels.zip'
     return response
 
+    # response = HttpResponse(content_type='application/pdf')
+    # response['Content-Disposition'] = 'attachment; filename="stock_labels.pdf"'
 
-
+    # response.write(washinglabel(product))
+    # return response
 
 ### Admin helper ###
 def product_mark_inactive(modeladmin, request, queryset):
@@ -114,6 +121,7 @@ def print_stock_label_38x90(modeladmin, request, queryset):
 print_stock_label_38x90.short_description = 'Print stock labels 38x90'
 
 def print_washinglabel(modeladmin, request, queryset):
-    for q in queryset:
-        return print_washinglabel_admin(q)
+    return print_washinglabel_admin(queryset)
+    # for q in queryset:
+        # return print_washinglabel_admin(q)
 print_washinglabel.short_description = 'Print Washinglabels'
