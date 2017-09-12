@@ -2,11 +2,12 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import mm
 from reportlab.graphics.barcode import eanbc
-from reportlab.graphics.shapes import Drawing 
+from reportlab.graphics.shapes import Drawing, Line
 from reportlab.graphics import renderPDF
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle, PageBreak
-
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle, PageBreak, Spacer
+from reportlab.lib import colors
 from defaults.printing import stylesheet
+from defaults.labels import BarCode
 
 from io import BytesIO
 
@@ -38,6 +39,60 @@ def stock_label_38x90(materials):
     return pdf    
 
 
+def washinglabel(product):
+    '''
+    Return washinglabel pdf for a product with width: 3cm, length: 10cm
+    Washinglabel contains:
+    - barcode ean
+    - umbrella_product name
+    - colour
+    - size
+    - sku
+    '''
+
+    product_title = str(product.umbrella_product)
+    product_colour = 'Colour: {}'.format(product.umbrella_product.colour)
+    product_size = 'Size: {}'.format(product.product_model.size)
+    product_sku = product.sku
+    product_ean = product.ean_code
+    # product_ean = eanbc.Ean13BarcodeWidget(product.ean_code)
+    # product_ean.width = 28*mm
+    
+    buffer = BytesIO()
+
+    margin = 0*mm
+    doc = SimpleDocTemplate(buffer,
+            rightMargin=margin,
+            leftMargin=margin,
+            topMargin=margin,
+            bottomMargin=margin,
+            pagesize=(30*mm, 100*mm))
+
+    elements = []
+    styles = stylesheet()
+
+    ## Hack to add horizontal line
+    style = TableStyle([
+         ("LINEABOVE", (0,0), (-1,-1), 1, colors.black),
+       ])
+    table = Table([''])
+    table.setStyle(style)
+    elements.append(table)    
+
+    elements.append(Spacer(30*mm, 15*mm))
+    elements.append(BarCode(value=product_ean, ratio=0.9))
+    elements.append(Spacer(30*mm, 10*mm))
+    elements.append(Paragraph(product_title, styles['Bold']))
+    elements.append(Paragraph(product_colour, styles['Normal']))
+    elements.append(Paragraph(product_size, styles['Normal']))
+    elements.append(Paragraph(product_sku, styles['Normal']))
+
+    doc.build(elements)
+    pdf = buffer.getvalue()
+    buffer.close()
+    return pdf 
+
+
 def box_barcode_label_38x90(product):
     '''
     Return barcode pdf for a product barcode on the box including:
@@ -53,7 +108,6 @@ def box_barcode_label_38x90(product):
     product_size = product.product_model.size
     product_sku = product.sku
 
-    # EAN = barcode.get_barcode_class('ean13')
     buffer = BytesIO()
 
     page_real_height = 38*mm  ## Cheating to fix layout, real value 38
