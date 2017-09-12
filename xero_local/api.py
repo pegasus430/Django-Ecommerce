@@ -21,7 +21,9 @@ xero_session = Xero(credentials)
 
 
 def create_invoice(salesorder):
-    ''' create an invoice for a sales-order'''
+    ''' create an invoice for a sales-order
+    Retuns tuple with (InvoiceNumber, InvoiceID, Created_Boolean)
+    '''
     logger.info('Creating invoice for salesorder #{}'.format(salesorder.id))
 
     contact = xero_session.contacts.get(salesorder.client._xero_contact_id)[0]
@@ -49,7 +51,7 @@ def create_invoice(salesorder):
             'Quantity': item.qty,
             'UnitAmount': item.unit_price,
             'TaxType': salesorder.client.vat_regime,
-            'AccountCode': item.product.product.umbrella_product.accounting_code,
+            'AccountCode': int(item.product.product.umbrella_product.accounting_code),
         })
 
     ## Add estimate delivery line
@@ -64,14 +66,15 @@ def create_invoice(salesorder):
 
     logger.debug('Uploading data for invoice {}'.format(data))
 
+    ## Save new invoice, or return old ids
     if salesorder._xero_invoice_id is None or\
             salesorder._xero_invoice_id == '':
         logger.debug('Creating new invoice')
         inv = xero_session.invoices.put(data)[0]
-        return (inv['InvoiceNumber'], inv['InvoiceID'])
+        return (inv['InvoiceNumber'], inv['InvoiceID'], True)
     else:
         logger.debug('Skipped Creating new invoice, already known')
-        return (salesorder.invoice_number, salesorder._xero_invoice_id)
+        return (salesorder.invoice_number, salesorder._xero_invoice_id, False)
 
 
 def update_create_relation(relation):

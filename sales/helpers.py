@@ -91,11 +91,9 @@ export_costlist_csv_admin_action.short_description = 'Export cost and price to c
 
 def create_sales_invoice(modeladmin, request, queryset):
     for q in queryset:
-        invoice_number, invoice_id = xero_api.create_invoice(q)
-        if q.invoice_number != invoice_number:
+        invoice_number, invoice_id, created = xero_api.create_invoice(q)
+        if created:
             q.invoice_number = invoice_number
-
-        if q._xero_invoice_id != invoice_id:
             q._xero_invoice_id = invoice_id
         
         q.save()
