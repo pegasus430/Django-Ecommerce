@@ -55,8 +55,6 @@ def washinglabel(product):
     product_size = 'Size: {}'.format(product.product_model.size)
     product_sku = product.sku
     product_ean = product.ean_code
-    # product_ean = eanbc.Ean13BarcodeWidget(product.ean_code)
-    # product_ean.width = 28*mm
     
     buffer = BytesIO()
 
