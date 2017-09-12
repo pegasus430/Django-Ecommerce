@@ -22,6 +22,8 @@ xero_session = Xero(credentials)
 
 def create_invoice(salesorder):
     ''' create an invoice for a sales-order'''
+    logger.info('Creating invoice for salesorder #{}'.format(salesorder.id))
+
     contact = xero_session.contacts.get(salesorder.client._xero_contact_id)[0]
     data = {
         'Type': 'ACCREC',
@@ -60,7 +62,8 @@ def create_invoice(salesorder):
         'Description': 'Estimated delivery: {}'.format(date),
     })
 
-    logger.debug('Prepped data for invoice {}'.format(data))
+    logger.debug('Uploading data for invoice {}'.format(data))
+
     if salesorder._xero_invoice_id is None or\
             salesorder._xero_invoice_id == '':
         logger.debug('Creating new invoice')
