@@ -6,7 +6,8 @@ from reportlab.graphics.shapes import Drawing, Line
 from reportlab.graphics import renderPDF
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle, PageBreak, Spacer
 from reportlab.lib import colors
-from defaults.printing import stylesheet
+
+from defaults.printing import stylesheet, stylesheet_washinglabels
 from defaults.labels import BarCode
 
 from io import BytesIO
@@ -67,7 +68,7 @@ def washinglabel(product):
             pagesize=(30*mm, 100*mm))
 
     elements = []
-    styles = stylesheet()
+    styles = stylesheet_washinglabels()
 
     ## Hack to add horizontal line
     style = TableStyle([
@@ -81,9 +82,9 @@ def washinglabel(product):
     elements.append(BarCode(value=product_ean, ratio=0.9))
     elements.append(Spacer(30*mm, 10*mm))
     elements.append(Paragraph(product_title, styles['Bold']))
-    elements.append(Paragraph(product_colour, styles['Normal']))
-    elements.append(Paragraph(product_size, styles['Normal']))
-    elements.append(Paragraph(product_sku, styles['Normal']))
+    elements.append(Paragraph(product_colour, styles['NormalSmall']))
+    elements.append(Paragraph(product_size, styles['NormalSmall']))
+    elements.append(Paragraph(product_sku, styles['NormalSmall']))
 
     doc.build(elements)
     pdf = buffer.getvalue()
