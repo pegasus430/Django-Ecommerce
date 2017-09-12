@@ -28,10 +28,13 @@ def create_invoice(salesorder):
         'Status': 'DRAFT',
         'Contact': contact,
         'CurrencyCode': contact['DefaultCurrency'],
-        'Reference': salesorder.client_reference,
         'LineItems': [],
 
     }
+
+    ## Add Ref
+    if salesorder.client_reference is not None:
+        data['Reference']: salesorder.client_reference
 
     ## Add item lines
     for item in salesorder.salesorderproduct_set.all():
