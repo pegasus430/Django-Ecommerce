@@ -108,5 +108,6 @@ class SalesOrderProduct(models.Model):
 
     def save(self, *args, **kwargs):
         ## Find the right price.
-        self.unit_price = get_correct_sales_order_item_price(self.product, self.qty)
+        if self.unit_price is None or self.unit_price == '':
+            self.unit_price = get_correct_sales_order_item_price(self.product, self.qty)
         super(SalesOrderProduct, self).save(*args, **kwargs)
