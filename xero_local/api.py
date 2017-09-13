@@ -28,17 +28,17 @@ def create_invoice(salesorder):
 
     contact = xero_session.contacts.get(salesorder.client._xero_contact_id)[0]
     data = {
-        'Type': 'ACCREC',
-        'Status': 'DRAFT',
-        'Contact': contact,
-        'CurrencyCode': contact['DefaultCurrency'],
-        'LineItems': [],
+        u'Type': u'ACCREC',
+        u'Status': u'DRAFT',
+        u'Contact': contact,
+        u'CurrencyCode': contact['DefaultCurrency'],
+        u'LineItems': [],
 
     }
 
     ## Add Ref
     if salesorder.client_reference is not None:
-        data['Reference'] = salesorder.client_reference
+        data[u'Reference'] = salesorder.client_reference
 
     ## Add item lines
     for item in salesorder.salesorderproduct_set.all():
@@ -46,22 +46,22 @@ def create_invoice(salesorder):
         description.reverse()
         description = '\n'.join(description)
 
-        data['LineItems'].append({
-            'Description': description,
-            'Quantity': item.qty,
-            'UnitAmount': item.unit_price,
-            'TaxType': salesorder.client.vat_regime,
-            'AccountCode': int(item.product.product.umbrella_product.accounting_code),
+        data[u'LineItems'].append({
+            u'Description': description,
+            u'Quantity': item.qty,
+            u'UnitAmount': item.unit_price,
+            u'TaxType': salesorder.client.vat_regime,
+            u'AccountCode': int(item.product.product.umbrella_product.accounting_code),
         })
 
     ## Add estimate delivery line
     try:
         date = salesorder.estimated_delivery.strftime('%d %B')
     except AttributeError:
-        date = 'Unkown'
+        date = u'Unkown'
 
-    data['LineItems'].append({
-        'Description': 'Estimated delivery: {}'.format(date),
+    data[u'LineItems'].append({
+        u'Description': u'Estimated delivery: {}'.format(date),
     })
 
     logger.debug('Uploading data for invoice {}'.format(data))
@@ -95,7 +95,7 @@ def update_create_relation(relation):
         'AccountsReceivableTaxType': relation.vat_regime,
         u'Addresses': [
             {u'AddressType': u'STREET',
-            u'AttentionTo': '{} {}'.format(relation.contact_first_name, relation.contact_name),
+            u'AttentionTo': u'{} {}'.format(relation.contact_first_name, relation.contact_name),
             u'AddressLine1': relation.address1,
             u'AddressLine2': relation.address2,
             u'City': relation.city,
@@ -103,7 +103,7 @@ def update_create_relation(relation):
             u'Country': relation.get_country_display(),
             },
             {u'AddressType': u'POBOX',
-            u'AttentionTo': '{} {}'.format(relation.contact_first_name, relation.contact_name),
+            u'AttentionTo': u'{} {}'.format(relation.contact_first_name, relation.contact_name),
             u'AddressLine1': relation.address1,
             u'AddressLine2': relation.address2,
             u'City': relation.city,
