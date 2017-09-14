@@ -92,7 +92,7 @@ def washinglabel(product):
     return pdf 
 
 
-def box_barcode_label_38x90(product):
+def box_barcode_label(product):
     '''
     Return barcode pdf for a product barcode on the box including:
     - ean-code
@@ -100,6 +100,7 @@ def box_barcode_label_38x90(product):
     - colour
     - size
     - sku
+    label size: 35x89mm
      '''
     product_ean = product.ean_code
     product_title = product.umbrella_product
@@ -109,8 +110,8 @@ def box_barcode_label_38x90(product):
 
     buffer = BytesIO()
 
-    page_real_height = 38*mm  ## Cheating to fix layout, real value 38
-    page_real_width = 90*mm  ## Cheating to fix layout, real value 90
+    page_real_height = 35*mm  ## Cheating to fix layout, real value 38
+    page_real_width = 89*mm  ## Cheating to fix layout, real value 90
     page_margin = 5*mm
     line_height = 2.8*mm
     font_size = 8

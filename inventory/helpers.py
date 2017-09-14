@@ -2,7 +2,7 @@ from django.http import HttpResponse
 
 from copy import deepcopy
 
-from .labels import box_barcode_label_38x90, washinglabel
+from .labels import box_barcode_label, washinglabel
 from defaults.labels import stock_label_38x90
 
 
@@ -66,13 +66,23 @@ def materials_on_stock_in_production_location(product):
             return stock[key]
 
 
-def print_box_barcode_admin(product):
+def print_box_barcode_label_admin(products):
     '''helper function to return the admin-data from the pdf generation'''
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="box_barcode_{}.pdf"'.format(product.sku)
-
-    response.write(box_barcode_label_38x90(product))
+    import StringIO, zipfile
+    outfile = StringIO.StringIO()
+    with zipfile.ZipFile(outfile, 'w') as zf:
+        for product in products:
+            zf.writestr("{}.pdf".format(product.sku), box_barcode_label(product))
+    
+    response = HttpResponse(outfile.getvalue(), content_type="application/octet-stream")
+    response['Content-Disposition'] = 'attachment; filename=box_barcode.zip'
     return response
+
+    # response = HttpResponse(content_type='application/pdf')
+    # response['Content-Disposition'] = 'attachment; filename="box_barcode_{}.pdf"'.format(product.sku)
+
+    # response.write(box_barcode_label(product))
+    # return response
 
 
 def print_stock_label_38x90_admin(materials):
@@ -111,10 +121,9 @@ def product_mark_active(modeladmin, request, queryset):
     queryset.update(active=True)
 product_mark_active.short_description = "Mark selected products as active."
 
-def print_box_barcode(modeladmin, request, queryset):
-    for q in queryset:
-        return print_box_barcode_admin(q)
-print_box_barcode.short_description = 'Print box 38x90 barcode'
+def print_box_barcode_label(modeladmin, request, queryset):
+    return print_box_barcode_label_admin(queryset)
+print_box_barcode_label.short_description = 'Print box label'
 
 def print_stock_label_38x90(modeladmin, request, queryset):
     return print_stock_label_38x90_admin(queryset)

@@ -10,6 +10,9 @@ from django.conf import settings
 import logging
 logger = logging.getLogger(__name__)
 
+### Using pyxero from github
+## https://github.com/freakboy3742/pyxero
+
 rsa_keyfile_path = os.path.join(settings.BASE_DIR, 'xero_local/certs/privatekey.pem')
 #rsa_keyfile_path = os.path.join(settings.BASE_DIR, 'xero_local/certs/publickey.cer')
 

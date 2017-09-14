@@ -4,7 +4,7 @@ from defaults.admin import DefaultAdmin, DefaultInline
 from .models import *
 from .helpers import product_mark_inactive,\
     product_mark_active,\
-    print_box_barcode,\
+    print_box_barcode_label,\
     print_stock_label_38x90, \
     print_washinglabel
 
@@ -130,7 +130,7 @@ class ProductAdmin(admin.ModelAdmin):
         'product_model__umbrella_product_model__number', 'complete', 'active']
     inlines = [ProductBillOfMaterialInline]
     search_fields = ['sku',]
-    actions = [product_mark_inactive, product_mark_active, print_box_barcode, print_washinglabel]
+    actions = [product_mark_inactive, product_mark_active, print_box_barcode_label, print_washinglabel]
 
 
 class ProductBillOfMaterialAdmin(admin.ModelAdmin):
