@@ -2,8 +2,7 @@ from django.http import HttpResponse
 
 from copy import deepcopy
 
-from .labels import box_barcode_label, washinglabel
-from defaults.labels import stock_label_38x90
+from printing.labels import box_barcode_label, washinglabel, stock_label_38x90
 
 
 ROUND_DIGITS = 2
