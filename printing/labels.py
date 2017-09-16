@@ -13,6 +13,8 @@ from defaults.stylesheets import stylesheet, stylesheet_washinglabels
 
 from io import BytesIO
 
+import textwrap
+
 
 def stock_label_38x90(materials):
     '''
@@ -133,7 +135,7 @@ def box_barcode_label(product):
     label size: 35x89mm
      '''
     product_ean = product.ean_code
-    product_title = product.umbrella_product
+    product_title = product.umbrella_product.__unicode__()
     product_colour = product.umbrella_product.colour
     product_size = product.product_model.size
     product_sku = product.sku
@@ -168,14 +170,14 @@ def box_barcode_label(product):
 
     ## Right col info
     p.setFont('Helvetica', font_size)
-    #string_top_location -= line_height
-    p.drawString(col2, string_top_location, u'{}'.format(product_title))
-    string_top_location -= line_height
-    p.drawString(col2, string_top_location,'Colour: {}'.format(product_colour))
-    string_top_location -= line_height
-    p.drawString(col2, string_top_location,'Size: {}'.format(product_size))
-    string_top_location -= line_height
-    p.drawString(col2, string_top_location, u'{}'.format(product_sku))
+    to_draw_strings = textwrap.fill(product_title, 28).split('\n')
+    to_draw_strings.append(u'Colour: {}'.format(product_colour))
+    to_draw_strings.append(u'Size: {}'.format(product_size))
+    to_draw_strings.append(u'{}'.format(product_sku))
+
+    for s in to_draw_strings:
+        p.drawString(col2, string_top_location, s)
+        string_top_location -= line_height
 
     ## new page 
     p.showPage()
