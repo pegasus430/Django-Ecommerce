@@ -330,7 +330,7 @@ def production_notes_for_umbrella_product(umbrella_product):
     for img in umbrella_product.umbrellaproductimage_set.all():
         path = img.image.path         
         aspect_ratio = img.image.height / float(img.image.width)
-        document.add_image(path, 0.25, aspect_ratio)
+        document.add_image(path, 0.4, aspect_ratio)
 
 
     document.add_text('Matrials needed', heading)
