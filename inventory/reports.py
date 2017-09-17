@@ -298,8 +298,9 @@ def production_notes_for_umbrella_product(umbrella_product):
     bullet = 'Bullet'
     text = 'BodyText'
     
-    document.add_text('Production notes for {} on {}'.format(base_sku, 
-        datetime.date.today().strftime("%d %B, %Y")), title)    
+    document.add_text('Production notes for {} on {}'.format(base_sku), title)
+    document.add_text('{}'.format(datetime.date.today().strftime("%d %B, %Y")), title)
+    
 
     document.add_text('Product details', heading)
     document.add_text('Collection: {} {}'.format(collection, collection_number), bullet)
