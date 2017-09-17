@@ -299,10 +299,12 @@ def production_notes_for_umbrella_product(umbrella_product):
     
     document.add_text('Production notes for {}'.format(base_sku), title)
     
+
     document.add_text('Product details', heading)
     document.add_text('Collection: {} {}'.format(collection, collection_number), bullet)
     document.add_text('Model type: {}'.format(model_type), bullet)
     document.add_text('Model number: {} ({})'.format(model_number, model_name), bullet)
+
 
     document.add_text('Available sizes', heading)
     for model in umbrella_product.umbrella_product_model.productmodel_set.all():
@@ -337,7 +339,6 @@ def production_notes_for_umbrella_product(umbrella_product):
     #     line_under_header_row=False)
 
 
-
     document.add_text('Matrials needed', heading)
     table_widths = [0.5, 0.3, 0.2]
     table_data = [[
@@ -352,6 +353,24 @@ def production_notes_for_umbrella_product(umbrella_product):
             bom.material.get_mat_type_display(),
         ])
     document.add_table(table_data, table_widths)
+
+
+    # document.add_text('List of patterns', heading)
+    # table_widths = [0.2, 0.1, 0.7]
+    # table_data = [[
+    #     'Pattern name',
+    #     'Times to use',
+    #     'Size,'
+    # ]]
+    # for product in umbrella_product.product_set.all():
+    #     for pattern in product.product_model.pattern_set.all():
+    #         table_data.append([
+    #             ...
+    #             ...
+    #             ...
+    #             ])
+    # document.add_table(table_data, table_widths)
+
 
     return document.print_document()
 

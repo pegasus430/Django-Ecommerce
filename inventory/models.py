@@ -277,6 +277,7 @@ class ProductModel(models.Model):
 
 class ProductModelPattern(models.Model):
     name = models.CharField(max_length=100)
+    times_to_use = models.IntegerField(default=0)
     pattern_image = models.FileField(upload_to='media/product_model/patterns/image/%Y/%m/%d', 
         verbose_name='Pattern PDF-file')
     pattern_vector = models.FileField(upload_to='media/product_model/patterns/vector/%Y/%m/%d',
