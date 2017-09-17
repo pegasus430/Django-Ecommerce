@@ -26,7 +26,7 @@ class StockLocationItemInline(DefaultInline):
 
 class ProductModelPatternInline(DefaultInline):
     model=ProductModelPattern
-    exclude = ['description', 'surface_area']
+    exclude = ['description', 'surface_area', 'name']
 
 class UmbrellaProductModelImageInline(DefaultInline):
     model=UmbrellaProductModelImage
