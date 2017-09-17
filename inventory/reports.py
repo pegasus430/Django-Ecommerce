@@ -335,7 +335,7 @@ def production_notes_for_umbrella_product(umbrella_product):
 
 
     document.add_text('Matrials needed', heading)
-    table_widths = [0.5, 0.3, 0.2]
+    table_widths = [0.4, 0.3, 0.3]
     table_data = [[
         'Material',
         'SKU',
