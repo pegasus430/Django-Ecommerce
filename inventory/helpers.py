@@ -111,11 +111,11 @@ def print_production_notes_for_umbrella_product_admin(umbrella_products):
     outfile = StringIO.StringIO()
     with zipfile.ZipFile(outfile, 'w') as zf:
         for umbrella_product in umbrella_products:
-            zf.writestr("{}.pdf".format(umbrella_product.base_sku), 
+            zf.writestr("suzys_production_notes_{}.pdf".format(umbrella_product.base_sku), 
                 production_notes_for_umbrella_product(umbrella_product))
     
     response = HttpResponse(outfile.getvalue(), content_type="application/octet-stream")
-    response['Content-Disposition'] = 'attachment; filename=production_docs.zip'
+    response['Content-Disposition'] = 'attachment; filename=suzys_production_notes.zip'
     return response
 
 
