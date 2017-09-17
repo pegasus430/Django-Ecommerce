@@ -289,6 +289,7 @@ def production_notes_for_umbrella_product(umbrella_product):
 
     model_type = umbrella_product.umbrella_product_model.get_product_type_display()
     model_number = umbrella_product.umbrella_product_model.number
+    model_name = umbrella_product.umbrella_product_model.name
 
     ## styles
     title = 'Title'
@@ -301,7 +302,7 @@ def production_notes_for_umbrella_product(umbrella_product):
     document.add_text('Product details', heading)
     document.add_text('Collection: {} {}'.format(collection, collection_number), bullet)
     document.add_text('Model type: {}'.format(model_type), bullet)
-    document.add_text('Model number: {}'.format(model_number), bullet)
+    document.add_text('Model number: {} ({})'.format(model_number, model_name), bullet)
 
     document.add_text('Available sizes', heading)
     for model in umbrella_product.umbrella_product_model.productmodel_set.all():
