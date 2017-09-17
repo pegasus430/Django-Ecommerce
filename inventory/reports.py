@@ -317,7 +317,13 @@ def production_notes_for_umbrella_product(umbrella_product):
         document.add_text(umbrella_product_model.production_remark, text)
 
 
+    umbrella_product_images = umbrella_product.umbrellaproductimage_set.all()
+    if len(umbrella_product_images) > 0:
     document.add_text('Product Images', heading)
+    for img in umbrella_product_images:
+        path = img.image.path         
+        aspect_ratio = img.image.height / float(img.image.width)
+        document.add_image(path, 0.4, aspect_ratio)    
     ## FIXME: Below code renders blank images
     # number_of_columns = 4
     # image_table_data = ImageTable(number_of_columns=number_of_columns, page_width=document.doc.width)
@@ -329,10 +335,7 @@ def production_notes_for_umbrella_product(umbrella_product):
     #     [document.doc.width / number_of_columns] * number_of_columns, 
     #     bold_header_row=False, 
     #     line_under_header_row=False)
-    for img in umbrella_product.umbrellaproductimage_set.all():
-        path = img.image.path         
-        aspect_ratio = img.image.height / float(img.image.width)
-        document.add_image(path, 0.4, aspect_ratio)
+
 
 
     document.add_text('Matrials needed', heading)
