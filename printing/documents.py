@@ -54,10 +54,11 @@ class SuzysDocument:
         
         # Footer
         if self.page_number:
-            pass
-        # footer = Paragraph('S-Company ltd, Suzy\'s manufacturing - Westwood House Annie Med Lane - England <br />Tel: +44 203608 7593 - hello@suzys.eu', styles['BodyTextCenter'])
-        # w, h = footer.wrap(doc.width, doc.bottomMargin)
-        # footer.drawOn(canvas, doc.leftMargin, h)
+            w = doc.width / 2.0
+            h = doc.bottomMargin * 2.0
+            page_num = Paragraph('Page {}'.format(canvas.getPageNumber()), styles['BodyTextCenter'])
+            w, h = page_num.wrap(doc.width, doc.bottomMargin)
+            page_num.drawOn(canvas, doc.leftMargin, h)
 
         # Release the canvas
         canvas.restoreState()
