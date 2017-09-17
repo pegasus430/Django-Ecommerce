@@ -356,7 +356,7 @@ def production_notes_for_umbrella_product(umbrella_product):
 
 
     document.add_text('List of patterns', heading)
-    table_widths = [0.1, 0.6, 0.1, 0.2]
+    table_widths = [0.1, 0.45, 0.25, 0.2]
     table_data = [[
         'Size',
         'Pattern name',
