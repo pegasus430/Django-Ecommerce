@@ -280,6 +280,7 @@ class ProductModelPattern(models.Model):
         ('FA', 'Fabric'),
         ('FO', 'Foam'),
         ('FI', 'Hollow Fibres'),
+        ('FF', 'Fabric and Hollow Fibres'),
     )
 
     name = models.CharField(max_length=100)
