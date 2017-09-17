@@ -319,7 +319,7 @@ def production_notes_for_umbrella_product(umbrella_product):
 
     umbrella_product_images = umbrella_product.umbrellaproductimage_set.all()
     if len(umbrella_product_images) > 0:
-    document.add_text('Product Images', heading)
+        document.add_text('Product Images', heading)
     for img in umbrella_product_images:
         path = img.image.path         
         aspect_ratio = img.image.height / float(img.image.width)
