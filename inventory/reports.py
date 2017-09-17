@@ -308,7 +308,8 @@ def production_notes_for_umbrella_product(umbrella_product):
         size = '{} ({})'.format(model.size.short_size, model.size.full_size)
         document.add_text(size, bullet)
 
-    document.add_text('Important remark', heading)
+    if umbrella_product.production_remark or umbrella_product.umbrella_product_model.production_remark:
+        document.add_text('Important remark', heading)
     if umbrella_product.production_remark:
         document.add_text(umbrella_product.production_remark, text)
     if umbrella_product.umbrella_product_model.production_remark:
