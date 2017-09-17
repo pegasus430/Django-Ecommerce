@@ -366,7 +366,7 @@ def production_notes_for_umbrella_product(umbrella_product):
     for product in umbrella_product.product_set.all():
         for pattern in product.product_model.productmodelpattern_set.all():
             table_data.append([
-                product.size.short_size,
+                product.product_model.size.short_size,
                 pattern.name,
                 pattern.get_pattern_type_display(),
                 pattern.times_to_use,
