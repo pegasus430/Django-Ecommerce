@@ -291,7 +291,7 @@ class ProductModelPattern(models.Model):
         verbose_name='Pattern DXF-file')
     product = models.ForeignKey(ProductModel)
     pattern_type = models.CharField(max_length=2, default='FA', choices=PATTERN_TYPE_CHOICES)
-    surface_area = models.FloatField(default=0, verbose_name='Surface Area in cm2')
+    surface_area = models.FloatField(default=1, verbose_name='Surface Area in cm2')
     description = models.TextField(blank=True, null=True)
 
     def __unicode__(self):
