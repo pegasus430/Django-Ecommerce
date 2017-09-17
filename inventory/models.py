@@ -299,7 +299,7 @@ class ProductModelPattern(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.name:
-            self.name = self.pattern_vector.name.split('.')[0]
+            self.name = self.pattern_vector.name.split('/')[-1].split('.')[0]
         super(ProductModelPattern, self).save(*args, **kwargs)
 
 
