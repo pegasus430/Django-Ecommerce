@@ -276,6 +276,12 @@ class ProductModel(models.Model):
 
 
 class ProductModelPattern(models.Model):
+    PATTERN_TYPE_CHOICES = (
+        ('FA', 'Fabric'),
+        ('FO', 'Foam'),
+        ('FI', 'Hollow Fibres'),
+    )
+
     name = models.CharField(max_length=100)
     times_to_use = models.IntegerField(default=0)
     pattern_image = models.FileField(upload_to='media/product_model/patterns/image/%Y/%m/%d', 
@@ -283,6 +289,7 @@ class ProductModelPattern(models.Model):
     pattern_vector = models.FileField(upload_to='media/product_model/patterns/vector/%Y/%m/%d',
         verbose_name='Pattern DXF-file')
     product = models.ForeignKey(ProductModel)
+    pattern_type = models.CharField(max_length=2, default='FA')
     surface_area = models.FloatField(default=0, verbose_name='Surface Area in cm2')
     description = models.TextField(blank=True, null=True)
 
