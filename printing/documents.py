@@ -57,7 +57,7 @@ class SuzysDocument:
             w = doc.width / 2.0
             h = doc.bottomMargin * 2.0
             page_num = Paragraph('Page {}'.format(canvas.getPageNumber()), styles['BodyTextCenter'])
-            w, h = page_num.wrap(doc.width, doc.bottomMargin * 3)
+            w, h = page_num.wrap(doc.width, doc.bottomMargin)
             page_num.drawOn(canvas, doc.leftMargin, h)
 
         # Release the canvas
