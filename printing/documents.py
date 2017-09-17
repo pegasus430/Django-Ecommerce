@@ -95,6 +95,7 @@ class SuzysDocument:
         if line_under_header_row:
             table.setStyle(TableStyle([
                 ('LINEBELOW', (0,0), (4,0), 1, colors.black),  ## Add line below headers
+                ('VALIGN',(-1,-1),(-1,-1),'TOP') ## Align cells to top
             ]))
         self.elements.append(table)        
 
