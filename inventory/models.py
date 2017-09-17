@@ -283,7 +283,7 @@ class ProductModelPattern(models.Model):
         ('FF', 'Fabric and Hollow Fibres'),
     )
 
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, blank=True, null=True)
     times_to_use = models.IntegerField(default=0)
     pattern_image = models.FileField(upload_to='media/product_model/patterns/image/%Y/%m/%d', 
         verbose_name='Pattern PDF-file')
@@ -296,6 +296,12 @@ class ProductModelPattern(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.name:
+            self.name = self.pattern_vector.name.split('.')[-1]
+        super(ProductModelPattern, self).save(*args, **kwargs)
+
 
 
 class UmbrellaProduct(models.Model):
