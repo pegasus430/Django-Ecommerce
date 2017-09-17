@@ -356,11 +356,11 @@ def production_notes_for_umbrella_product(umbrella_product):
 
 
     document.add_text('List of patterns', heading)
-    table_widths = [0.2, 0.1, 0.7]
+    table_widths = [0.1, 0.6, 0.1, 0.2]
     table_data = [[
-        'Size,'
+        'Size',
         'Pattern name',
-        'Type'
+        'Type',
         'Times to use',
     ]]
     for product in umbrella_product.product_set.all():
