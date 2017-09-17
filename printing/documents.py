@@ -29,11 +29,12 @@ def stylesheet():
 
 
 class SuzysDocument:
-    def __init__(self):
+    def __init__(self, page_number=True):
         self.buffer = BytesIO()        
         self.elements = []
         self.styles = stylesheet()
         self.margin = 20*mm
+        self.page_number = page_number
         self.doc = SimpleDocTemplate(self.buffer,
             rightMargin=self.margin,
             leftMargin=self.margin,
@@ -50,8 +51,10 @@ class SuzysDocument:
         filename = os.path.join(settings.STATIC_ROOT, 'pdf/letterhead.jpg')
 
         canvas.drawImage(filename, 0, 0, *A4)
-
+        
         # Footer
+        if self.page_number:
+            pass
         # footer = Paragraph('S-Company ltd, Suzy\'s manufacturing - Westwood House Annie Med Lane - England <br />Tel: +44 203608 7593 - hello@suzys.eu', styles['BodyTextCenter'])
         # w, h = footer.wrap(doc.width, doc.bottomMargin)
         # footer.drawOn(canvas, doc.leftMargin, h)

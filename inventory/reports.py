@@ -6,6 +6,7 @@ from django.conf import settings
 from printing.documents import SuzysDocument, ImageTable
 
 from StringIO import StringIO
+import datetime
 import csv
 import os
 
@@ -298,6 +299,7 @@ def production_notes_for_umbrella_product(umbrella_product):
     text = 'BodyText'
     
     document.add_text('Production notes for {}'.format(base_sku), title)
+    document.add_text('{}'.format(datetime.date.today().strftime("%d %B, %Y")), text)
     
 
     document.add_text('Product details', heading)
