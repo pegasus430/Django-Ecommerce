@@ -341,7 +341,7 @@ def production_notes_for_umbrella_product(umbrella_product):
     #     line_under_header_row=False)
 
 
-    document.add_text('Matrials needed', heading)
+    document.add_text('Bill Of Materials', heading)
     table_widths = [0.5, 0.3, 0.2]
     table_data = [[
         'Material',
@@ -357,7 +357,7 @@ def production_notes_for_umbrella_product(umbrella_product):
     document.add_table(table_data, table_widths)
 
 
-    document.add_text('List of patterns', heading)
+    document.add_text('List Of Patterns', heading)
     table_widths = [0.1, 0.45, 0.25, 0.2]
     table_data = [[
         'Size',
