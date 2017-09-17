@@ -314,7 +314,7 @@ def production_notes_for_umbrella_product(umbrella_product):
     if umbrella_product.production_remark:
         document.add_text(umbrella_product.production_remark, text)
     if umbrella_product.umbrella_product_model.production_remark:
-        document.add_text(umbrella_product_model.production_remark, text)
+        document.add_text(umbrella_product.umbrella_product_model.production_remark, text)
 
 
     umbrella_product_images = umbrella_product.umbrellaproductimage_set.all()
