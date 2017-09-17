@@ -284,14 +284,14 @@ class ProductModelPattern(models.Model):
     )
 
     name = models.CharField(max_length=100, blank=True, null=True)
-    times_to_use = models.IntegerField(default=0)
+    times_to_use = models.IntegerField(default=1)
     pattern_image = models.FileField(upload_to='media/product_model/patterns/image/%Y/%m/%d', 
         verbose_name='Pattern PDF-file')
     pattern_vector = models.FileField(upload_to='media/product_model/patterns/vector/%Y/%m/%d',
         verbose_name='Pattern DXF-file')
     product = models.ForeignKey(ProductModel)
     pattern_type = models.CharField(max_length=2, default='FA', choices=PATTERN_TYPE_CHOICES)
-    surface_area = models.FloatField(default=1, verbose_name='Surface Area in cm2')
+    surface_area = models.FloatField(default=0, verbose_name='Surface Area in cm2')
     description = models.TextField(blank=True, null=True)
 
     def __unicode__(self):
