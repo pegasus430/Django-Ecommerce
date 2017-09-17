@@ -355,21 +355,23 @@ def production_notes_for_umbrella_product(umbrella_product):
     document.add_table(table_data, table_widths)
 
 
-    # document.add_text('List of patterns', heading)
-    # table_widths = [0.2, 0.1, 0.7]
-    # table_data = [[
-    #     'Pattern name',
-    #     'Times to use',
-    #     'Size,'
-    # ]]
-    # for product in umbrella_product.product_set.all():
-    #     for pattern in product.product_model.pattern_set.all():
-    #         table_data.append([
-    #             ...
-    #             ...
-    #             ...
-    #             ])
-    # document.add_table(table_data, table_widths)
+    document.add_text('List of patterns', heading)
+    table_widths = [0.2, 0.1, 0.7]
+    table_data = [[
+        'Size,'
+        'Pattern name',
+        'Type'
+        'Times to use',
+    ]]
+    for product in umbrella_product.product_set.all():
+        for pattern in product.product_model.pattern_set.all():
+            table_data.append([
+                product.size.short_size,
+                pattern.name,
+                pattern.get_pattern_type_display(),
+                pattern.times_to_use,
+                ])
+    document.add_table(table_data, table_widths)
 
 
     return document.print_document()
