@@ -106,7 +106,7 @@ class MaterialImage(models.Model):
     ''' Images to go with a Material '''
     # name = models.CharField(max_length=100)
     material = models.ForeignKey(Material)
-    image = models.FileField(upload_to='media/materials/images/%Y/%m/%d')
+    image = models.ImageField(upload_to='media/materials/images/%Y/%m/%d')
 
     def __unicode__(self):
         return 'Image for {}'.format(self.material)
@@ -208,6 +208,8 @@ class UmbrellaProductModel(models.Model):
     description = models.TextField(blank=True, null=True)
     original_umbrella_product_model = models.ForeignKey('self', blank=True, null=True)
 
+    production_remark = models.TextField(blank=True, null=True)
+
     ## When saving, you need to save all of the nested attached products. So they may re-assign the sku
     ## FIXME: Write test for override below
     def save(self, *args, **kwargs):
@@ -229,7 +231,7 @@ class UmbrellaProductModelProductionDescription(models.Model):
     umbrella_product_model = models.ForeignKey(UmbrellaProductModel)
     name = models.CharField(max_length=100, verbose_name='Step name')
     description = models.TextField(verbose_name='What to do and how to do it')
-    image = models.FileField(upload_to='media/umbrella_product_models/production_description/images/%Y/%m/%d',
+    image = models.ImageField(upload_to='media/umbrella_product_models/production_description/images/%Y/%m/%d',
                 blank=True,
                 null=True)
 
@@ -239,7 +241,7 @@ class UmbrellaProductModelProductionDescription(models.Model):
 class UmbrellaProductModelImage(models.Model):
     '''Product model images'''
     description = models.CharField(max_length=100)
-    image = models.FileField(upload_to='media/umbrella_product_model/images/%Y/%m/%d')
+    image = models.ImageField(upload_to='media/umbrella_product_model/images/%Y/%m/%d')
     umbrella_product_model = models.ForeignKey(UmbrellaProductModel)
 
     def __unicode__(self):
@@ -303,6 +305,8 @@ class UmbrellaProduct(models.Model):
 
     active = models.BooleanField(default=True)
     complete = models.BooleanField(default=False)
+
+    production_remark = models.TextField(blank=True, null=True)
 
     __original_umbrella_product_model = None
     __original_colour = None
@@ -370,7 +374,7 @@ class UmbrellaProduct(models.Model):
 class UmbrellaProductImage(models.Model):
     ''' product image'''
     description = models.CharField(max_length=100)
-    image = models.FileField(upload_to='media/products/%Y/%m/%d')
+    image = models.ImageField(upload_to='media/products/%Y/%m/%d')
     product = models.ForeignKey(UmbrellaProduct)
 
     def __unicode__(self):

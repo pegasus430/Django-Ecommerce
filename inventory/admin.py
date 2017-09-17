@@ -6,7 +6,8 @@ from .helpers import product_mark_inactive,\
     product_mark_active,\
     print_box_barcode_label,\
     print_stock_label_38x90, \
-    print_washinglabel
+    print_washinglabel, \
+    print_production_notes_for_umbrella_product
 
 ###############
 ### Inlines ###
@@ -111,6 +112,7 @@ class UmbrellaProductAdmin(admin.ModelAdmin):
     list_display = ['__unicode__','base_sku', 'active', 'complete', 'get_umbrella_product_model_number', 'number_of_sizes']
     list_filter = ['collection', 'colour', 'umbrella_product_model__product_type', 'umbrella_product_model__number', 'complete', 'active']
     inlines = [ProductInline, UmbrellaProductBillOfMaterialInline, UmbrellaProductImageInline]
+    actions = [print_production_notes_for_umbrella_product]    
 
     def get_umbrella_product_model_number(self, obj):
         return obj.umbrella_product_model.number

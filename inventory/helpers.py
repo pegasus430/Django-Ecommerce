@@ -1,8 +1,11 @@
 from django.http import HttpResponse
 
 from copy import deepcopy
+import StringIO, zipfile
 
 from printing.labels import box_barcode_label, washinglabel, stock_label_38x90
+
+from .reports import production_notes_for_umbrella_product
 
 
 ROUND_DIGITS = 2
@@ -95,7 +98,6 @@ def print_stock_label_38x90_admin(materials):
 
 def print_washinglabel_admin(products):
     ''' helper function to print washinglabels for products'''
-    import StringIO, zipfile
     outfile = StringIO.StringIO()
     with zipfile.ZipFile(outfile, 'w') as zf:
         for product in products:
@@ -105,11 +107,17 @@ def print_washinglabel_admin(products):
     response['Content-Disposition'] = 'attachment; filename=washing_labels.zip'
     return response
 
-    # response = HttpResponse(content_type='application/pdf')
-    # response['Content-Disposition'] = 'attachment; filename="stock_labels.pdf"'
+def print_production_notes_for_umbrella_product_admin(umbrella_products):
+    outfile = StringIO.StringIO()
+    with zipfile.ZipFile(outfile, 'w') as zf:
+        for umbrella_product in umbrella_products:
+            zf.writestr("{}.pdf".format(umbrella_product.base_sku), 
+                production_notes_for_umbrella_product(umbrella_product))
+    
+    response = HttpResponse(outfile.getvalue(), content_type="application/octet-stream")
+    response['Content-Disposition'] = 'attachment; filename=production_docs.zip'
+    return response
 
-    # response.write(washinglabel(product))
-    # return response
 
 ### Admin helper ###
 def product_mark_inactive(modeladmin, request, queryset):
@@ -130,6 +138,8 @@ print_stock_label_38x90.short_description = 'Print stock labels 38x90'
 
 def print_washinglabel(modeladmin, request, queryset):
     return print_washinglabel_admin(queryset)
-    # for q in queryset:
-        # return print_washinglabel_admin(q)
 print_washinglabel.short_description = 'Print Washinglabels'
+
+def print_production_notes_for_umbrella_product(modeladmin, request, queryset):
+    return print_production_notes_for_umbrella_product_admin(queryset)
+print_production_notes_for_umbrella_product.short_description = 'Print production notes'

@@ -1,9 +1,13 @@
 from .models import *
 
 from django.core.mail import EmailMessage
+from django.conf import settings
+
+from printing.documents import SuzysDocument, ImageTable
 
 from StringIO import StringIO
 import csv
+import os
 
 import logging
 logger = logging.getLogger(__name__)
@@ -263,4 +267,87 @@ def return_stock_status_for_order(purchaseorder_queryset):
     except Exception as e:
         logger.error('Failed to run due to {}'.format(e))
         raise
+
+
+def production_notes_for_umbrella_product(umbrella_product):
+    '''
+    function that returns a pdf-file with all production documentation for a collection
+    It contains:
+    - Collection name and number
+    - Model name and number
+    - Pictures
+    - Extra production notes
+    - Materials used, with name, type and sku
+    - Available sizes
+    '''
+    document = SuzysDocument()
+
+    ## data
+    base_sku = umbrella_product.base_sku
+    collection = umbrella_product.collection
+    collection_number = umbrella_product.collection.number
+
+    model_type = umbrella_product.umbrella_product_model.get_product_type_display()
+    model_number = umbrella_product.umbrella_product_model.number
+
+    ## styles
+    title = 'Title'
+    heading = 'Heading2'
+    bullet = 'Bullet'
+    text = 'BodyText'
+    
+    document.add_text('Production notes for {}'.format(base_sku), title)
+    
+    document.add_text('Product details', heading)
+    document.add_text('Collection: {} {}'.format(collection, collection_number), bullet)
+    document.add_text('Model type: {}'.format(model_type), bullet)
+    document.add_text('Model number: {}'.format(model_number), bullet)
+
+    document.add_text('Available sizes', heading)
+    for model in umbrella_product.umbrella_product_model.productmodel_set.all():
+        size = '{} ({})'.format(model.size.short_size, model.size.full_size)
+        document.add_text(size, bullet)
+
+    document.add_text('Important remark', heading)
+    if umbrella_product.production_remark:
+        document.add_text(umbrella_product.production_remark, text)
+    if umbrella_product.umbrella_product_model.production_remark:
+        document.add_text(umbrella_product_model.production_remark, text)
+
+
+    document.add_text('Product Images', heading)
+    ## FIXME: Below code renders blank images
+    # number_of_columns = 4
+    # image_table_data = ImageTable(number_of_columns=number_of_columns, page_width=document.doc.width)
+    # for img in umbrella_product.umbrellaproductimage_set.all():
+    #     path = img.image.path         
+    #     aspect_ratio = img.image.height / float(img.image.width)
+    #     image_table_data.add_image(path, aspect_ratio)
+    # document.add_table(image_table_data.return_table_data(), 
+    #     [document.doc.width / number_of_columns] * number_of_columns, 
+    #     bold_header_row=False, 
+    #     line_under_header_row=False)
+    for img in umbrella_product.umbrellaproductimage_set.all():
+        path = img.image.path         
+        aspect_ratio = img.image.height / float(img.image.width)
+        document.add_image(path, 0.25, aspect_ratio)
+
+
+    document.add_text('Matrials needed', heading)
+    table_widths = [0.5, 0.2, 0.3]
+    table_data = [[
+        'Material',
+        'SKU',
+        'Material Type',
+    ]]
+    for bom in umbrella_product.umbrellaproductbillofmaterial_set.all():
+        table_data.append([
+            bom.material,
+            bom.material.sku,
+            bom.material.get_mat_type_display(),
+        ])
+    document.add_table(table_data, table_widths)
+
+    return document.print_document()
+
 
