@@ -454,6 +454,16 @@ class UmbrellaProductBillOfMaterial(models.Model):
         return round(self.quantity_needed * self.material.cost_per_usage_unit, ROUND_DIGITS)
 
 
+class UmbrellaProductProductionNote(models.Model):
+    name = models.CharField(max_length=200)
+    umbrella_product = models.ManyToManyField(UmbrellaProduct)
+    note = models.TextField()
+    image = models.ImageField(upload_to='media/production/notes/images/%Y/%m/%d')
+
+    def __unicode__(self):
+        return '{}'.format(self.name)
+
+
 class Product(models.Model):
     '''
     The child of an Umbrellaproduct.  This is the item being sold.
@@ -522,7 +532,7 @@ class ProductBillOfMaterial(models.Model):
         return round(quantity_in_stock / self.quantity_needed, 2)
 
 #######################
-### Srock Movements ###
+### Stock Movements ###
 #######################
 class StockLocationMovement(models.Model):
     material  = models.ForeignKey(Material)
@@ -582,17 +592,6 @@ class StockLocationOnItsWayMovement(models.Model):
     def __unicode__(self):
         return 'Changed qty of {} in {} with {}'.format(
             self.material, self.stock_location, self.qty_change)   
-
-
-class ProductionNotesUmbrellaProduct(models.Model):
-    name = models.CharField(max_length=200)
-    umbrella_product = models.ManyToManyField(UmbrellaProduct)
-    note = models.TextField()
-    image = models.ImageField(upload_to='media/production/notes/images/%Y/%m/%d')
-
-    def __unicode__(self):
-        return '{}'.format(self.name)
-
 
 
 ###############
