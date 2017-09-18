@@ -10,13 +10,11 @@ def print_address_label_admin(addresses):
             {address.contact_first_name} {address.contact_name}
             {address.address1} {address.address2}
             {address.postcode} {address.city}
-            {address.get_country_display}
-            '''.replace('\n', '<br></br>').format(address=address)
+            {country}
+            '''.replace('\n', '<br></br>').format(address=address, country=address.get_country_display())
         label_data[filename] = simple_label_38x90(text)
 
     return multiple_files_to_zip_httpresponse(label_data, u'address_labels')
-
-
 
 
 ### admin helpers ###
