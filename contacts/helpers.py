@@ -8,14 +8,13 @@ def print_address_label_admin(addresses):
         text = u'''
             {address.business_name}
             {address.contact_first_name} {address.contact_name}
-            {address.address1}
-            {address.address2}
+            {address.address1} {address.address2}
             {address.postcode} {address.city}
             {address.get_country_display}
             '''.replace('\n', '<br></br>').format(address=address)
         label_data[filename] = simple_label_38x90(text)
 
-    return multiple_files_to_zip_httpresponse(label_data, u'addess_labels')
+    return multiple_files_to_zip_httpresponse(label_data, u'address_labels')
 
 
 
