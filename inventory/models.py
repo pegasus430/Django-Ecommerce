@@ -454,7 +454,7 @@ class UmbrellaProductBillOfMaterial(models.Model):
         return round(self.quantity_needed * self.material.cost_per_usage_unit, ROUND_DIGITS)
 
 
-class UmbrellaProductProductionNote(models.Model):
+class ProductionNote(models.Model):
     name = models.CharField(max_length=200)
     umbrella_product = models.ManyToManyField(UmbrellaProduct)
     note = models.TextField()
