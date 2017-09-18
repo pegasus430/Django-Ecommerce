@@ -187,7 +187,7 @@ def sample_washinglabel(product):
     table.setStyle(style)
     elements.append(table)    
 
-    elements.append(Spacer(30*mm, 20*mm))
+    elements.append(Spacer(30*mm, 15*mm))
     elements.append(Paragraph('PRODUCTION SAMPLE',styles['Bold']))
     elements.append(Spacer(30*mm, 20*mm))
     elements.append(Paragraph(product_title, styles['Bold']))
