@@ -11,7 +11,7 @@ def print_address_label_admin(addresses):
             {address.address1}
             {address.address2}
             {address.postcode} {address.city}
-            {address.country}
+            {address.get_country_display}
             '''.replace('\n', '<br></br>').format(address=address)
         label_data[filename] = simple_label_38x90(text)
 
