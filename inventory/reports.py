@@ -332,7 +332,7 @@ def production_notes_for_umbrella_product(umbrella_product):
         document.add_text(size, bullet)
 
     document.add_text('Production notes', heading)
-    for note in umbrella_product.umbrella_product_model.umbrellaproductmodelproductiondescription_set.all():
+    for note in umbrella_product.umbrella_product_model.umbrellaproductmodelproductionnote_set.all():
         document.add_text(note.note, bullet)
         aspect_ratio = note.image.height / float(note.image.width)
         document.add_image(note.image.path, 0.25, aspect_ratio)
@@ -344,23 +344,23 @@ def production_notes_for_umbrella_product(umbrella_product):
     if umbrella_product.umbrella_product_model.production_remark:
         document.add_text(umbrella_product.umbrella_product_model.production_remark, text)
 
-    document.add_text('Bill Of Materials for each size', heading)
+    document.add_text('Bill Of Materials', heading)
     table_widths = [0.5, 0.3, 0.2]
     table_data = [[
         'Material',
         'SKU',
         'Material Type',
     ]]
-    for product in umbrella_product.product_set.all():
-        document.add_text('Bill Of Materials for {}'.format(product.product_model.size.short_size), 'Heading3')
-        # for bom in umbrella_product.umbrellaproductbillofmaterial_set.all():
-        for bom in product.productbillofmaterial_set.all():
-            table_data.append([
-                bom.material,
-                bom.material.sku,
-                bom.material.get_mat_type_display(),
-            ])
-        document.add_table(table_data, table_widths)
+    # for product in umbrella_product.product_set.all():
+        # document.add_text('Bill Of Materials for {}'.format(product.product_model.size.short_size), 'Heading3')
+    for bom in umbrella_product.umbrellaproductbillofmaterial_set.all():
+        # for bom in product.productbillofmaterial_set.all():
+        table_data.append([
+            bom.material,
+            bom.material.sku,
+            bom.material.get_mat_type_display(),
+        ])
+    document.add_table(table_data, table_widths)
 
 
     document.add_text('List Of Patterns', heading)

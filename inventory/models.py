@@ -238,6 +238,16 @@ class UmbrellaProductModelProductionDescription(models.Model):
     def __unicode__(self):
         return '{} for {}'.format(self.name, self.umbrella_product_model)
 
+
+class UmbrellaProductModelProductionNote(models.Model):
+    name = models.CharField(max_length=200)
+    umbrella_product_model = models.ManyToManyField(UmbrellaProductModel)
+    note = models.TextField()
+    image = models.ImageField(upload_to='media/production/notes/images/%Y/%m/%d', blank=True, null=True)
+
+    def __unicode__(self):
+        return '{}'.format(self.name)        
+
 class UmbrellaProductModelImage(models.Model):
     '''Product model images'''
     description = models.CharField(max_length=100)
@@ -453,15 +463,6 @@ class UmbrellaProductBillOfMaterial(models.Model):
     def cost(self):
         return round(self.quantity_needed * self.material.cost_per_usage_unit, ROUND_DIGITS)
 
-
-class UmbrellaProductModelProductionNote(models.Model):
-    name = models.CharField(max_length=200)
-    umbrella_product_model = models.ManyToManyField(UmbrellaProductModel)
-    note = models.TextField()
-    image = models.ImageField(upload_to='media/production/notes/images/%Y/%m/%d', blank=True, null=True)
-
-    def __unicode__(self):
-        return '{}'.format(self.name)
 
 
 class Product(models.Model):
