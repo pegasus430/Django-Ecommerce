@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from copy import deepcopy
 import StringIO, zipfile
 
-from printing.labels import box_barcode_label, washinglabel, stock_label_38x90
+from printing.labels import box_barcode_label, washinglabel, stock_label_38x90, sample_washinglabel
 
 from .reports import production_notes_for_umbrella_product
 
@@ -107,6 +107,19 @@ def print_washinglabel_admin(products):
     response['Content-Disposition'] = 'attachment; filename=washing_labels.zip'
     return response
 
+def print_sample_washinglabel_admin(products):
+    ''' helper function to print washinglabels for products'''
+    outfile = StringIO.StringIO()
+    with zipfile.ZipFile(outfile, 'w') as zf:
+        for product in products:
+            zf.writestr("sample_{}.pdf".format(product.sku), sample_washinglabel(product))
+    
+    response = HttpResponse(outfile.getvalue(), content_type="application/octet-stream")
+    response['Content-Disposition'] = 'attachment; filename=sample_washing_labels.zip'
+    return response
+  
+
+
 def print_production_notes_for_umbrella_product_admin(umbrella_products):
     outfile = StringIO.StringIO()
     with zipfile.ZipFile(outfile, 'w') as zf:
@@ -139,6 +152,12 @@ print_stock_label_38x90.short_description = 'Print stock labels 38x90'
 def print_washinglabel(modeladmin, request, queryset):
     return print_washinglabel_admin(queryset)
 print_washinglabel.short_description = 'Print Washinglabels'
+
+
+def print_sample_washinglabel(modeladmin, request, queryset):
+    return print_sample_washinglabel_admin(queryset)
+print_sample_washinglabel.short_description = 'Print Sample Washinglabels'
+
 
 def print_production_notes_for_umbrella_product(modeladmin, request, queryset):
     return print_production_notes_for_umbrella_product_admin(queryset)

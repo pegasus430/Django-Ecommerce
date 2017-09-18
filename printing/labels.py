@@ -148,6 +148,59 @@ def washinglabel(product):
     return pdf 
 
 
+
+def sample_washinglabel(product):
+    '''
+    Return washinglabel pdf for a product with width: 3cm, length: 10cm
+    Washinglabel contains:
+    - barcode ean
+    - umbrella_product name
+    - colour
+    - size
+    - sku
+    '''
+
+    product_title = str(product.umbrella_product)
+    product_colour = 'Colour: {}'.format(product.umbrella_product.colour)
+    product_size = 'Size: {}'.format(product.product_model.size)
+    product_sku = product.sku
+    product_ean = product.ean_code
+    
+    buffer = BytesIO()
+
+    margin = 1*mm
+    doc = SimpleDocTemplate(buffer,
+            rightMargin=margin,
+            leftMargin=margin,
+            topMargin=margin,
+            bottomMargin=margin,
+            pagesize=(30*mm, 100*mm))
+
+    elements = []
+    styles = stylesheet_washinglabels()
+
+    ## Hack to add horizontal line
+    style = TableStyle([
+         ("LINEABOVE", (0,0), (-1,-1), 1, colors.black),
+       ])
+    table = Table([''])
+    table.setStyle(style)
+    elements.append(table)    
+
+    elements.append(Spacer(30*mm, 20*mm))
+    elements.append(Paragraph('PRODUCTION SAMPLE',styles['Bold']))
+    elements.append(Spacer(30*mm, 20*mm))
+    elements.append(Paragraph(product_title, styles['Bold']))
+    elements.append(Paragraph(product_colour, styles['NormalSmall']))
+    elements.append(Paragraph(product_size, styles['NormalSmall']))
+    elements.append(Paragraph(product_sku, styles['NormalSmall']))
+
+    doc.build(elements)
+    pdf = buffer.getvalue()
+    buffer.close()
+    return pdf 
+
+
 def box_barcode_label(product):
     '''
     Return barcode pdf for a product barcode on the box including:
@@ -210,3 +263,4 @@ def box_barcode_label(product):
     pdf = buffer.getvalue()
 
     return pdf
+
