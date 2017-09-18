@@ -334,8 +334,9 @@ def production_notes_for_umbrella_product(umbrella_product):
     document.add_text('Production notes', heading)
     for note in umbrella_product.umbrella_product_model.umbrellaproductmodelproductionnote_set.all():
         document.add_text(note.note, bullet)
-        aspect_ratio = note.image.height / float(note.image.width)
-        document.add_image(note.image.path, 0.25, aspect_ratio)
+        if note.image:
+            aspect_ratio = note.image.height / float(note.image.width)
+            document.add_image(note.image.path, 0.25, aspect_ratio)
 
     if umbrella_product.production_remark or umbrella_product.umbrella_product_model.production_remark:
         document.add_text('Important remark', heading)
