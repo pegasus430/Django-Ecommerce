@@ -458,7 +458,7 @@ class UmbrellaProductModelProductionNote(models.Model):
     name = models.CharField(max_length=200)
     umbrella_product_model = models.ManyToManyField(UmbrellaProductModel)
     note = models.TextField()
-    image = models.ImageField(upload_to='media/production/notes/images/%Y/%m/%d')
+    image = models.ImageField(upload_to='media/production/notes/images/%Y/%m/%d', blank=True, null=True)
 
     def __unicode__(self):
         return '{}'.format(self.name)
