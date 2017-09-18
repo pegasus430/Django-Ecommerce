@@ -4,8 +4,8 @@ from defaults.helpers import multiple_files_to_zip_httpresponse
 def print_address_label_admin(addresses):
     label_data = {}
     for address in addresses:
-        filename = '{}.pdf'.format(address.business_name)
-        text = '''
+        filename = u'{}.pdf'.format(address.business_name)
+        text = u'''
             {address.business_name}
             {address.contact_first_name} {address.contact_name}
             {address.address1}
@@ -15,7 +15,7 @@ def print_address_label_admin(addresses):
             '''.replace('\n', '<br></br>').format(address=address)
         label_data[filename] = simple_label_38x90(text)
 
-    return multiple_files_to_zip_httpresponse(label_data, 'addess_labels')
+    return multiple_files_to_zip_httpresponse(label_data, u'addess_labels')
 
 
 
