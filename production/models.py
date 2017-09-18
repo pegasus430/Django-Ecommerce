@@ -41,6 +41,13 @@ class ProductionOrder(models.Model):
     def missing_materials(self):
         return return_stock_status_for_order(self.productionorderitem_set.all())
 
+    @property 
+    def total_items(self):
+        counter = 0
+        for i in self.productionorderitem_set.all():
+            counter += i.qty
+        return counter
+
 
 class ProductionOrderItem(models.Model):
     production_order = models.ForeignKey(ProductionOrder)
