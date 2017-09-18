@@ -9,11 +9,35 @@ from reportlab.lib import colors
 from reportlab.graphics.barcode.eanbc import Ean13BarcodeWidget
 from reportlab.platypus import Flowable
 
-from defaults.stylesheets import stylesheet, stylesheet_washinglabels
+from defaults.stylesheets import stylesheet, stylesheet_washinglabels, stylesheet_labels
 
 from io import BytesIO
 
 import textwrap
+
+def simple_label_38x90(text):
+    '''
+    return a simple label, filled with the given text in a default font
+    '''
+    buffer = BytesIO()
+
+    margin = 0*mm
+    doc = SimpleDocTemplate(buffer,
+            rightMargin=margin,
+            leftMargin=margin,
+            topMargin=margin,
+            bottomMargin=margin,
+            pagesize=(90*mm, 38*mm))
+
+    elements = []
+    styles = stylesheet_labels()
+
+    elements.append(Paragraph(text, styles['BodyTextSmall']))
+
+    doc.build(elements)
+    pdf = buffer.getvalue()
+    buffer.close()
+    return pdf
 
 
 def stock_label_38x90(materials):

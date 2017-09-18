@@ -42,7 +42,7 @@ class SuzysDocument:
             bottomMargin=self.margin,
             pagesize=A4)        
 
-    def add_letterhead(self, canvas, doc):
+    def _add_letterhead(self, canvas, doc):
         ''' add letterhead to the page'''
         # Save the state of our canvas so we can draw on it
         canvas.saveState()
@@ -63,16 +63,27 @@ class SuzysDocument:
         # Release the canvas
         canvas.restoreState()
 
+    def add_invoice_delivery_headers(self, invoice_to, deliver_to):
+        table_data = [
+            ['', 'Invoice To', 'Deliver To', ''],
+            ['', invoice_to, deliver_to, ''],
+        ]
+        self.add_table(table_data, [0.15, 0.35, 0.35, 0.15], line_under_header_row=False)
+        self.add_vertical_space(10)
+
+
     def add_text(self, content, style):
-        ''' exptects content and a style that is present in the default stylesheet'''
+        ''' expects content and a style that is present in the default stylesheet'''
         self.elements.append(Paragraph(content.replace('\n', "<br></br>"), self.styles[style]))
 
-    def add_table(self, table_data, table_widths, bold_header_row=True, line_under_header_row=True):
+    def add_table(self, table_data, table_widths, bold_header_row=True, line_under_header_row=True,
+            box_line=False):
         ''' expects:
         :param table_data: a list of lists for each row
         :param table_widths: a list of widths for each columns in pct ex: [0.4, 0.4, 0.2]
         '''
         table_width = self.doc.width - self.margin
+        num_cols = len(table_widths)
 
         final_table_data = []
         for row in table_data:
@@ -98,7 +109,15 @@ class SuzysDocument:
         table = Table(final_table_data, colWidths=final_table_widths)
         if line_under_header_row:
             table.setStyle(TableStyle([
-                ('LINEBELOW', (0,0), (4,0), 1, colors.black),  ## Add line below headers
+                ('LINEBELOW', (0,0), (num_cols,0), 1, colors.black),  ## Add line below headers
+                ('VALIGN',(0,0),(-1,-1),'TOP') ## Align cells to top
+            ]))
+        if box_line:
+            table.setStyle(TableStyle([
+                ('LINEBELOW', (0,0), (num_cols,0), 1, colors.black),  ## Add line below headers
+                ('LINEABOVE', (0,0), (num_cols,0), 1, colors.black),  ## Add line below headers
+                ('LINEBEFORE', (0,0), (num_cols,0), 1, colors.black),  ## Add line below headers
+                ('LINEAFTER', (0,0), (num_cols,0), 1, colors.black),  ## Add line below headers
                 ('VALIGN',(0,0),(-1,-1),'TOP') ## Align cells to top
             ]))
         self.elements.append(table)        
@@ -112,8 +131,13 @@ class SuzysDocument:
         height = width * aspect_ratio
         self.elements.append(Image(path, width, height))
 
+
+    def add_vertical_space(self, height_in_mm):
+        self.elements.append(Spacer(width=0, height=height_in_mm*mm))
+
+
     def print_document(self):
-        self.doc.build(self.elements, onFirstPage=self.add_letterhead, onLaterPages=self.add_letterhead)
+        self.doc.build(self.elements, onFirstPage=self._add_letterhead, onLaterPages=self._add_letterhead)
         pdf = self.buffer.getvalue()
         self.buffer.close()
         return pdf        

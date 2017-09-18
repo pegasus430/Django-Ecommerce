@@ -2,6 +2,7 @@ from django.contrib import admin
 from defaults.admin import DefaultAdmin, DefaultInline
 
 from .models import *
+from .helpers import print_production_order_report
 
 ###############
 ### Inlines ###
@@ -16,6 +17,7 @@ class ProductionOrderAdmin(DefaultAdmin):
 	inlines = [ProductionOrderItemInline]
 	readonly_fields = ['missing_materials']
 	list_display = ['__unicode__', 'status']
+	actions = [print_production_order_report]
 
 class ProductionOrderItemAdmin(DefaultAdmin):
 	pass

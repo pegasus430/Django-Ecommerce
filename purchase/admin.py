@@ -2,6 +2,7 @@ from django.contrib import admin
 from defaults.admin import DefaultAdmin, DefaultInline
 
 from .models import *
+from .helpers import print_purchase_order_report
 
 ##############
 ### Inines ###
@@ -26,6 +27,7 @@ class PurchaseOrderAdmin(DefaultAdmin):
     readonly_fields = ['order_value', 'created_at', 'updated_at', 'id']
     list_display = ['__unicode__', 'status']
     inlines = [PurchaseOrderItemInline, PurchaseOrderConfirmationAttachmentInline]
+    actions = [print_purchase_order_report]
 
 class DeliveryAdmin(DefaultAdmin):
     list_display = ['__unicode__', 'status']

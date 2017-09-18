@@ -307,20 +307,6 @@ def production_notes_for_umbrella_product(umbrella_product):
     document.add_text('Model type: {}'.format(model_type), bullet)
     document.add_text('Model number: {} ({})'.format(model_number, model_name), bullet)
 
-
-    document.add_text('Available sizes', heading)
-    for model in umbrella_product.umbrella_product_model.productmodel_set.all():
-        size = '{} ({})'.format(model.size.short_size, model.size.full_size)
-        document.add_text(size, bullet)
-
-    if umbrella_product.production_remark or umbrella_product.umbrella_product_model.production_remark:
-        document.add_text('Important remark', heading)
-    if umbrella_product.production_remark:
-        document.add_text(umbrella_product.production_remark, text)
-    if umbrella_product.umbrella_product_model.production_remark:
-        document.add_text(umbrella_product.umbrella_product_model.production_remark, text)
-
-
     umbrella_product_images = umbrella_product.umbrellaproductimage_set.all()
     if len(umbrella_product_images) > 0:
         document.add_text('Product Images', heading)
@@ -340,21 +326,41 @@ def production_notes_for_umbrella_product(umbrella_product):
     #     bold_header_row=False, 
     #     line_under_header_row=False)
 
+    document.add_text('Available sizes', heading)
+    for model in umbrella_product.umbrella_product_model.productmodel_set.all():
+        size = '{} ({})'.format(model.size.short_size, model.size.full_size)
+        document.add_text(size, bullet)
 
-    document.add_text('Bill Of Materials', heading)
+    document.add_text('Production notes', heading)
+    for note in umbrella_product.productionnotesumbrellaproduct_set.all():
+        document.add_text(note.note, bullet)
+        aspect_ratio = note.image.height / float(note.image.width)
+        document.add_image(note.image.path, 0.25, aspect_ratio)
+
+    if umbrella_product.production_remark or umbrella_product.umbrella_product_model.production_remark:
+        document.add_text('Important remark', heading)
+    if umbrella_product.production_remark:
+        document.add_text(umbrella_product.production_remark, text)
+    if umbrella_product.umbrella_product_model.production_remark:
+        document.add_text(umbrella_product.umbrella_product_model.production_remark, text)
+
+    document.add_text('Bill Of Materials for each size', heading)
     table_widths = [0.5, 0.3, 0.2]
     table_data = [[
         'Material',
         'SKU',
         'Material Type',
     ]]
-    for bom in umbrella_product.umbrellaproductbillofmaterial_set.all():
-        table_data.append([
-            bom.material,
-            bom.material.sku,
-            bom.material.get_mat_type_display(),
-        ])
-    document.add_table(table_data, table_widths)
+    for product in umbrella_product.product_set.all():
+        document.add_text('Bill Of Materials for {}'.format(product.product_model.size.short_size), 'Heading3')
+        # for bom in umbrella_product.umbrellaproductbillofmaterial_set.all():
+        for bom in product.productbillofmaterial_set.all():
+            table_data.append([
+                bom.material,
+                bom.material.sku,
+                bom.material.get_mat_type_display(),
+            ])
+        document.add_table(table_data, table_widths)
 
 
     document.add_text('List Of Patterns', heading)

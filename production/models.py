@@ -5,6 +5,8 @@ from django.db import models
 from inventory.models import StockLocation, Product
 from inventory.reports import return_stock_status_for_order
 
+from contacts.models import OwnAddress
+
 
 class ProductionOrder(models.Model):
     STATUS_CHOICES = (
@@ -15,10 +17,15 @@ class ProductionOrder(models.Model):
         ('IN', 'Invoice added'),
     )
 
-    production_location = models.ForeignKey(StockLocation)
+    production_location = models.ForeignKey(StockLocation, related_name='production_location')
+
+    invoice_to = models.ForeignKey(OwnAddress, blank=True, null=True)
+    ship_to = models.ForeignKey(StockLocation, related_name='ship_to', blank=True, null=True)    
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    est_delivery = models.DateField(null=True, blank=True)
 
     reference = models.CharField(max_length=20, blank=True, null=True, unique=True)
     status = models.CharField(choices=STATUS_CHOICES, max_length=2, default='DR')
