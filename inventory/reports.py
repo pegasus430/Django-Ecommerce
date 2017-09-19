@@ -393,6 +393,7 @@ def production_notes_for_umbrella_product(umbrella_product):
     document.add_table(table_data, table_widths)
 
 
+    document.add_vertical_space(10)
     document.add_text('In case of questions, doubts or suggestions please contact Sascha (sascha@suzys.eu)', 'BodyTextCenter')
 
 
