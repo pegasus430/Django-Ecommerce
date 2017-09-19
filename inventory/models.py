@@ -247,7 +247,7 @@ class UmbrellaProductModelProductionNote(models.Model):
     note = models.TextField()
     image = models.ImageField(upload_to='media/production/notes/images/%Y/%m/%d', blank=True, null=True)
     image_optimised = ImageSpecField(source='image',
-                                      processors=[ResizeToFill(300, 200)],
+                                      processors=[ResizeToFill(500, 500)],
                                       format='JPEG',
                                       options={'quality': 60})
 
