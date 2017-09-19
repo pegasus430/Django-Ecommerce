@@ -5,9 +5,10 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 
 from .helpers import calc_price, ROUND_DIGITS
-
 from contacts.models import Relation, OwnAddress
 
+from imagekit.models import ImageSpecField
+from imagekit.processors import ResizeToFill
 from taggit.managers import TaggableManager
 
 import logging
@@ -245,6 +246,10 @@ class UmbrellaProductModelProductionNote(models.Model):
     umbrella_product = models.ManyToManyField('UmbrellaProduct', blank=True, null=True)
     note = models.TextField()
     image = models.ImageField(upload_to='media/production/notes/images/%Y/%m/%d', blank=True, null=True)
+    image_optimised = ImageSpecField(source='image',
+                                      processors=[ResizeToFill(300, 200)],
+                                      format='JPEG',
+                                      options={'quality': 60})
 
     def __unicode__(self):
         return '{}'.format(self.name)        

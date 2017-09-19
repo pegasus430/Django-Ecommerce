@@ -37,6 +37,7 @@ INSTALLED_APPS = [
 
     'django_nose',  ## you want to monitor how much test-code you write, no?
     'taggit',
+    'imagekit',
 
     'defaults',
     'inventory',
