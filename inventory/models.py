@@ -241,7 +241,8 @@ class UmbrellaProductModelProductionDescription(models.Model):
 
 class UmbrellaProductModelProductionNote(models.Model):
     name = models.CharField(max_length=200)
-    umbrella_product_model = models.ManyToManyField(UmbrellaProductModel)
+    umbrella_product_model = models.ManyToManyField(UmbrellaProductModel, blank=True, null=True)
+    umbrella_product = models.ManyToManyField('UmbrellaProduct', blank=True, null=True)
     note = models.TextField()
     image = models.ImageField(upload_to='media/production/notes/images/%Y/%m/%d', blank=True, null=True)
 
