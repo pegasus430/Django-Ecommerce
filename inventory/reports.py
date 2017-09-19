@@ -333,6 +333,13 @@ def production_notes_for_umbrella_product(umbrella_product):
         document.add_text(size, bullet)
 
     document.add_text('Production notes', heading)
+    for note in umbrella_product.umbrellaproductmodelproductionnote_set.all():
+        document.add_text(note.name, heading2)
+        document.add_text(note.note, bullet)
+        if note.image:
+            aspect_ratio = note.image.height / float(note.image.width)
+            document.add_image(note.image.path, 0.25, aspect_ratio)
+
     for note in umbrella_product.umbrella_product_model.umbrellaproductmodelproductionnote_set.all():
         document.add_text(note.name, heading2)
         document.add_text(note.note, bullet)
