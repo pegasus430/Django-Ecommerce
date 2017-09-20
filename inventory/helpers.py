@@ -4,6 +4,7 @@ from copy import deepcopy
 import StringIO, zipfile
 
 from printing.labels import box_barcode_label, washinglabel, stock_label_38x90, sample_washinglabel
+from defaults.helpers import dynamic_file_httpresponse
 
 from .reports import production_notes_for_umbrella_product
 
@@ -121,15 +122,11 @@ def print_sample_washinglabel_admin(products):
 
 
 def print_production_notes_for_umbrella_product_admin(umbrella_products):
-    outfile = StringIO.StringIO()
-    with zipfile.ZipFile(outfile, 'w') as zf:
-        for umbrella_product in umbrella_products:
-            zf.writestr("suzys_production_notes_{}.pdf".format(umbrella_product.base_sku), 
-                production_notes_for_umbrella_product(umbrella_product))
-    
-    response = HttpResponse(outfile.getvalue(), content_type="application/octet-stream")
-    response['Content-Disposition'] = 'attachment; filename=suzys_production_notes.zip'
-    return response
+    pr_notes = {}
+    for umbrella_product in umbrella_products:
+        pr_notes["suzys_production_notes_{}.pdf".format(umbrella_product.base_sku)] = production_notes_for_umbrella_product(umbrella_product)
+
+    return dynamic_file_httpresponse(pr_notes, suzys_production_notes.zip)
 
 
 ### Admin helper ###
