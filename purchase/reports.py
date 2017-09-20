@@ -35,13 +35,14 @@ def purchase_order_report(purchase_order):
 
     doc.add_text('Items requested', 'Heading2')
     items_requested = [
-        ['Name', 'sku', 'Quantity']
+        ['Name', 'sku', 'Quantity', 'Unit']
     ]
     for item in purchase_order.purchaseorderitem_set.all():
         items_requested.append([
             item.material.name,
             item.material.sku_supplier,
             item.qty,
+            item.material.unit_usage,
         ])
     doc.add_table(items_requested, [0.4, 0.3, 0.3])
 
