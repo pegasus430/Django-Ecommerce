@@ -42,7 +42,7 @@ def purchase_order_report(purchase_order):
             item.material.name,
             item.material.sku_supplier,
             item.qty,
-            item.material.unit_usage,
+            item.material.get_unit_usage_display(),
         ])
     doc.add_table(items_requested, [0.35, 0.35, 0.15, 0.15])
 
