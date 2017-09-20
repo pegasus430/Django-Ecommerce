@@ -126,7 +126,7 @@ def print_production_notes_for_umbrella_product_admin(umbrella_products):
     for umbrella_product in umbrella_products:
         pr_notes["suzys_production_notes_{}.pdf".format(umbrella_product.base_sku)] = production_notes_for_umbrella_product(umbrella_product)
 
-    return dynamic_file_httpresponse(pr_notes, suzys_production_notes.zip)
+    return dynamic_file_httpresponse(pr_notes, 'suzys_production_notes.zip')
 
 
 ### Admin helper ###
