@@ -40,7 +40,7 @@ def simple_label_38x90(text):
     return pdf
 
 
-def stock_label_38x90(materials):
+def stock_label_38x90(material):
     '''
     return label pdf for a simple box sku label
     '''
@@ -57,10 +57,8 @@ def stock_label_38x90(materials):
     elements = []
     styles = stylesheet()
 
-    for mat in materials:
-        elements.append(Paragraph(mat.name, styles['BodyText']))
-        elements.append(Paragraph('sku: {}'.format(mat.sku), styles['BodyText']))
-        elements.append(PageBreak())
+    elements.append(Paragraph(material.name, styles['BodyText']))
+    elements.append(Paragraph('sku: {}'.format(material.sku), styles['BodyText']))
 
     doc.build(elements)
     pdf = buffer.getvalue()

@@ -71,61 +71,34 @@ def materials_on_stock_in_production_location(product):
 
 def print_box_barcode_label_admin(products):
     '''helper function to return the admin-data from the pdf generation'''
-    import StringIO, zipfile
-    outfile = StringIO.StringIO()
-    with zipfile.ZipFile(outfile, 'w') as zf:
-        for product in products:
-            zf.writestr("{}.pdf".format(product.sku), box_barcode_label(product))
-    
-    response = HttpResponse(outfile.getvalue(), content_type="application/octet-stream")
-    response['Content-Disposition'] = 'attachment; filename=box_barcode.zip'
-    return response
-
-    # response = HttpResponse(content_type='application/pdf')
-    # response['Content-Disposition'] = 'attachment; filename="box_barcode_{}.pdf"'.format(product.sku)
-
-    # response.write(box_barcode_label(product))
-    # return response
+    product_data = {"box_label_{}.pdf".format(product.sku): box_barcode_label(product) for product in products}
+    return dynamic_file_httpresponse(product_data, 'box_labels.zip')
 
 
 def print_stock_label_38x90_admin(materials):
     ''' helper function to return all of the labels for stock-identifying'''
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="stock_labels.pdf"'
-
-    response.write(stock_label_38x90(materials))
-    return response
+    stock_label_data = {'stock_label_{}.pdf'.format(mat.sku): stock_label_38x90(mat) for mat in materials}
+    return dynamic_file_httpresponse(stock_label_data, 'stock_labels.zip')
 
 
 def print_washinglabel_admin(products):
     ''' helper function to print washinglabels for products'''
-    outfile = StringIO.StringIO()
-    with zipfile.ZipFile(outfile, 'w') as zf:
-        for product in products:
-            zf.writestr("{}.pdf".format(product.sku), washinglabel(product))
-    
-    response = HttpResponse(outfile.getvalue(), content_type="application/octet-stream")
-    response['Content-Disposition'] = 'attachment; filename=washing_labels.zip'
-    return response
+    washing_label_data = {"washing_label_{}.pdf".format(product.sku): washinglabel(product) for \
+        product in products}
+    return dynamic_file_httpresponse(washing_label_data, 'washing_labels.zip')
+
 
 def print_sample_washinglabel_admin(products):
     ''' helper function to print washinglabels for products'''
-    outfile = StringIO.StringIO()
-    with zipfile.ZipFile(outfile, 'w') as zf:
-        for product in products:
-            zf.writestr("sample_{}.pdf".format(product.sku), sample_washinglabel(product))
-    
-    response = HttpResponse(outfile.getvalue(), content_type="application/octet-stream")
-    response['Content-Disposition'] = 'attachment; filename=sample_washing_labels.zip'
-    return response
+    sample_washing_labels_data = {"sample_{}.pdf".format(product.sku): sample_washinglabel(product) for\
+        product in products}
+    return dynamic_file_httpresponse(sample_washing_labels_data, 'sample_washing_labels.zip')
   
 
 
 def print_production_notes_for_umbrella_product_admin(umbrella_products):
-    pr_notes = {}
-    for umbrella_product in umbrella_products:
-        pr_notes["suzys_production_notes_{}.pdf".format(umbrella_product.base_sku)] = production_notes_for_umbrella_product(umbrella_product)
-
+    pr_notes = {"suzys_production_notes_{}.pdf".format(umbrella_product.base_sku):production_notes_for_umbrella_product(umbrella_product) for\
+        umbrella_product in umbrella_products}
     return dynamic_file_httpresponse(pr_notes, 'suzys_production_notes.zip')
 
 
