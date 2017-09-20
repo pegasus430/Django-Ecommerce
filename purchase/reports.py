@@ -44,7 +44,7 @@ def purchase_order_report(purchase_order):
             item.qty,
             item.material.unit_usage,
         ])
-    doc.add_table(items_requested, [0.4, 0.3, 0.3])
+    doc.add_table(items_requested, [0.4, 0.2, 0.2, 0.2])
 
     doc.add_vertical_space(10)
     doc.add_text('Thank you for swift confirmation, communication and delivery.', 'BodyTextCenter')
