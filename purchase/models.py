@@ -5,6 +5,7 @@ from django.db import models
 from inventory.models import Material, StockLocation, StockLocationMovement, StockLocationOnItsWayMovement
 from contacts.models import OwnAddress, Relation
 
+import datetime
 import logging
 logger = logging.getLogger(__name__)
 
@@ -33,23 +34,32 @@ class PurchaseOrder(models.Model):
 
     transport_cost = models.FloatField(default=0.0)
 
+    _awaiting_delivery = models.BooleanField(default=False)
+
     def __unicode__(self):
         return 'Purchase Order {} {} ref:{}'.format(self.supplier, self.created_at, self.supplier_reference)
 
+    def mark_as_awaiting_for_confirmation(self):
+        higher_stati = ['WA', 'PL', 'DL', 'IN']
+        if self.status not in higher_stati:
+            self.status = 'WC' 
+            self.save()
 
-    def save(self, *args, **kwargs):
-        ## If purchase order is marked as WA.  Add all of the items to on_its_way_stock, 
-        if self.status == 'WA':
-            logger.debug('Going to add temporary stock for {}'.format(self))
+    def mark_as_awaiting_delivery(self):
+        logger.debug('Bump to WA - awaiting_delivery #{}'.format(self.id))
+        logger.debug('Going to add temporary stock for {}'.format(self))
 
+        if not self._awaiting_delivery:
             for item in self.purchaseorderitem_set.filter(added_to_temp_stock=False):
-                stocklocation = self.ship_to
-                StockLocationOnItsWayMovement.objects.create(stock_location=stocklocation,
-                    material=item.material,qty_change=item.qty)
-                item.added_to_temp_stock = True
-                item.save()
+                    stocklocation = self.ship_to
+                    StockLocationOnItsWayMovement.objects.create(stock_location=stocklocation,
+                        material=item.material,qty_change=item.qty)
+                    item.added_to_temp_stock = True
+                    item.save()        
 
-        super(PurchaseOrder, self).save(*args, **kwargs)
+            self._awaiting_delivery = True
+            self.satus = 'WA'
+            self.save()
 
     def order_value(self):
         value = 0.0
@@ -97,32 +107,34 @@ class PurchaseOrderConfirmationAttachment(models.Model):
 
 
 class Delivery(models.Model):
-    STATUS_CHOICES = (
-        ('DR', 'Draft'),
-        ('CO', 'Confirmed'),
-    )
     purchase_order = models.ForeignKey(PurchaseOrder)
-    status = models.CharField(choices=STATUS_CHOICES, default='DR', max_length=2)
 
     delivered = models.DateField(null=True, blank=True)
+    _is_confirmed = models.BooleanField(default=False)
 
     def __unicode__(self):
         return 'Delivery for {}'.format(self.purchase_order)
 
-    def save(self, *args, **kwargs):
-        ## if delivery is new, aut-add all products
-        if not self.pk:
-            super(Delivery, self).save(*args, **kwargs)
-            for item in self.purchase_order.purchaseorderitem_set.all():
-                ## TODO: make qty data dynamic, only that are not delivered, and only qty to be received
-                DeliveryItem.objects.create(delivery=self, material=item.material, qty=item.qty)
+    @property 
+    def status(self):
+        if not self._is_confirmed:
+            return 'Draft'
+        else:
+            return 'Confirmed'        
 
-        ## If delivery is marked as confimed.  Add all of the items to stock, and set order to delivered
-        if self.status == 'CO':
+    def mark_confirmed(self):
+        '''Mark delivery as confirmed'''
+        if not self._is_confirmed:
             logger.debug('Going to update stock for {}'.format(self.purchase_order))
 
             for item in self.deliveryitem_set.filter(added_to_stock=False):
                 stocklocation = self.purchase_order.ship_to
+                ## FIXME: There is an issue here.  Example:
+                ## Stock = 100
+                ## Ordered = 200
+                ## OnItsWay-stock = 200
+                ## Partial delivery = 100
+                ## After mark_confirmed, OnItsWay-stock = 0 instaead of 100
                 StockLocationMovement.objects.create(stock_location=stocklocation,
                     material=item.material,qty_change=item.qty)
 
@@ -147,12 +159,25 @@ class Delivery(models.Model):
                     purchase_order.status = 'DL'
                 else:
                     purchase_order.status = 'PL'
-                purchase_order.save()
+                purchase_order.save()   
 
-        super(Delivery, self).save(*args, **kwargs)
+        if self.delivered is None:
+            self.delivered = datetime.date.today()
+        self._is_confirmed = True
+        self.save()
+
+    def save(self, *args, **kwargs):
+        ## if delivery is new, aut-add all products
+        if not self.pk:
+            super(Delivery, self).save(*args, **kwargs)
+            for item in self.purchase_order.purchaseorderitem_set.all():
+                ## TODO: make qty data dynamic, only that are not delivered, and only qty to be received
+                DeliveryItem.objects.create(delivery=self, material=item.material, qty=item.qty)
+        else:
+            super(Delivery, self).save(*args, **kwargs)
 
     class Meta:
-        verbose_name_plural = "delieveries"
+        verbose_name_plural = "deliveries"
 
 
 class DeliveryAttachment(models.Model):

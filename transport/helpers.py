@@ -27,7 +27,6 @@ def print_stock_label_38x90_admin(queryset):
 
 
 ## Admin helpers
-
 def print_picking_list(modeladmin, request, queryset):
     for q in queryset:
         return print_internal_transport_picking_list_admin(q)
@@ -36,3 +35,18 @@ print_picking_list.short_description = 'Print picking list'
 def print_stock_label_38x90(modeladmin, request, queryset):
 	return print_stock_label_38x90_admin(queryset)
 print_stock_label_38x90.short_description = 'Print labels'
+
+def mark_ready_for_shipment(modeladmin, request, queryset):
+    for shipment in queryset:
+        shipment.mark_ready_for_shipment()
+mark_ready_for_shipment.short_description = 'Mark ready for pickup'
+
+def mark_shipped(modeladmin, request, queryset):
+    for shipment in queryset:
+        shipment.mark_shipped()
+mark_shipped.short_description = 'Mark as shipped'
+
+def mark_arrived(modeladmin, request, queryset):
+    for shipment in queryset:
+        shipment.mark_arrived()
+mark_arrived.short_description = 'Mark as arrived'
