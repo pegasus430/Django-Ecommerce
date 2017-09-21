@@ -370,8 +370,8 @@ def production_notes_for_umbrella_product(umbrella_product, language='EN'):
             document.add_text(note.name_en, heading2)
             document.add_text(note.note_en, bullet)
         elif language == 'CZ':
-            document.add_text(note.name_cz or '', heading2)
-            document.add_text(note.note_cz or '', bullet)  
+            document.add_text(note.name_cz or note.name_en, heading2)
+            document.add_text(note.note_cz or note.note_en, bullet)  
 
         if note.image:
             aspect_ratio = note.image_optimised.height / float(note.image_optimised.width)
@@ -383,8 +383,8 @@ def production_notes_for_umbrella_product(umbrella_product, language='EN'):
             document.add_text(note.name_en, heading2)
             document.add_text(note.note_en, bullet)
         elif language == 'CZ':
-            document.add_text(note.name_cz or '', heading2)
-            document.add_text(note.note_cz or '', bullet)  
+            document.add_text(note.name_cz or note.name_en, heading2)
+            document.add_text(note.note_cz or note.note_en, bullet)  
 
         if note.image:
             aspect_ratio = note.image_optimised.height / float(note.image_optimised.width)
@@ -402,9 +402,9 @@ def production_notes_for_umbrella_product(umbrella_product, language='EN'):
         if umbrella_product.production_remark_cz or umbrella_product.umbrella_product_model.production_remark_cz:
             document.add_text('Important remark', heading)
         if umbrella_product.production_remark_cz:
-            document.add_text(umbrella_product.production_remark_cz or '', text)
+            document.add_text(umbrella_product.production_remark_cz or umbrella_product.production_remark_en, text)
         if umbrella_product.umbrella_product_model.production_remark_cz:
-            document.add_text(umbrella_product.umbrella_product_model.production_remark_cz or '', text)        
+            document.add_text(umbrella_product.umbrella_product_model.production_remark_cz or umbrella_product.umbrella_product_model.production_remark_en, text)        
 
     if language == 'EN':
         document.add_text('Bill Of Materials', heading)
@@ -469,7 +469,7 @@ def production_notes_for_umbrella_product(umbrella_product, language='EN'):
     if language == 'EN':
         document.add_text('In case of questions, doubts or suggestions please contact Sascha (sascha@suzys.eu)', 'BodyTextCenter')
     elif language == 'CZ':
-        document.add_text('In case of questions, doubts or suggestions please contact Sascha (sascha@suzys.eu)', 'BodyTextCenter')
+        document.add_text(u'V případě dotazů, pochybnosti nebo návrhy kontaktujte, prosím, polina@suzys.eu', 'BodyTextCenter')
 
 
     return document.print_document()
