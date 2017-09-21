@@ -300,35 +300,39 @@ def production_notes_for_umbrella_product(umbrella_product, language='EN'):
     text = 'BodyText'
     
     if language == 'EN':
-        document.add_text('Production notes for {}'.format(base_sku), title)
+        document.add_text(u'Production notes for {}'.format(base_sku), title)
     elif language == 'CZ':
-        document.add_text('Production notes for {}'.format(base_sku), title)
+        document.add_text(u'Poznámky k výrobě {}'.format(base_sku), title)
 
     document.add_text('{}'.format(datetime.date.today().strftime("%d %B, %Y")), title)
     
     if language == 'EN':
-        document.add_text('Product details', heading)
+        document.add_text(u'Product details', heading)
     elif language == 'CZ':
-        document.add_text('Product details', heading)
+        document.add_text(u'Detaily produkty', heading)
     
     if language == 'EN':
-        document.add_text('Collection: {} {}'.format(collection, collection_number), bullet)
+        document.add_text(u'Collection: {} {}'.format(collection, collection_number), bullet)
     elif language == 'CZ':
-        document.add_text('Collection: {} {}'.format(collection, collection_number), bullet)
+        document.add_text(u'Kolekce: {} {}'.format(collection, collection_number), bullet)
     
     if language == 'EN':
-        document.add_text('Model type: {}'.format(model_type), bullet)
+        document.add_text(u'Model type: {}'.format(model_type), bullet)
     elif language == 'CZ':
-        document.add_text('Model type: {}'.format(model_type), bullet)
+        document.add_text(u'Typ modelu: {}'.format(model_type), bullet)
     
     if language == 'EN':
-        document.add_text('Model number: {} ({})'.format(model_number, model_name), bullet)
+        document.add_text(u'Model number: {} ({})'.format(model_number, model_name), bullet)
     elif language == 'CZ':
-        document.add_text('Model number: {} ({})'.format(model_number, model_name), bullet)
+        document.add_text(u'Modelové číslo: {} ({})'.format(model_number, model_name), bullet)
 
     umbrella_product_images = umbrella_product.umbrellaproductimage_set.all()
     if len(umbrella_product_images) > 0:
-        document.add_text('Product Images', heading)
+        if language == 'EN':
+            document.add_text('Product Images', heading)
+        elif language == 'CZ':
+            document.add_text(u'Obrázky výrobků', heading)
+
     for img in umbrella_product_images:
         path = img.image.path         
         aspect_ratio = img.image.height / float(img.image.width)
@@ -346,9 +350,9 @@ def production_notes_for_umbrella_product(umbrella_product, language='EN'):
     #     line_under_header_row=False)
 
     if language == 'EN':
-        document.add_text('Available sizes', heading)
+        document.add_text(u'Available sizes', heading)
     elif language == 'CZ':
-        document.add_text('Available sizes', heading)
+        document.add_text(u'Dostupné velikosti', heading)
 
     for model in umbrella_product.umbrella_product_model.productmodel_set.all():
         size = '{} ({})'.format(model.size.short_size, model.size.full_size)
@@ -358,7 +362,7 @@ def production_notes_for_umbrella_product(umbrella_product, language='EN'):
     if language == 'EN':
         document.add_text('Production notes', heading)
     elif language == 'CZ':
-        document.add_text('Production notes', heading)        
+        document.add_text(u'Poznámky k výrobě', heading)        
 
     for note in umbrella_product.umbrellaproductmodelproductionnote_set.all():
         if language == 'EN':
@@ -404,7 +408,7 @@ def production_notes_for_umbrella_product(umbrella_product, language='EN'):
     if language == 'EN':
         document.add_text('Bill Of Materials', heading)
     elif language == 'CZ':
-        document.add_text('Bill Of Materials', heading)
+        document.add_text(u'Seznam materiálů', heading)
     table_widths = [0.5, 0.3, 0.2]
     
     if language == 'EN':
@@ -437,7 +441,7 @@ def production_notes_for_umbrella_product(umbrella_product, language='EN'):
     if language == 'EN':
         document.add_text('List Of Patterns', heading)
     elif language == 'CZ':
-        document.add_text('List Of Patterns', heading)
+        document.add_text(u'Seznam střihů', heading)
     table_widths = [0.1, 0.45, 0.25, 0.2]
 
     if language == 'EN':
