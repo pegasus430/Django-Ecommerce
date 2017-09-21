@@ -425,18 +425,11 @@ def production_notes_for_umbrella_product(umbrella_product, language='EN'):
             'Material Type',
         ]]        
     for bom in umbrella_product.umbrellaproductbillofmaterial_set.all():
-        if language == 'EN':
-            table_data.append([
-                bom.material,
-                bom.material.sku,
-                bom.material.get_mat_type_display(),
-            ])
-        elif language == 'CZ':
-            table_data.append([
-                bom.material.name_cz or '',
-                bom.material.sku,
-                bom.material.get_mat_type_display(),
-            ])
+        table_data.append([
+            bom.material,
+            bom.material.sku,
+            bom.material.get_mat_type_display(),
+        ])
     document.add_table(table_data, table_widths)
 
     if language == 'EN':
