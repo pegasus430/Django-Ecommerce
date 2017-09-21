@@ -399,11 +399,11 @@ def production_notes_for_umbrella_product(umbrella_product, language='EN'):
         if umbrella_product.umbrella_product_model.production_remark_en:
             document.add_text(umbrella_product.umbrella_product_model.production_remark_en, text)
     elif language == 'CZ':
-        if umbrella_product.production_remark_cz or umbrella_product.umbrella_product_model.production_remark_cz:
+        if umbrella_product.production_remark_en or umbrella_product.umbrella_product_model.production_remark_en:
             document.add_text(u'Důležité informace', heading)
-        if umbrella_product.production_remark_cz:
+        if umbrella_product.production_remark_en:
             document.add_text(umbrella_product.production_remark_cz or umbrella_product.production_remark_en, text)
-        if umbrella_product.umbrella_product_model.production_remark_cz:
+        if umbrella_product.umbrella_product_model.production_remark_en:
             document.add_text(umbrella_product.umbrella_product_model.production_remark_cz or umbrella_product.umbrella_product_model.production_remark_en, text)        
 
     if language == 'EN':
