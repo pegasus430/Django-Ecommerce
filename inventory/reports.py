@@ -495,7 +495,7 @@ def production_notes_for_umbrella_product(umbrella_product, language='EN'):
             u'Work Pramont - Práce Pramont',
             u'Zipper - Zip',
         ]
-        document.add_text(u'Glossary', heading)
+        document.add_text(u'Glosář', heading)
         [document.add_text(i, BodyText) for i in glossary_items]
 
     return document.print_document()
