@@ -96,7 +96,7 @@ def print_sample_washinglabel_admin(products):
   
 
 
-def print_production_notes_for_umbrella_product_admin(umbrella_products):
+def print_production_notes_for_umbrella_product_admin(umbrella_products, language):
     pr_notes = {"suzys_production_notes_{}.pdf".format(umbrella_product.base_sku):production_notes_for_umbrella_product(umbrella_product) for\
         umbrella_product in umbrella_products}
     return dynamic_file_httpresponse(pr_notes, 'suzys_production_notes')
@@ -123,12 +123,14 @@ def print_washinglabel(modeladmin, request, queryset):
     return print_washinglabel_admin(queryset)
 print_washinglabel.short_description = 'Print Washinglabels'
 
-
 def print_sample_washinglabel(modeladmin, request, queryset):
     return print_sample_washinglabel_admin(queryset)
 print_sample_washinglabel.short_description = 'Print Sample Washinglabels'
 
+def print_production_notes_for_umbrella_product_EN(modeladmin, request, queryset):
+    return print_production_notes_for_umbrella_product_admin(queryset, 'EN')
+print_production_notes_for_umbrella_product_EN.short_description = 'Print production notes in English'
 
-def print_production_notes_for_umbrella_product(modeladmin, request, queryset):
-    return print_production_notes_for_umbrella_product_admin(queryset)
-print_production_notes_for_umbrella_product.short_description = 'Print production notes'
+def print_production_notes_for_umbrella_product_CZ(modeladmin, request, queryset):
+    return print_production_notes_for_umbrella_product_admin(queryset, 'CZ')
+print_production_notes_for_umbrella_product_CZ.short_description = 'Print production notes in Czech'

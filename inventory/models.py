@@ -209,7 +209,8 @@ class UmbrellaProductModel(models.Model):
     description = models.TextField(blank=True, null=True)
     original_umbrella_product_model = models.ForeignKey('self', blank=True, null=True)
 
-    production_remark = models.TextField(blank=True, null=True)
+    production_remark_en = models.TextField(blank=True, null=True)
+    production_remark_cz = models.TextField(blank=True, null=True)
 
     ## When saving, you need to save all of the nested attached products. So they may re-assign the sku
     ## FIXME: Write test for override below
@@ -241,10 +242,12 @@ class UmbrellaProductModelProductionDescription(models.Model):
 
 
 class UmbrellaProductModelProductionNote(models.Model):
-    name = models.CharField(max_length=200)
+    name_en = models.CharField(max_length=200)
+    name_cz = models.CharField(max_length=200, blank=True, null=True)
     umbrella_product_model = models.ManyToManyField(UmbrellaProductModel, blank=True)
     umbrella_product = models.ManyToManyField('UmbrellaProduct', blank=True)
-    note = models.TextField()
+    note_en = models.TextField()
+    note_cz = models.TextField(blank=True, null=True)
     image = models.ImageField(upload_to='media/production/notes/images/%Y/%m/%d', blank=True, null=True)
     image_optimised = ImageSpecField(source='image',
                                       processors=[ResizeToFill(500, 500)],
@@ -252,7 +255,7 @@ class UmbrellaProductModelProductionNote(models.Model):
                                       options={'quality': 60})
 
     def __unicode__(self):
-        return '{}'.format(self.name)        
+        return '{}'.format(self.name_en)        
 
 class UmbrellaProductModelImage(models.Model):
     '''Product model images'''
@@ -337,7 +340,8 @@ class UmbrellaProduct(models.Model):
     active = models.BooleanField(default=True)
     complete = models.BooleanField(default=False)
 
-    production_remark = models.TextField(blank=True, null=True)
+    production_remark_en = models.TextField(blank=True, null=True)
+    production_remark_cz = models.TextField(blank=True, null=True)
 
     __original_umbrella_product_model = None
     __original_colour = None

@@ -270,7 +270,7 @@ def return_stock_status_for_order(purchaseorder_queryset):
         raise
 
 
-def production_notes_for_umbrella_product(umbrella_product):
+def production_notes_for_umbrella_product(umbrella_product, language='EN'):
     '''
     function that returns a pdf-file with all production documentation for a collection
     It contains:
@@ -299,14 +299,32 @@ def production_notes_for_umbrella_product(umbrella_product):
     bullet = 'Bullet'
     text = 'BodyText'
     
-    document.add_text('Production notes for {}'.format(base_sku), title)
+    if language == 'EN':
+        document.add_text('Production notes for {}'.format(base_sku), title)
+    elif language == 'CZ':
+        document.add_text('Production notes for {}'.format(base_sku), title)
+
     document.add_text('{}'.format(datetime.date.today().strftime("%d %B, %Y")), title)
     
-
-    document.add_text('Product details', heading)
-    document.add_text('Collection: {} {}'.format(collection, collection_number), bullet)
-    document.add_text('Model type: {}'.format(model_type), bullet)
-    document.add_text('Model number: {} ({})'.format(model_number, model_name), bullet)
+    if language == 'EN':
+        document.add_text('Product details', heading)
+    elif language == 'CZ':
+        document.add_text('Product details', heading)
+    
+    if language == 'EN':
+        document.add_text('Collection: {} {}'.format(collection, collection_number), bullet)
+    elif language == 'CZ':
+        document.add_text('Collection: {} {}'.format(collection, collection_number), bullet)
+    
+    if language == 'EN':
+        document.add_text('Model type: {}'.format(model_type), bullet)
+    elif language == 'CZ':
+        document.add_text('Model type: {}'.format(model_type), bullet)
+    
+    if language == 'EN':
+        document.add_text('Model number: {} ({})'.format(model_number, model_name), bullet)
+    elif language == 'CZ':
+        document.add_text('Model number: {} ({})'.format(model_number, model_name), bullet)
 
     umbrella_product_images = umbrella_product.umbrellaproductimage_set.all()
     if len(umbrella_product_images) > 0:
@@ -327,44 +345,80 @@ def production_notes_for_umbrella_product(umbrella_product):
     #     bold_header_row=False, 
     #     line_under_header_row=False)
 
-    document.add_text('Available sizes', heading)
+    if language == 'EN':
+        document.add_text('Available sizes', heading)
+    elif language == 'CZ':
+        document.add_text('Available sizes', heading)
+
     for model in umbrella_product.umbrella_product_model.productmodel_set.all():
         size = '{} ({})'.format(model.size.short_size, model.size.full_size)
         document.add_text(size, bullet)
 
 
-    document.add_text('Production notes', heading)
+    if language == 'EN':
+        document.add_text('Production notes', heading)
+    elif language == 'CZ':
+        document.add_text('Production notes', heading)        
+
     for note in umbrella_product.umbrellaproductmodelproductionnote_set.all():
-        document.add_text(note.name, heading2)
-        document.add_text(note.note, bullet)
+        if language == 'EN':
+            document.add_text(note.name_en, heading2)
+            document.add_text(note.note_en, bullet)
+        elif language == 'CZ':
+            document.add_text(note.name_cz, heading2)
+            document.add_text(note.note_cz, bullet)  
+
         if note.image:
             aspect_ratio = note.image_optimised.height / float(note.image_optimised.width)
             document.add_image(note.image_optimised.path, 0.25, aspect_ratio)
 
 
     for note in umbrella_product.umbrella_product_model.umbrellaproductmodelproductionnote_set.all():
-        document.add_text(note.name, heading2)
-        document.add_text(note.note, bullet)
+        if language == 'EN':
+            document.add_text(note.name_en, heading2)
+            document.add_text(note.note_en, bullet)
+        elif language == 'CZ':
+            document.add_text(note.name_cz, heading2)
+            document.add_text(note.note_cz, bullet)  
+
         if note.image:
             aspect_ratio = note.image_optimised.height / float(note.image_optimised.width)
             document.add_image(note.image_optimised.path, 0.25, aspect_ratio)
 
 
-    if umbrella_product.production_remark or umbrella_product.umbrella_product_model.production_remark:
-        document.add_text('Important remark', heading)
-    if umbrella_product.production_remark:
-        document.add_text(umbrella_product.production_remark, text)
-    if umbrella_product.umbrella_product_model.production_remark:
-        document.add_text(umbrella_product.umbrella_product_model.production_remark, text)
+    if language == 'EN':
+        if umbrella_product.production_remark_en or umbrella_product.umbrella_product_model.production_remark_en:
+            document.add_text('Important remark', heading)
+        if umbrella_product.production_remark_en:
+            document.add_text(umbrella_product.production_remark_en, text)
+        if umbrella_product.umbrella_product_model.production_remark_en:
+            document.add_text(umbrella_product.umbrella_product_model.production_remark_en, text)
+    elif language == 'CZ':
+        if umbrella_product.production_remark_cz or umbrella_product.umbrella_product_model.production_remark_cz:
+            document.add_text('Important remark', heading)
+        if umbrella_product.production_remark_cz:
+            document.add_text(umbrella_product.production_remark_cz, text)
+        if umbrella_product.umbrella_product_model.production_remark_cz:
+            document.add_text(umbrella_product.umbrella_product_model.production_remark_cz, text)        
 
-
-    document.add_text('Bill Of Materials', heading)
+    if language == 'EN':
+        document.add_text('Bill Of Materials', heading)
+    elif language == 'CZ':
+        document.add_text('Bill Of Materials', heading)
     table_widths = [0.5, 0.3, 0.2]
-    table_data = [[
-        'Material',
-        'SKU',
-        'Material Type',
-    ]]
+    
+    if language == 'EN':
+        table_data = [[
+            'Material',
+            'SKU',
+            'Material Type',
+        ]]
+    elif language == 'CZ':
+        table_data = [[
+            'Material',
+            'SKU',
+            'Material Type',
+        ]]        
     for bom in umbrella_product.umbrellaproductbillofmaterial_set.all():
         table_data.append([
             bom.material,
@@ -373,15 +427,27 @@ def production_notes_for_umbrella_product(umbrella_product):
         ])
     document.add_table(table_data, table_widths)
 
-
-    document.add_text('List Of Patterns', heading)
+    if language == 'EN':
+        document.add_text('List Of Patterns', heading)
+    elif language == 'CZ':
+        document.add_text('List Of Patterns', heading)
     table_widths = [0.1, 0.45, 0.25, 0.2]
-    table_data = [[
-        'Size',
-        'Pattern name',
-        'Type',
-        'Times to use',
-    ]]
+
+    if language == 'EN':
+        table_data = [[
+            'Size',
+            'Pattern name',
+            'Type',
+            'Times to use',
+        ]]
+    elif language == 'CZ':
+        table_data = [[
+            'Size',
+            'Pattern name',
+            'Type',
+            'Times to use',
+        ]]        
+
     for product in umbrella_product.product_set.all():
         for pattern in product.product_model.productmodelpattern_set.all():
             if pattern.times_to_use > 0:
@@ -395,7 +461,10 @@ def production_notes_for_umbrella_product(umbrella_product):
 
 
     document.add_vertical_space(10)
-    document.add_text('In case of questions, doubts or suggestions please contact Sascha (sascha@suzys.eu)', 'BodyTextCenter')
+    if language == 'EN':
+        document.add_text('In case of questions, doubts or suggestions please contact Sascha (sascha@suzys.eu)', 'BodyTextCenter')
+    elif language == 'CZ':
+        document.add_text('In case of questions, doubts or suggestions please contact Sascha (sascha@suzys.eu)', 'BodyTextCenter')
 
 
     return document.print_document()
