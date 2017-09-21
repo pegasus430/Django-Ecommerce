@@ -496,7 +496,7 @@ def production_notes_for_umbrella_product(umbrella_product, language='EN'):
             u'Zipper - Zip',
         ]
         document.add_text(u'Glosář', heading)
-        [document.add_text(i, BodyText) for i in glossary_items]
+        [document.add_text(i, text) for i in glossary_items]
 
     return document.print_document()
 
