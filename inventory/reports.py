@@ -370,8 +370,8 @@ def production_notes_for_umbrella_product(umbrella_product, language='EN'):
             document.add_text(note.name_en, heading2)
             document.add_text(note.note_en, bullet)
         elif language == 'CZ':
-            document.add_text(note.name_cz, heading2)
-            document.add_text(note.note_cz, bullet)  
+            document.add_text(note.name_cz or '', heading2)
+            document.add_text(note.note_cz or '', bullet)  
 
         if note.image:
             aspect_ratio = note.image_optimised.height / float(note.image_optimised.width)
@@ -383,8 +383,8 @@ def production_notes_for_umbrella_product(umbrella_product, language='EN'):
             document.add_text(note.name_en, heading2)
             document.add_text(note.note_en, bullet)
         elif language == 'CZ':
-            document.add_text(note.name_cz, heading2)
-            document.add_text(note.note_cz, bullet)  
+            document.add_text(note.name_cz or '', heading2)
+            document.add_text(note.note_cz or '', bullet)  
 
         if note.image:
             aspect_ratio = note.image_optimised.height / float(note.image_optimised.width)
@@ -402,9 +402,9 @@ def production_notes_for_umbrella_product(umbrella_product, language='EN'):
         if umbrella_product.production_remark_cz or umbrella_product.umbrella_product_model.production_remark_cz:
             document.add_text('Important remark', heading)
         if umbrella_product.production_remark_cz:
-            document.add_text(umbrella_product.production_remark_cz, text)
+            document.add_text(umbrella_product.production_remark_cz or '', text)
         if umbrella_product.umbrella_product_model.production_remark_cz:
-            document.add_text(umbrella_product.umbrella_product_model.production_remark_cz, text)        
+            document.add_text(umbrella_product.umbrella_product_model.production_remark_cz or '', text)        
 
     if language == 'EN':
         document.add_text('Bill Of Materials', heading)
@@ -433,7 +433,7 @@ def production_notes_for_umbrella_product(umbrella_product, language='EN'):
             ])
         elif language == 'CZ':
             table_data.append([
-                bom.material.name_cz,
+                bom.material.name_cz or '',
                 bom.material.sku,
                 bom.material.get_mat_type_display(),
             ])
