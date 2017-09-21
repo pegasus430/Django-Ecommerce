@@ -472,6 +472,32 @@ def production_notes_for_umbrella_product(umbrella_product, language='EN'):
         document.add_text(u'V případě dotazů, pochybnosti nebo návrhy kontaktujte, prosím, polina@suzys.eu', 'BodyTextCenter')
 
 
+    if language == 'CZ':
+        glossary_items = [
+            u'Accessories - Doplňky',
+            u'Barcode - Čárový kód',
+            u'Bag – Kapsa, sáček uvnitř tašky/nosiče',
+            u'Carrier - Taška, nosič',
+            u'Cotton - Bavlna',
+            u'Cushion - Polštář',
+            u'Fabrics - Tkaniny',
+            u'Foams - Pěny',
+            u'Filling - Náplň',
+            u'Fur - Kožešina, srst',
+            u"Golden Suzy's Plaque - Zlata značka/deska Suzy's",
+            u"Golden Suzy's plaque bottom attachments - Zlata značka/deska Suzy's - spodní přílohy",
+            u"Hollow Fibres, wadding - Duté vlákno",
+            u"Leather faux - Umělé kůže",
+            u"PVC plate - PVC deska",
+            u'Ribbon - Paska',
+            u'Small Materials - Malé materiály',
+            u'Wash label - Mycí štítek',
+            u'Work Pramont - Práce Pramont',
+            u'Zipper - Zip',
+        ]
+        document.add_text(u'Glossary', heading)
+        [document.add_text(i, BodyText) for i in glossary_items]
+
     return document.print_document()
 
 
