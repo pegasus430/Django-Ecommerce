@@ -400,7 +400,7 @@ def production_notes_for_umbrella_product(umbrella_product, language='EN'):
             document.add_text(umbrella_product.umbrella_product_model.production_remark_en, text)
     elif language == 'CZ':
         if umbrella_product.production_remark_cz or umbrella_product.umbrella_product_model.production_remark_cz:
-            document.add_text('Important remark', heading)
+            document.add_text(u'Důležité informace', heading)
         if umbrella_product.production_remark_cz:
             document.add_text(umbrella_product.production_remark_cz or umbrella_product.production_remark_en, text)
         if umbrella_product.umbrella_product_model.production_remark_cz:
