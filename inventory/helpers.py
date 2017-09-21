@@ -72,34 +72,34 @@ def materials_on_stock_in_production_location(product):
 def print_box_barcode_label_admin(products):
     '''helper function to return the admin-data from the pdf generation'''
     product_data = {"box_label_{}.pdf".format(product.sku): box_barcode_label(product) for product in products}
-    return dynamic_file_httpresponse(product_data, 'box_labels.zip')
+    return dynamic_file_httpresponse(product_data, 'box_labels')
 
 
 def print_stock_label_38x90_admin(materials):
     ''' helper function to return all of the labels for stock-identifying'''
     stock_label_data = {'stock_label_{}.pdf'.format(mat.sku): stock_label_38x90(mat) for mat in materials}
-    return dynamic_file_httpresponse(stock_label_data, 'stock_labels.zip')
+    return dynamic_file_httpresponse(stock_label_data, 'stock_labels')
 
 
 def print_washinglabel_admin(products):
     ''' helper function to print washinglabels for products'''
     washing_label_data = {"washing_label_{}.pdf".format(product.sku): washinglabel(product) for \
         product in products}
-    return dynamic_file_httpresponse(washing_label_data, 'washing_labels.zip')
+    return dynamic_file_httpresponse(washing_label_data, 'washing_labels')
 
 
 def print_sample_washinglabel_admin(products):
     ''' helper function to print washinglabels for products'''
     sample_washing_labels_data = {"sample_{}.pdf".format(product.sku): sample_washinglabel(product) for\
         product in products}
-    return dynamic_file_httpresponse(sample_washing_labels_data, 'sample_washing_labels.zip')
+    return dynamic_file_httpresponse(sample_washing_labels_data, 'sample_washing_labels')
   
 
 
 def print_production_notes_for_umbrella_product_admin(umbrella_products):
     pr_notes = {"suzys_production_notes_{}.pdf".format(umbrella_product.base_sku):production_notes_for_umbrella_product(umbrella_product) for\
         umbrella_product in umbrella_products}
-    return dynamic_file_httpresponse(pr_notes, 'suzys_production_notes.zip')
+    return dynamic_file_httpresponse(pr_notes, 'suzys_production_notes')
 
 
 ### Admin helper ###
