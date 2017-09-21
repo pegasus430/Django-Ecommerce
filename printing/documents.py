@@ -35,6 +35,7 @@ def stylesheet():
     styles['Heading1'].fontName = 'Arial'
     styles['Heading2'].fontName = 'Arial'
     styles['Heading3'].fontName = 'Arial'
+    styles['BodyTextCenter'].fontName = 'Arial'
     return styles
 
 
