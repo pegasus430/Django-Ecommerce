@@ -23,7 +23,7 @@ class PriceListItemInline(DefaultInline):
 ### Custom Admins ###
 #####################
 class SalesOrderAdmin(DefaultAdmin):
-    list_display = ['__unicode__', 'status', 'get_total_order_value']
+    list_display = ['__unicode__', 'status', 'get_total_order_value', 'created_at']
     inlines = [SalesOrderProductInline]
     readonly_fields = ['total_order_value']
     actions = [create_sales_invoice]
