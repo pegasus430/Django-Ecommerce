@@ -110,6 +110,9 @@ class ProductModelAdmin(admin.ModelAdmin):
     get_umbrella_poroduct_model_number.admin_order_field  = 'Model Number'  #Allows column order sorting
     get_umbrella_poroduct_model_number.short_description = 'Model Number'  #Renames column head
 
+class ProductModelPatternAdmin(admin.ModelAdmin):
+    list_display = ['__unicode__', 'product']
+    list_filter = ['product']
 
 class UmbrellaProductAdmin(admin.ModelAdmin):    
     list_display = ['__unicode__','base_sku', 'active', 'complete', 'get_umbrella_product_model_number', 'number_of_sizes']
@@ -152,7 +155,7 @@ admin.site.register(Collection, CollectionAdmin)
 admin.site.register(Size, SizeAdmin)
 admin.site.register(Colour)
 admin.site.register(ProductModel, ProductModelAdmin)
-admin.site.register(ProductModelPattern)
+admin.site.register(ProductModelPattern, ProductModelPatternAdmin)
 admin.site.register(UmbrellaProductModel, UmbrellaProductModelAdmin)
 admin.site.register(UmbrellaProductModelImage)
 admin.site.register(UmbrellaProductModelProductionNote)
