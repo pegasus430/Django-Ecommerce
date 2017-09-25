@@ -112,7 +112,12 @@ class ProductModelAdmin(admin.ModelAdmin):
 
 class ProductModelPatternAdmin(admin.ModelAdmin):
     list_display = ['__unicode__', 'product']
-    list_filter = ['product']
+    list_filter = ['get_umbrella_product_model_number']
+
+    def get_umbrella_product_model_number(self, obj):
+        return obj.product.umbrella_product_model.number
+    get_umbrella_product_model_number.admin_order_field = 'Model Number'
+    get_umbrella_product_model_number.short_description= 'Model Number'
 
 class UmbrellaProductAdmin(admin.ModelAdmin):    
     list_display = ['__unicode__','base_sku', 'active', 'complete', 'get_umbrella_product_model_number', 'number_of_sizes']
