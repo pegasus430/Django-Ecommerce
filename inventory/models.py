@@ -17,6 +17,29 @@ logger = logging.getLogger(__name__)
 
 ## FIXME:  Add all __unicode__ and other generated strings to tests
 
+################
+### Abstract ### 
+################
+
+class ProductionNoteAbstract(models.Model):
+    name_en = models.CharField(max_length=200)
+    name_cz = models.CharField(max_length=200, blank=True, null=True)
+    umbrella_product_model = models.ManyToManyField('UmbrellaProductModel', blank=True)
+    umbrella_product = models.ManyToManyField('UmbrellaProduct', blank=True)
+    note_en = models.TextField()
+    note_cz = models.TextField(blank=True, null=True)
+    image = models.ImageField(upload_to='media/production/notes/images/%Y/%m/%d', blank=True, null=True)
+    image_optimised = ImageSpecField(source='image',
+                                      processors=[ResizeToFill(500, 500)],
+                                      format='JPEG',
+                                      options={'quality': 60})
+
+    def __unicode__(self):
+        return '{}'.format(self.name_en)   
+
+    class Meta:
+        abstract = True
+
 ######################
 ### Stock location ###
 ######################
@@ -242,21 +265,13 @@ class UmbrellaProductModelProductionDescription(models.Model):
         return '{} for {}'.format(self.name, self.umbrella_product_model)
 
 
-class UmbrellaProductModelProductionNote(models.Model):
-    name_en = models.CharField(max_length=200)
-    name_cz = models.CharField(max_length=200, blank=True, null=True)
-    umbrella_product_model = models.ManyToManyField(UmbrellaProductModel, blank=True)
-    umbrella_product = models.ManyToManyField('UmbrellaProduct', blank=True)
-    note_en = models.TextField()
-    note_cz = models.TextField(blank=True, null=True)
-    image = models.ImageField(upload_to='media/production/notes/images/%Y/%m/%d', blank=True, null=True)
-    image_optimised = ImageSpecField(source='image',
-                                      processors=[ResizeToFill(500, 500)],
-                                      format='JPEG',
-                                      options={'quality': 60})
+class UmbrellaProductModelProductionNote(ProductionNoteAbstract):
+    pass
 
-    def __unicode__(self):
-        return '{}'.format(self.name_en)        
+
+class UmbrellaProductModelProductionIssue(ProductionNoteAbstract):
+    pass
+
 
 class UmbrellaProductModelImage(models.Model):
     '''Product model images'''
