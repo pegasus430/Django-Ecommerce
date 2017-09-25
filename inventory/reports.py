@@ -465,7 +465,22 @@ def production_notes_for_umbrella_product(umbrella_product, language='EN'):
     document.add_table(table_data, table_widths)
 
 
-    document.add_text('Known production issues', heading)
+    if len(umbrella_product.umbrellaproductmodelproductionissue_set.all()) > 0 or\
+            len(umbrella_product.umbrella_product_model.umbrellaproductmodelproductionissue_set.all()) > 0:
+        document.add_text('Known production issues', heading)
+    
+    for remark in umbrella_product.umbrellaproductmodelproductionissue_set.all():
+        if language == 'EN':
+            document.add_text(remark.name_en, heading2)
+            document.add_text(remark.note_en, bullet)
+        elif language == 'CZ':
+            document.add_text(remark.name_cz or remark.name_en, heading2)
+            document.add_text(remark.note_cz or remark.note_en, bullet)  
+
+        if note.image:
+            aspect_ratio = remark.image_optimised.height / float(remark.image_optimised.width)
+            document.add_image(remark.image_optimised.path, 0.25, aspect_ratio)
+
     for remark in umbrella_product.umbrella_product_model.umbrellaproductmodelproductionissue_set.all():
         if language == 'EN':
             document.add_text(remark.name_en, heading2)
