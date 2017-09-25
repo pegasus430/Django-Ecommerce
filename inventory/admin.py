@@ -110,14 +110,16 @@ class ProductModelAdmin(admin.ModelAdmin):
     get_umbrella_poroduct_model_number.admin_order_field  = 'Model Number'  #Allows column order sorting
     get_umbrella_poroduct_model_number.short_description = 'Model Number'  #Renames column head
 
+
 class ProductModelPatternAdmin(admin.ModelAdmin):
     list_display = ['__unicode__', 'product']
-    list_filter = ['get_umbrella_product_model_number']
+    list_filter = ['product__umbrella_product_model__number']
 
     def get_umbrella_product_model_number(self, obj):
         return obj.product.umbrella_product_model.number
     get_umbrella_product_model_number.admin_order_field = 'Model Number'
     get_umbrella_product_model_number.short_description= 'Model Number'
+
 
 class UmbrellaProductAdmin(admin.ModelAdmin):    
     list_display = ['__unicode__','base_sku', 'active', 'complete', 'get_umbrella_product_model_number', 'number_of_sizes']
