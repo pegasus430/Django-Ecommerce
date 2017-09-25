@@ -477,7 +477,7 @@ def production_notes_for_umbrella_product(umbrella_product, language='EN'):
             document.add_text(remark.name_cz or remark.name_en, heading2)
             document.add_text(remark.note_cz or remark.note_en, bullet)  
 
-        if note.image:
+        if remark.image:
             aspect_ratio = remark.image_optimised.height / float(remark.image_optimised.width)
             document.add_image(remark.image_optimised.path, 0.25, aspect_ratio)
 
@@ -489,7 +489,7 @@ def production_notes_for_umbrella_product(umbrella_product, language='EN'):
             document.add_text(remark.name_cz or remark.name_en, heading2)
             document.add_text(remark.note_cz or remark.note_en, bullet)  
 
-        if note.image:
+        if remark.image:
             aspect_ratio = remark.image_optimised.height / float(remark.image_optimised.width)
             document.add_image(remark.image_optimised.path, 0.25, aspect_ratio)
 
