@@ -12,6 +12,7 @@ env.ssl_email = 'sascha.dobblaere@gmail.com'
 env.roledefs = {
 	'web': [
             'www.sila.network',
+            'dev.sila.network',
         ],
 	'mail': [],
 	'feature':[],
