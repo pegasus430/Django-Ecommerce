@@ -2,6 +2,9 @@
 
 ## Todos
 
+- add printing and defaults to django packages
+- cleanup the mess with stylesheets
+- move tranport document, and perhaps some labels to the new printing lib
 - Magento order and client export
 - Centralise and generalise label printing and document printing.
     * partially done, mode splintered code to default pages
