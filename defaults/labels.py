@@ -8,7 +8,7 @@ from reportlab.graphics.barcode.eanbc import Ean13BarcodeWidget
 from reportlab.graphics.shapes import Drawing
 from reportlab.platypus import Flowable
 
-from .printing import stylesheet
+from .stylesheets import stylesheet
 
 from io import BytesIO
 

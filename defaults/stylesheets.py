@@ -16,8 +16,6 @@ def stylesheet_labels():
     return styles
 
 
-
-
 def stylesheet_washinglabels():
     ''' Override the getSampleStyleSheet, and add own styles'''
     styles = getSampleStyleSheet()
