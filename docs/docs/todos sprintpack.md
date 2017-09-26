@@ -1,12 +1,14 @@
 # Questions sprintpack
 
 - PreAdvice, what is dit?
+	`Aankondigen van goederen`
 - ChangeOrderStatus
-    * enkel cancel?
+    * enkel cancel.
 - AddOrder,
     * Partial delivery, when would this happen
 - CreateProduct
-    * to create a product, the api needs a ‘product item’  But where can I see how this if formed? (p10) ===> Page 19
+    * to create a product, the api needs a ‘product item’  But where can I see how this if formed? 
+    `(p10) ===> Page 19`
 - ChangeProduct api endpoint?  
 - DeleteProduct api endpoint?
 

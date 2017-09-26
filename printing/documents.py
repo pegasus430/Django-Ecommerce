@@ -12,7 +12,7 @@ from reportlab.lib.enums import TA_CENTER
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from .stylesheets import stylesheet
 
 from io import BytesIO
 
@@ -20,23 +20,6 @@ from django.conf import settings
 
 import textwrap
 import os
-
-
-def stylesheet():
-    ''' Override the getSampleStyleSheet, and add own styles'''
-    styles = getSampleStyleSheet()
-    pdfmetrics.registerFont(TTFont('Arial', os.path.join(settings.STATIC_ROOT, 'pdf/Arial.ttf')))
-    styles.add(ParagraphStyle(name='BodyTextCenter', parent=styles['BodyText'], alignment=TA_CENTER))
-    styles.add(ParagraphStyle(name='Bold', parent=styles['BodyText'], fontName='Helvetica-Bold'))
-
-    styles['Title'].fontName = 'Arial'
-    styles['BodyText'].fontName = 'Arial'
-    styles['Bullet'].fontName = 'Arial'
-    styles['Heading1'].fontName = 'Arial'
-    styles['Heading2'].fontName = 'Arial'
-    styles['Heading3'].fontName = 'Arial'
-    styles['BodyTextCenter'].fontName = 'Arial'
-    return styles
 
 
 class SuzysDocument:
@@ -82,11 +65,18 @@ class SuzysDocument:
         self.add_table(table_data, [0.15, 0.35, 0.35, 0.15], line_under_header_row=False)
         self.add_vertical_space(10)
 
-
     def add_text(self, content, style):
         ''' expects content and a style that is present in the default stylesheet'''
         self.elements.append(Paragraph(content.replace('\n', "<br></br>"), self.styles[style]))
+    
+    def add_title(self, content):
+        ''' add a title to a page '''
+        self.add_text(content, 'Title')
 
+    def add_paragraph(self, content):
+        ''' add a piece of body/paragraph to a page '''
+        self.add_text(content, 'BodyText')
+        
     def add_table(self, table_data, table_widths, bold_header_row=True, line_under_header_row=True,
             box_line=False):
         ''' expects:

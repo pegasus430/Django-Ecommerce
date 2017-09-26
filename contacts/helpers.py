@@ -1,5 +1,5 @@
 from printing.labels import simple_label_38x90
-from defaults.helpers import multiple_files_to_zip_httpresponse
+from defaults.helpers import dynamic_file_httpresponse
 
 def print_address_label_admin(addresses):
     label_data = {}
@@ -14,7 +14,7 @@ def print_address_label_admin(addresses):
             '''.replace('\n', '<br></br>').format(address=address, country=address.get_country_display())
         label_data[filename] = simple_label_38x90(text)
 
-    return multiple_files_to_zip_httpresponse(label_data, u'address_labels')
+    return dynamic_file_httpresponse(label_data, u'address_labels')
 
 
 ### admin helpers ###
