@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 
-from .printing import print_internal_transport_picking_list
+from .documents import print_internal_transport_picking_list
 from defaults.labels import stock_label_38x90
 
 def print_internal_transport_picking_list_admin(internal_transport):
