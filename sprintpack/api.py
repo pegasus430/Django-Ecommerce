@@ -2,7 +2,7 @@ import requests
 import xmltodict
 
 class SprintClient:
-    def __init__(self, webshopcode):
+    def __init__(self, webshopcode=99):
         self.webshopcode = webshopcode
         self.url = 'http://ewms.sprintpack.be:1450/'
         self.headers = {
@@ -12,7 +12,7 @@ class SprintClient:
         }
 
 
-    def post(self, data, soapaction):
+    def post(self, soapaction, data=False):
         '''
         Post the request to the sprintpack server, with the given webshopcode.
         - headers will add the SoapAction
@@ -21,23 +21,47 @@ class SprintClient:
         '''
         headers = self.headers.copy()
         headers['SoapAction'] = soapaction
-        data = '''
+        xml_data = '''
         <?xml version="1.0" encoding="utf-8"?>
         <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xmlns:xsd="http://www.w3.org/2001/XMLSchema"
             xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
         <soap:Body>
         <WebshopCode>{webshopcode}</WebshopCode>
-        {data}
-       </soap:Body>
-        </soap:Envelope>
-        '''.format(webshopcode=self.webshopcode, data=data)
+        '''.format(webshopcode=self.webshopcode)
+        
+        if data:
+            xml_data += data
 
-        response = requests.post(url,data=data,headers=headers)
+        xml_data += '''
+        </soap:Body>
+        </soap:Envelope>
+        '''
+
+        response = requests.post(url,data=xml_data,headers=headers)
         converted_response = xmltodict.parse(response.content)
         return converted_response
 
 
     def create_order(self, order_dict):
         '''dict with data to create an order'''
-        self.post(converted_order_dict, 'CreateOrder')
+        return self.post(converted_order_dict, 'CreateOrder')
+
+
+    def request_inventory(self, product_ean=False):
+        '''Request the data about the available stock'''
+        if not product_ean:
+            xml_data = '''
+            <RequestInventory>
+                <Inventory>True</Inventory>
+            </RequestInventory>
+            '''
+        else:
+            xml_data = '''
+            <RequestInventory>
+                <Product>{}</Product>
+                <Inventory>True</Inventory>
+            </RequestInventory>
+            '''.format(product_ean)
+
+        return self.post('RequestInventory', xml_data)
