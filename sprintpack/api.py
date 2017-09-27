@@ -11,11 +11,6 @@ class SprintClient:
             # 'SoapAction': 'RequestOrderStatus'
         }
 
-    def parse_response(self, data):
-        '''return the soap body content in ordered dict format'''
-        return data[u'soap:Envelope'][u'soap:Body'][u'SoapRequestResult']
-
-
     def post(self, soapaction, data=False):
         '''
         Post the request to the sprintpack server, with the given webshopcode.
@@ -43,7 +38,7 @@ class SprintClient:
         '''
 
         response = requests.post(url=self.url, data=xml_data, headers=headers)
-        return self.parse_response(response)
+        return response.content[u'soap:Envelope'][u'soap:Body'][u'SoapRequestResult']
 
 
     def create_order(self, order_dict):
