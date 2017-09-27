@@ -88,4 +88,4 @@ class SprintClient:
                 response['Status'], 
                 response['ErrorCode'], 
                 response['Reason'],
-                product_ean)
+                product_ean))
