@@ -38,7 +38,7 @@ class SprintClient:
         '''
 
         response = requests.post(url=self.url, data=xml_data, headers=headers)
-        return response.content[u'soap:Envelope'][u'soap:Body'][u'SoapRequestResult']
+        return xmltodict.parse(response.content)[u'soap:Envelope'][u'soap:Body'][u'SoapRequestResult']
 
 
     def create_order(self, order_dict):
