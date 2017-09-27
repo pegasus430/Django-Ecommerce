@@ -11,6 +11,10 @@ class SprintClient:
             # 'SoapAction': 'RequestOrderStatus'
         }
 
+    def parse_response(self, data):
+        '''return the soap body content in ordered dict format'''
+        return data[u'soap:Envelope'][u'soap:Body'][u'SoapRequestResult']
+
 
     def post(self, soapaction, data=False):
         '''
@@ -39,8 +43,7 @@ class SprintClient:
         '''
 
         response = requests.post(url=self.url, data=xml_data, headers=headers)
-        converted_response = xmltodict.parse(response.content)
-        return converted_response
+        return self.parse_response(response)
 
 
     def create_order(self, order_dict):
@@ -64,4 +67,4 @@ class SprintClient:
             </RequestInventory>
             '''.format(product_ean)
 
-        return self.post('RequestInventory', xml_data)
+        return self.post('RequestInventory', xml_data)[u'Inventory']
