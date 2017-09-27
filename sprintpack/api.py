@@ -87,5 +87,5 @@ class SprintClient:
             raise Exception('{} {} {} for EAN: {}'.format(
                 response['Status'], 
                 response['ErrorCode'], 
-                response['Reason']),
+                response['Reason'],
                 product_ean)
