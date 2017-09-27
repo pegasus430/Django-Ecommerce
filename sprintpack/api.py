@@ -84,4 +84,8 @@ class SprintClient:
         try:
             return response[u'Inventory']
         except KeyError:
-            raise Exception('{} {} {}'.format(response['Status'], response['ErrorCode'], response['Reason']))
+            raise Exception('{} {} {} for EAN: {}'.format(
+                response['Status'], 
+                response['ErrorCode'], 
+                response['Reason']),
+                product_ean)
