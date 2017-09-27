@@ -84,4 +84,4 @@ class SprintClient:
         try:
             return response[u'Inventory']
         except KeyError:
-            return '{} {} {}'.format(response['Status'], response['ErrorCode'], response['Reason'])
+            raise Exception('{} {} {}'.format(response['Status'], response['ErrorCode'], response['Reason']))
