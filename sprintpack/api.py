@@ -10,6 +10,9 @@ class SprintClient:
             #'content-type': 'application/soap+xml',
             # 'SoapAction': 'RequestOrderStatus'
         }
+    
+    def parse_xml(self, data):
+        return xmltodict.parse(data)[u'soap:Envelope'][u'soap:Body'][u'SoapRequestResult']
 
     def post(self, soapaction, data=False):
         '''
@@ -38,13 +41,28 @@ class SprintClient:
         '''
 
         response = requests.post(url=self.url, data=xml_data, headers=headers)
-        return xmltodict.parse(response.content)[u'soap:Envelope'][u'soap:Body'][u'SoapRequestResult']
+        return self.parse_xml(response.content)
 
+# '''
+# - CreatePreAdvice
+# - ChangePreAdviceStatus
+# '''
 
     def create_order(self, order_dict):
         '''dict with data to create an order'''
+        ##TODO
         return self.post(converted_order_dict, 'CreateOrder')
 
+    # def change_order_status(self, order_number, new_status='cancel'):
+    #     '''Change the order-status.  Currently only cancel is avilable at the api'''
+    #     ## TODO
+    #     xml_data = ''
+    #     return self.post(xml_data, 'ChangeOrderStatus')
+
+    def create_products(self, products_list):
+        '''create a list of dicts with product_data'''
+        ##TODO
+        return self.post(converted_product_list, 'CreateProducts')
 
     def request_inventory(self, product_ean=False):
         '''Request the data about the available stock'''
@@ -61,5 +79,9 @@ class SprintClient:
                 <Inventory>True</Inventory>
             </RequestInventory>
             '''.format(product_ean)
-
-        return self.post('RequestInventory', xml_data)[u'Inventory']
+        
+        response = self.post('RequestInventory', xml_data)
+        try:
+            return response[u'Inventory']
+        except KeyError:
+            return response
