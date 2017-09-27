@@ -38,7 +38,7 @@ class SprintClient:
         </soap:Envelope>
         '''
 
-        response = requests.post(url,data=xml_data,headers=headers)
+        response = requests.post(url=self.url, data=xml_data, headers=headers)
         converted_response = xmltodict.parse(response.content)
         return converted_response
 
