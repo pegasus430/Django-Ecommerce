@@ -40,8 +40,14 @@ class SprintClient:
         </soap:Envelope>
         '''
 
-        response = requests.post(url=self.url, data=xml_data, headers=headers)
-        return self.parse_xml(response.content)
+        response = self.parse_xml(requests.post(url=self.url, data=xml_data, headers=headers).content)
+        if response['Status'] == u'Error':
+            raise Exception('ErrorCode {} for {} with message: {}'.format(
+                response['ErrorCode'],
+                soapaction,
+                response['Reason']))
+        else:
+            return response
 
 
     def create_pre_advice(self, pre_advice_data):
@@ -86,18 +92,11 @@ class SprintClient:
             </RequestInventory>
             '''.format(product_ean)
         
-        response = self.post('RequestInventory', xml_data)
-        try:
-            return response[u'Inventory']
-        except KeyError:
-            raise Exception('{} {} {} for EAN: {}'.format(
-                response['Status'], 
-                response['ErrorCode'], 
-                response['Reason'],
-                product_ean))
+        return = self.post('RequestInventory', xml_data)[u'Inventory']
 
     def request_order_status(self, order_number):
         '''request the status of an order'''
+        ## TODO:  To test
         xml_data = '''
         <RequestOrderStatus>
             <OrderID>{}</OrderID>
