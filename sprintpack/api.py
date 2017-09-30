@@ -75,15 +75,18 @@ class SprintClient:
         ##TODO
         return self.post(converted_pre_advice_data, 'ChangePreAdviceStatus')
 
-    def change_order_status(self, order_number, new_status='cancel'):
-        '''Change the order-status.  Currently only cancel is avilable at the api'''
-        ## TODO
-        xml_data = ''
-        return self.post(xml_data, 'ChangeOrderStatus')
+    def cancel_order(self, order_number):
+        '''cancel the order.  Currently only cancel is avilable at the api.  Original name ChangeOrderStatus'''
+        xml_data = '''
+        <ChangeOrderStatus>
+            <OrderID>{order_number}</OrderID>
+            <Status>Cancel</Status>
+        </ChangeOrderStatus>
+        '''.format(order_number)
+        return self.post('ChangeOrderStatus', xml_data)
 
     def create_products(self, product_list):
         '''create a list of dicts with product_data'''
-        ##TODO
         xml_data = '''
         <CreateProducts>
              <Product>
