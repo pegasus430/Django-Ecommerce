@@ -18,7 +18,8 @@ class SprintClient:
             return xmltodict.parse(data, dict_constructor=dict)[u'soap:Envelope'][u'soap:Body'][u'SoapRequestResult']
         except ExpatError:
             import sys
-            raise Exception(data), None, sys.exc_info()[2]
+            raise Exception(data)
+            # raise Exception(data), None, sys.exc_info()[2]
 
     def post(self, soapaction, data=False):
         '''
