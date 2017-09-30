@@ -81,7 +81,7 @@ class SprintClient:
         xml_data = ''
         return self.post(xml_data, 'ChangeOrderStatus')
 
-    def create_products(self, products_list):
+    def create_products(self, product_list):
         '''create a list of dicts with product_data'''
         ##TODO
         xml_data = '''
@@ -105,7 +105,7 @@ class SprintClient:
         </CreateProducts>     
         '''
         
-        return self.post(converted_product_list, 'CreateProducts')
+        return self.post('CreateProducts', xml_data)
 
     def request_inventory(self, product_ean=False):
         '''Request the data about the available stock'''
