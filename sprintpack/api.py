@@ -79,7 +79,7 @@ class SprintClient:
         '''cancel the order.  Currently only cancel is avilable at the api.  Original name ChangeOrderStatus'''
         xml_data = '''
         <ChangeOrderStatus>
-            <OrderID>{order_number}</OrderID>
+            <OrderID>{}</OrderID>
             <Status>Cancel</Status>
         </ChangeOrderStatus>
         '''.format(order_number)
