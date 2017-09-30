@@ -103,4 +103,4 @@ class SprintClient:
             <OrderID>{}</OrderID>
         </RequestOrderStatus>
         '''.format(order_number)
-        self.post('RequestOrderStatus', sxml_data)
+        self.post('RequestOrderStatus', xml_data)
