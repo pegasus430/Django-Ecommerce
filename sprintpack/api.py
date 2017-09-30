@@ -41,6 +41,7 @@ class SprintClient:
         '''
 
         response = self.parse_xml(requests.post(url=self.url, data=xml_data, headers=headers).content)
+        return response
         if response['Status'] == u'Error':
             raise Exception('ErrorCode {} for {} with message: {}'.format(
                 response['ErrorCode'],
