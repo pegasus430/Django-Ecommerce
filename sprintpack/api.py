@@ -99,8 +99,8 @@ class SprintClient:
     def request_order_status(self, order_number):
         '''request the status of an order'''
         xml_data = '''
-            <RequestOrderStatus>
-                <OrderID>{}</OrderID>
-            </RequestOrderStatus>
+        <RequestOrderStatus>
+            <OrderID>{}</OrderID>
+        </RequestOrderStatus>
         '''.format(order_number)
-        self.post(xml_data, 'RequestOrderStatus')
+        self.post('RequestOrderStatus', sxml_data)
