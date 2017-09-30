@@ -1,6 +1,7 @@
 import requests
 import xmltodict
 
+from .excpetions import UnkownError
 from xml.parsers.expat import ExpatError
 
 class SprintClient:
@@ -10,15 +11,14 @@ class SprintClient:
         self.headers = {
             'content-type': 'text/xml',
             #'content-type': 'application/soap+xml',
-            # 'SoapAction': 'RequestOrderStatus'
         }
     
     def parse_xml(self, data):
         try:
             return xmltodict.parse(data, dict_constructor=dict)[u'soap:Envelope'][u'soap:Body'][u'SoapRequestResult']
         except ExpatError:
-            raise Exception(data)
-            raise
+            import sys
+            raise Exception(data), None, sys.exc_info()[2]
 
     def post(self, soapaction, data=False):
         '''
@@ -54,7 +54,7 @@ class SprintClient:
                     soapaction,
                     response['Reason']))
             else:
-                raise Exception('Status contained value {} instead of Error'.format(response['Status']))
+                raise UnkownError('Status contained value {} instead of Error'.format(response['Status']))
         except KeyError:
             return response
 
