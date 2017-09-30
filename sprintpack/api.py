@@ -12,7 +12,11 @@ class SprintClient:
         }
     
     def parse_xml(self, data):
-        return xmltodict.parse(data, dict_constructor=dict)[u'soap:Envelope'][u'soap:Body'][u'SoapRequestResult']
+        try:
+            return xmltodict.parse(data, dict_constructor=dict)[u'soap:Envelope'][u'soap:Body'][u'SoapRequestResult']
+        except ExpatError:
+            raise Exception(data)
+            raise
 
     def post(self, soapaction, data=False):
         '''
