@@ -1,0 +1,2 @@
+class UnkownError(Excpetion):
+	pass
