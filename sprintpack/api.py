@@ -92,7 +92,7 @@ class SprintClient:
             </RequestInventory>
             '''.format(product_ean)
         
-        return = self.post('RequestInventory', xml_data)[u'Inventory']
+        return self.post('RequestInventory', xml_data)[u'Inventory']
 
     def request_order_status(self, order_number):
         '''request the status of an order'''
