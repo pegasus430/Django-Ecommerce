@@ -12,7 +12,7 @@ class SprintClient:
         }
     
     def parse_xml(self, data):
-        return xmltodict.parse(data)[u'soap:Envelope'][u'soap:Body'][u'SoapRequestResult']
+        return xmltodict.parse(data, dict_constructor=dict)[u'soap:Envelope'][u'soap:Body'][u'SoapRequestResult']
 
     def post(self, soapaction, data=False):
         '''
@@ -43,21 +43,27 @@ class SprintClient:
         response = requests.post(url=self.url, data=xml_data, headers=headers)
         return self.parse_xml(response.content)
 
-# '''
-# - CreatePreAdvice
-# - ChangePreAdviceStatus
-# '''
+
+    def create_pre_advice(self, pre_advice_data):
+        ''' create a pre-advice / aka announce goods to be delivered '''
+        ##TODO
+        return self.post(converted_pre_advice_data, 'CreatePreAdvice')
 
     def create_order(self, order_dict):
         '''dict with data to create an order'''
         ##TODO
         return self.post(converted_order_dict, 'CreateOrder')
 
-    # def change_order_status(self, order_number, new_status='cancel'):
-    #     '''Change the order-status.  Currently only cancel is avilable at the api'''
-    #     ## TODO
-    #     xml_data = ''
-    #     return self.post(xml_data, 'ChangeOrderStatus')
+    def change_pre_advice_status(self, pre_advice_data):
+        ''' change a pre-advice status '''
+        ##TODO
+        return self.post(converted_pre_advice_data, 'ChangePreAdviceStatus')
+
+    def change_order_status(self, order_number, new_status='cancel'):
+        '''Change the order-status.  Currently only cancel is avilable at the api'''
+        ## TODO
+        xml_data = ''
+        return self.post(xml_data, 'ChangeOrderStatus')
 
     def create_products(self, products_list):
         '''create a list of dicts with product_data'''
@@ -89,3 +95,12 @@ class SprintClient:
                 response['ErrorCode'], 
                 response['Reason'],
                 product_ean))
+
+    def request_order_status(self, order_number):
+        '''request the status of an order'''
+        xml_data = '''
+            <RequestOrderStatus>
+                <OrderID>{}</OrderID>
+            </RequestOrderStatus>
+        '''.format(order_number)
+        self.post(xml_data, 'RequestOrderStatus')
