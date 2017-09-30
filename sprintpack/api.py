@@ -84,6 +84,27 @@ class SprintClient:
     def create_products(self, products_list):
         '''create a list of dicts with product_data'''
         ##TODO
+        xml_data = '''
+        <CreateProducts>
+             <Product>
+        '''
+
+        for product in product_list:
+            xml_data += '''
+            <EAN>{ean}</EAN>
+            <ExternalRef>{sku}</ExternalRef>
+            <Description1>{description}</Description1>
+            '''.format(
+                ean=product['ean_code'],
+                sku=product['sku'],
+                description=product['description']
+                )
+
+        xml_data += '''
+             </Product>
+        </CreateProducts>     
+        '''
+        
         return self.post(converted_product_list, 'CreateProducts')
 
     def request_inventory(self, product_ean=False):
@@ -102,12 +123,12 @@ class SprintClient:
             </RequestInventory>
             '''.format(product_ean)
         
-        # return self.post('RequestInventory', xml_data)[u'Inventory']
-        return self.post('RequestInventory', xml_data)
+        return self.post('RequestInventory', xml_data)[u'Inventory']
 
     def request_order_status(self, order_number):
         '''request the status of an order'''
-        ## TODO:  To test
+        ## FIXME: client.request_order_status(2222) >> Throws expat-error on BPOST link - invalid excaping of &
+        ## Request sent to Orlando on 30/09/2017
         xml_data = '''
         <RequestOrderStatus>
             <OrderID>{}</OrderID>
