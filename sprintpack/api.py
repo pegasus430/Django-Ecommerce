@@ -1,7 +1,7 @@
 import requests
 import xmltodict
 
-from .excpetions import UnkownError
+from .exceptions import UnkownError
 from xml.parsers.expat import ExpatError
 
 class SprintClient:
