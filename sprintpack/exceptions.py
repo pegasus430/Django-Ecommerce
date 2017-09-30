@@ -1,2 +1,2 @@
-class UnkownError(Excpetion):
+class UnkownError(Exception):
 	pass
