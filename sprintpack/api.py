@@ -1,6 +1,8 @@
 import requests
 import xmltodict
 
+from xml.parsers.expat import ExpatError
+
 class SprintClient:
     def __init__(self, webshopcode=99):
         self.webshopcode = webshopcode
