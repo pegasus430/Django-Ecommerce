@@ -42,12 +42,15 @@ class SprintClient:
 
         response = self.parse_xml(requests.post(url=self.url, data=xml_data, headers=headers).content)
         return response
-        if response['Status'] == u'Error':
-            raise Exception('ErrorCode {} for {} with message: {}'.format(
-                response['ErrorCode'],
-                soapaction,
-                response['Reason']))
-        else:
+        try:
+            if response['Status'] == u'Error':
+                raise Exception('ErrorCode {} for {} with message: {}'.format(
+                    response['ErrorCode'],
+                    soapaction,
+                    response['Reason']))
+            else:
+                raise Exception('Status contained value {} instead of Error'.format(response['Status']))
+        except KeyError:
             return response
 
 
@@ -93,7 +96,8 @@ class SprintClient:
             </RequestInventory>
             '''.format(product_ean)
         
-        return self.post('RequestInventory', xml_data)[u'Inventory']
+        # return self.post('RequestInventory', xml_data)[u'Inventory']
+        return self.post('RequestInventory', xml_data)
 
     def request_order_status(self, order_number):
         '''request the status of an order'''
