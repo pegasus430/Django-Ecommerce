@@ -45,15 +45,18 @@ class SprintClient:
     def encode_file_to_base64(path):
         '''encode a file to base64 data from either local path or http(s) url'''
 
-        extension = path[-3:].lower()
-        if extension != 'pdf':
-            raise WrongFileTypeError('{} is not supported.  Only PDF.'.format(extension))
+        if os.path.isfile(path):
+            extension = path[-3:].lower()
+            if extension != 'pdf':
+                raise WrongFileTypeError('{} is not supported.  Only PDF.'.format(extension))
 
-        if path.startswith('http'):
-            file_content = requests.get(path).content
+            if path.startswith('http'):
+                file_content = requests.get(path).content
+            else:
+                with open(path, 'rb') as f:
+                    file_content = f.read()
         else:
-            with open(path, 'rb') as f:
-                file_content = f.read()
+            file_content = path
 
         return base64.b64encode(file_content)
 
@@ -120,7 +123,7 @@ class SprintClient:
         :param country: 2 Digit ISO code
         :param phone: full international phone
         :param product_order_list: Items ordered in following format: [{'ean_code': 333333, 'qty': 3}]
-        :param attachment_file_list: List of file-attachments ['/link/to/file.pdf', 'http://link.to.file']
+        :param attachment_file_list: List of paths or file-contents
         :return: Sprintpack OrderID
         '''
         ## TODO: Test
