@@ -32,6 +32,7 @@ class SprintClient:
                 )
         return xml_data
     
+
     def parse_xml(self, data):
         try:
             return xmltodict.parse(data, dict_constructor=dict)[u'soap:Envelope'][u'soap:Body'][u'SoapRequestResult']
@@ -42,7 +43,7 @@ class SprintClient:
 
     def render_xml(self, data, template_name):
         '''render and return xml from the given data with the given template_name'''
-        path = os.path.join(settings.BASE_DIR, 'sprintpack', 'templates', 'sprintpack', template_name)
+        path = os.path.join('sprintpack', template_name)
         post_data = {
             'webshopcode': self.webshopcode,
             'data': data,

@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'transport',
     'production',
     
+    'sprintpack',    
     'xero_local',
 
     #'huey.contrib.djhuey', 

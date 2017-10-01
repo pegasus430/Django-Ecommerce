@@ -1,4 +1,4 @@
-{% extends "base.xml" %}
+{% extends "sprintpack/base.xml" %}
 
 {% block body %}
 <RequestInventory>
