@@ -12,6 +12,18 @@ class SprintClient:
             'content-type': 'text/xml',
             #'content-type': 'application/soap+xml',
         }
+
+    def _product_item(self, product):
+        xml_data = '''
+            <EAN>{ean}</EAN>
+            <ExternalRef>{sku}</ExternalRef>
+            <Description1>{description}</Description1>
+            '''.format(
+                ean=product['ean_code'],
+                sku=product['sku'],
+                description=product['description']
+                )
+        return xml_data
     
     def parse_xml(self, data):
         try:
@@ -66,6 +78,74 @@ class SprintClient:
 
     def create_order(self, order_dict):
         '''dict with data to create an order'''
+        xml_data = '''
+        <Order>
+        '''
+
+        xml_data += '''
+        <Order>
+            <OrderNumber>Nr</OrderNumber>
+            <Reference>Ref</Reference>
+            <SiteIndication>Ref</SiteIndication>
+            <Language>NL</Language>
+            <Carrier></Carrier>
+            <ShipmentMethod></ShipmentMethod>
+            <Currency></Currency>
+            <TransportRef>NL</Language>
+            <TransportNota1></TransportNota1>
+            <TransportNota2></TransportNota2>
+            <DayOfDelivery></DayOfDelivery>
+            <DaysRetention>999</DaysRetention>
+            <DaysCancelation>999</DaysCancelation>
+            <OrderMode>N</OrderMode>
+        </Order>
+        '''
+
+        xml_data += '''
+        <Customer>
+            <ExternalID></ExternalID>
+            <Name></Name>
+            <Name2></Name2>
+            <Address1></Address1>
+            <Address2></Address2>
+            <PostalCode1></PostalCode1>
+            <PostalCode2></PostalCode2>
+            <City></City>
+            <Country></Country>
+            <Mobile></Mobile>
+            <Telephone></Telephone>
+            <eMail></eMail>
+            <ServicePoint></ServicePoint>
+        </Customer>
+        '''
+
+        '''
+            <OrderValueAddedHandling>
+                 * VALUE ADDED HANDLING ITEM *
+            </OrderValueAddedHandling>
+
+        '''       
+
+        for product in order_dict['products']:
+            xml_data += '''
+            <OrderLine>
+                <ProductID>{ean}</ProductID>
+                <Pieces>{qty}</Pieces>
+            </OrderLine>
+            '''.format(ean=product['ean_code'], qty=product['qty'])
+
+            '''
+            <AdditionalDocuments>
+                 * ADDITIONALDOCUMENT ITEM *
+            </AdditionalDocuments>
+            <LabelText>
+                 * LABELTEXT ITEM *
+            </LabelText>
+        '''
+
+        xml_data += '''
+        </Order>
+        '''
         ##TODO
         return self.post(converted_order_dict, 'CreateOrder')
 
@@ -92,15 +172,7 @@ class SprintClient:
         '''
 
         for product in product_list:
-            xml_data += '''
-            <EAN>{ean}</EAN>
-            <ExternalRef>{sku}</ExternalRef>
-            <Description1>{description}</Description1>
-            '''.format(
-                ean=product['ean_code'],
-                sku=product['sku'],
-                description=product['description']
-                )
+            xml_data += self._product_item(product)
 
         xml_data += '''
              </Product>
