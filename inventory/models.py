@@ -533,7 +533,7 @@ class Product(models.Model):
     def available_stock(self):
         '''show the available stock in SprintPack'''
         client = SprintClient()
-        return self.request
+        return client.request_inventory(ean_code=self.ean_code)
 
 
 class ProductBillOfMaterial(models.Model):
