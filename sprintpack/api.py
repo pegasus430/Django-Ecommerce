@@ -42,21 +42,21 @@ class SprintClient:
         return render_to_string(path, post_data)
 
     @staticmethod
-    def encode_file_to_base64(path):
-        '''encode a file to base64 data from either local path or http(s) url'''
+    def encode_file_to_base64(path_or_link_or_file_contents):
+        '''encode a file to base64 data from either file-contents, local path or http(s) url'''
 
-        if os.path.isfile(path):
-            extension = path[-3:].lower()
+        if os.path.isfile(path_or_link_or_file_contents):
+            extension = path_or_link_or_file_contents[-3:].lower()
             if extension != 'pdf':
                 raise WrongFileTypeError('{} is not supported.  Only PDF.'.format(extension))
 
-            if path.startswith('http'):
-                file_content = requests.get(path).content
+            if path_or_link_or_file_contents.startswith('http'):
+                file_content = requests.get(path_or_link_or_file_contents).content
             else:
-                with open(path, 'rb') as f:
+                with open(path_or_link_or_file_contents, 'rb') as f:
                     file_content = f.read()
         else:
-            file_content = path
+            file_content = path_or_link_or_file_contents
 
         return base64.b64encode(file_content)
 
