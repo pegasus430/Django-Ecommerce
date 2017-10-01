@@ -123,6 +123,12 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
+
+SPRINTPACK = {
+    'webshopcode': 99,
+    'url': 'http://ewms.sprintpack.be:1450/',
+}
+
 # Additional locations of static files
 STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".

@@ -1,13 +1,20 @@
 import requests
 import xmltodict
+import os
+
+from django.template.loader import render_to_string
+from django.conf import settings
 
 from .exceptions import UnkownError
 from xml.parsers.expat import ExpatError
 
+import logging
+logger = logging.getLogger(__name__)
+
 class SprintClient:
-    def __init__(self, webshopcode=99):
-        self.webshopcode = webshopcode
-        self.url = 'http://ewms.sprintpack.be:1450/'
+    def __init__(self):
+        self.webshopcode = settings.SPRINTPACK['webshopcode'] 
+        self.url = settings.SPRINTPACK['url'] 
         self.headers = {
             'content-type': 'text/xml',
             #'content-type': 'application/soap+xml',
@@ -32,6 +39,17 @@ class SprintClient:
             import sys
             raise Exception('{}\n{}'.format(e, data)), None, sys.exc_info()[2]
 
+
+    def render_xml(self, data, template_name):
+        '''render and return xml from the given data with the given template_name'''
+        path = os.path.join(settings.BASE_DIR, 'sprintpack', 'templates', 'sprintpack', template_name)
+        post_data = {
+            'webshopcode': self.webshopcode,
+            'data': data,
+        }
+        return render_to_string(path, post_data)
+
+
     def post(self, soapaction, data=False):
         '''
         Post the request to the sprintpack server, with the given webshopcode.
@@ -41,23 +59,27 @@ class SprintClient:
         '''
         headers = self.headers.copy()
         headers['SoapAction'] = soapaction
-        xml_data = '''
-        <?xml version="1.0" encoding="utf-8"?>
-        <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-            xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-        <soap:Body>
-        <WebshopCode>{webshopcode}</WebshopCode>
-        '''.format(webshopcode=self.webshopcode)
+        xml_template_name = '{}.xml'.format(soapaction)
         
-        if data:
-            xml_data += data
 
-        xml_data += '''
-        </soap:Body>
-        </soap:Envelope>
-        '''
+        # xml_data = '''
+        # <?xml version="1.0" encoding="utf-8"?>
+        # <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        #      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        #     xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+        # <soap:Body>
+        # <WebshopCode>{webshopcode}</WebshopCode>
+        # '''.format(webshopcode=self.webshopcode)
+        
+        # if data:
+        #     xml_data += data
 
+        # xml_data += '''
+        # </soap:Body>
+        # </soap:Envelope>
+        # '''
+        xml_data = self.render_xml(data, xml_template_name)
+        logger.debug('xml:data looks like: {}'.format(xml_data))
         response = self.parse_xml(requests.post(url=self.url, data=xml_data, headers=headers).content)
         try:
             if response[u'Status'] == u'Error':
@@ -181,21 +203,26 @@ class SprintClient:
         
         return self.post('CreateProducts', xml_data)
 
-    def request_inventory(self, product_ean=False):
+    def request_inventory(self, product_ean=None):
         '''Request the data about the available stock'''
-        if not product_ean:
-            xml_data = '''
-            <RequestInventory>
-                <Inventory>True</Inventory>
-            </RequestInventory>
-            '''
-        else:
-            xml_data = '''
-            <RequestInventory>
-                <Product>{}</Product>
-                <Inventory>True</Inventory>
-            </RequestInventory>
-            '''.format(product_ean)
+
+        xml_data = {
+            'ean_code': product_ean,
+            'Inventory': True,
+        }
+        # if not product_ean:
+        #     xml_data = '''
+        #     <RequestInventory>
+        #         <Inventory>True</Inventory>
+        #     </RequestInventory>
+        #     '''
+        # else:
+        #     xml_data = '''
+        #     <RequestInventory>
+        #         <Product>{}</Product>
+        #         <Inventory>True</Inventory>
+        #     </RequestInventory>
+        #     '''.format(product_ean)
         
         return self.post('RequestInventory', xml_data)[u'Inventory']
 
