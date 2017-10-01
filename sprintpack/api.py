@@ -24,6 +24,7 @@ class SprintClient:
         logger.debug('Initialising SprintClient with webshopcode {} and connect_to_server {}'.format(
             self.webshopcode, 
             self.connect_to_server))
+
     @staticmethod
     def parse_xml(data):
         try:
@@ -169,12 +170,12 @@ class SprintClient:
 
     def create_product(self, ean_code, sku, description):
         '''create one product'''
-        xml_data = [{
+        data = [{
             'ean_code': ean_code,
             'sku': sku, 
             'description': description,
         }]
-        return self.post('CreateProducts', [data])
+        return self.post('CreateProducts', data)
 
     def create_products(self, product_list):
         '''create a list of dicts with product_data

@@ -128,7 +128,7 @@ STATICFILES_FINDERS = (
 SPRINTPACK = {
     'webshopcode': 99,
     'url': 'http://ewms.sprintpack.be:1450/',
-    'connect_to_server': False,
+    'connect_to_server': True,
 }
 
 # Additional locations of static files

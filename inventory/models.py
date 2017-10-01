@@ -507,13 +507,27 @@ class Product(models.Model):
 
     sku = models.CharField(max_length=15, blank=True, null=True, unique=True)
 
+    _created_in_sprintpack = models.BooleanField(default=False)
+
     class Meta:
         ordering = ('sku', 'product_model')
 
-    ## Set sku on any save 
     def save(self, *args, **kwargs):
+        ## Set sku on any save
         self.sku = '{}-{}'.format(self.umbrella_product.base_sku, self.product_model.size.short_size)
+        
         super(Product, self).save(*args, **kwargs)
+
+        ## Create the inventry product in sprintpack
+        try:
+            if not self._created_in_sprintpack:
+                self.create_item_in_sprintpack()
+                self._created_in_sprintpack = True
+                self.save()
+        except Exception as e:
+            logger.error('Failed to created poduct {} in Sprintpack inventory due to: {}'.format(self.sku, e))
+            raise
+
 
     @property 
     def name(self):
@@ -530,15 +544,26 @@ class Product(models.Model):
             total_cost += bom.cost
         return total_cost
 
+    @property 
     def available_stock(self):
         '''show the available stock in SprintPack'''
         client = SprintClient()
-        return client.request_inventory(ean_code=self.ean_code)
+        return client.request_inventory(ean_code=self.ean_code)[u'Claimable']
 
     def create_item_in_sprintpack(self):
-        client = SprintClient()
-        return client.create_product(ean_code=self.ean_code, sku=self.sku, description=self.name)
+        if not self.ean_code:
+            error_string= 'ean_code missing for {}, cannot create product in inventory'.format(self.sku)
+            logger.error(error_string)
+            raise Exception(error_string)
 
+        response = SprintClient().create_product(ean_code=self.ean_code, sku=self.sku, description=self.name)
+        if response['Status'] == u'OK':
+            logger.info('Created {} in sprintpack inventory'.format(self.sku))
+            return True
+        else:
+            error_string = 'Failed to create {} in Sprintpack. Response: \n{}'.format(self.sku, response)
+            logger.error(error_string)
+            raise Exception(error_string)
 
 
 class ProductBillOfMaterial(models.Model):
