@@ -80,6 +80,9 @@ class SalesOrder(models.Model):
 
     is_paid = models.BooleanField(default=False)
 
+    class Meta:
+        ordering = ('created_at',)
+
     def __unicode__(self):
         return 'Order #{} for {}'.format(self.id, self.client)
 
