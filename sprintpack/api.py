@@ -168,11 +168,10 @@ class SprintClient:
         }
         return self.post('CreateProducts', xml_data)
 
-    @classmethod
-    def request_inventory(self, product_ean=False):
+    def request_inventory(self, ean_code=False):
         '''Request the data about the available stock'''
         xml_data = {
-            'ean_code': product_ean,
+            'ean_code': ean_code,
             'inventory': 'True',
         }
         response = self.post('RequestInventory', xml_data)
