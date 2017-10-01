@@ -535,6 +535,11 @@ class Product(models.Model):
         client = SprintClient()
         return client.request_inventory(ean_code=self.ean_code)
 
+    def create_item_in_sprintpack(self):
+        client = SprintClient()
+        return client.create_product(ean_code=self.ean_code, sku=self.sku, description=self.name)
+
+
 
 class ProductBillOfMaterial(models.Model):
     ''' Materials in a product '''

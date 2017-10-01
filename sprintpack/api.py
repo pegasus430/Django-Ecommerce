@@ -160,6 +160,15 @@ class SprintClient:
         }
         return self.post('ChangeOrderStatus', xml_data)
 
+    def create_product(self, ean_code, sku, description):
+        '''create one product'''
+        data = {
+            'ean_code': ean_code,
+            'sku': sku, 
+            'description': description,
+        }
+        return self.create_products([data])
+
     def create_products(self, product_list):
         '''create a list of dicts with product_data'''
         ##TODO: Cut description to max 60chars
