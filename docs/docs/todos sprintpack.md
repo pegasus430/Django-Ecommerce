@@ -2,21 +2,16 @@
 
 - PreAdvice, what is dit?
 	`Aankondigen van goederen`
-- ChangeOrderStatus
-    * enkel cancel.
 - AddOrder,
-    * Partial delivery, when would this happen
+    * Partial delivery, when would this happen > shouldnt happen if all is in stock before forwarding the order
 - CreateProduct
     * to create a product, the api needs a ‘product item’  But where can I see how this if formed? 
     `(p10) ===> Page 19`
-- ChangeProduct api endpoint?  
-- DeleteProduct api endpoint?
 
 
 # Todos Sprintpack
 
 - Create sprintpack log models to monitor any request after execution.
-- Set shop-id in settings, and 99 for testing
 - Invoice or picking-list, create list of EU countries, or else invoice.
 - For orders, create shipping extension.
 - For orders, allow for cancel, and create credit notes  (remainder of items)
