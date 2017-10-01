@@ -14,7 +14,6 @@ logger = logging.getLogger(__name__)
 ## https://github.com/freakboy3742/pyxero
 
 rsa_keyfile_path = os.path.join(settings.BASE_DIR, 'xero_local/certs/privatekey.pem')
-#rsa_keyfile_path = os.path.join(settings.BASE_DIR, 'xero_local/certs/publickey.cer')
 
 with open(rsa_keyfile_path) as keyfile:
     rsa_key = keyfile.read()
