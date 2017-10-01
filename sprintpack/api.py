@@ -76,6 +76,8 @@ class SprintClient:
                         response['ErrorCode'],
                         soapaction,
                         response['Reason']))
+                elif response[u'Status'] == u'OK':
+                    return response
                 else:
                     raise UnkownError('Status contained value {} instead of Error'.format(response['Status']))
             except KeyError:
