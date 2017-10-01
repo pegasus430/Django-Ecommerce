@@ -26,4 +26,5 @@ MEDIA_ROOT = 'media/'
 DEBUG = True
 COMPRESS_OFFLINE = False
 
+SPRINTPACK['connect_to_server'] = False
 # HUEY['consumer']['periodic'] = False ## Disable crons on local setup.

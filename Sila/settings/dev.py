@@ -29,5 +29,6 @@ CACHES = {
 }
 
 SPRINTPACK['connect_to_server'] = True
+SPRINTPACK['webshopcode'] = 99
 
 # EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'

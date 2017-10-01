@@ -21,14 +21,16 @@ class SprintClient:
             # 'content-type': 'text/xml',
             'content-type': 'application/soap+xml',
         }
-
-    def parse_xml(self, data):
+        logger.debug('Initialising SprintClient with webshopcode {} and connect_to_server {}'.format(
+            self.webshopcode, 
+            self.connect_to_server))
+    @staticmethod
+    def parse_xml(data):
         try:
             return xmltodict.parse(data, dict_constructor=dict)[u'soap:Envelope'][u'soap:Body'][u'SoapRequestResult']
         except ExpatError as e:
             import sys
             raise Exception('{}\n{}'.format(e, data)), None, sys.exc_info()[2]
-
 
     def render_xml(self, data, template_name):
         '''render and return xml from the given data with the given template_name'''
@@ -39,8 +41,8 @@ class SprintClient:
         }
         return render_to_string(path, post_data)
 
-
-    def encode_file_to_base64(self, path):
+    @staticmethod
+    def encode_file_to_base64(path):
         '''encode a file to base64 data from either local path or http(s) url'''
 
         extension = path[-3:].lower()
@@ -180,7 +182,10 @@ class SprintClient:
         return self.post('CreateProducts', xml_data)
 
     def request_inventory(self, ean_code=False):
-        '''Request the data about the available stock'''
+        '''Request the data about the available stock
+        :param ean_code: ean_code of the poduct of False
+        :return: inventory of requested ean_code, or list of inventory of all products known
+        '''
         xml_data = {
             'ean_code': ean_code,
             'inventory': 'True',
