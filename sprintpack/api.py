@@ -21,7 +21,6 @@ class SprintClient:
             # 'content-type': 'text/xml',
             'content-type': 'application/soap+xml',
         }
-    
 
     def parse_xml(self, data):
         try:
@@ -82,7 +81,6 @@ class SprintClient:
         else:
             return xml_data
 
-
     def create_pre_advice(self, expected_date_of_delivery, product_list):
         ''' create a pre-advice / aka announce goods to be delivered 
         :param date_of_delivery: datetime object
@@ -100,7 +98,6 @@ class SprintClient:
             return response[u'PreAdviceID']
         else:
             return response
-
 
     def create_order(self, order_number, order_reference, company_name,
         contact_name, address1, address2, postcode, city, country, phone,
@@ -168,7 +165,6 @@ class SprintClient:
         else:
             return response
          
-
     def request_order_status(self, order_number):
         '''request the status of an order'''
         ## FIXME: client.request_order_status(2222) >> Throws expat-error on BPOST link - invalid excaping of &

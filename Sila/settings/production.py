@@ -1,4 +1,4 @@
-from .base import TEMPLATES, INSTALLED_APPS, MIDDLEWARE_CLASSES
+from .base import TEMPLATES, INSTALLED_APPS, MIDDLEWARE_CLASSES, SPRINTPACK
 
 ENVIRONMENT = 'Production'
 DEBUG = False
@@ -41,3 +41,6 @@ DATABASES = {
 
 STATIC_ROOT = '/home/sila/static/'
 MEDIA_ROOT = '/home/sila/media/'
+
+SPRINTPACK['webshopcode'] = 32
+SPRINTPACK['connect_to_server'] = True
