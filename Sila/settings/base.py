@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'sales',
     'transport',
     'production',
-    
+
     'sprintpack',    
     'xero_local',
 
@@ -214,6 +214,11 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         }, 
+        'sprintpack': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },         
     },        
 }
 
