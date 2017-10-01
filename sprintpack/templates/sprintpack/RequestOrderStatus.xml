@@ -1,0 +1,7 @@
+{% extends "sprintpack/base.xml" %}
+
+{% block body %}
+<RequestOrderStatus>
+	<OrderID>{{post_data.order_number}}</OrderID>
+</RequestOrderStatus>
+{% endblock %}

@@ -2,7 +2,7 @@
 
 {% block body %}
 <RequestInventory>
-	<Product>{{ean_code}}</Product>
-	<Inventory>{{inventory}}</Inventory>
+	{% if post_data.ean_code %}<Product>{{post_data.ean_code}}</Product>{% endif %}
+	<Inventory>{{post_data.inventory}}</Inventory>
 </RequestInventory>
 {% endblock %}

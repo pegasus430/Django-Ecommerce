@@ -1,0 +1,13 @@
+{% extends "sprintpack/base.xml" %}
+
+{% block body %}
+<CreateProducts>
+{% for product in post_data.products %}
+	<Product>
+		<EAN>{{product.ean_code}}</EAN>
+		<ExternalRef>{{product.sku}}</ExternalRef>
+		<Description1>{{product.description}}</Description1>
+	</Product>
+{% endfor %}
+</CreateProducts>               	
+{% endblock %}
