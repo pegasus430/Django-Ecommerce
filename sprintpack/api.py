@@ -39,6 +39,7 @@ class SprintClient:
         }
         return render_to_string(path, post_data)
 
+
     def encode_file_to_base64(self, path):
         '''encode a file to base64 data from either local path or http(s) url'''
 
@@ -53,6 +54,7 @@ class SprintClient:
                 file_content = f.read()
 
         return base64.b64encode(file_content)
+
 
     def post(self, soapaction, data=False):
         '''
@@ -102,11 +104,20 @@ class SprintClient:
     def create_order(self, order_number, order_reference, company_name,
         contact_name, address1, address2, postcode, city, country, phone,
         product_order_list, attachment_file_list):
-        '''Create an order, 
-        - product_order_list:
-            [{'ean_code': 333333, 'qty': 3}]
-        - attachment_file_list:
-            ['/link/to/file.pdf', 'http://link.to.file']
+        '''Create an order:
+        :param order_number: order-number of the order 
+        :param order_reference: Customer reference of the order
+        :param company_name:
+        :param contact_name: full name of the customer/contact
+        :param address1:
+        :param address2: False or None if not needed
+        :param postcode:
+        :param city:
+        :param country: 2 Digit ISO code
+        :param phone: full international phone
+        :param product_order_list: Items ordered in following format: [{'ean_code': 333333, 'qty': 3}]
+        :param attachment_file_list: List of file-attachments ['/link/to/file.pdf', 'http://link.to.file']
+        :return: Sprintpack OrderID
         '''
         ## TODO: Test
         xml_data = {
@@ -131,7 +142,11 @@ class SprintClient:
         for f in attachment_file_list:
             xml_data['additional_documents'].append(self.encode_file_to_base64(f))
 
-        return self.post('CreateOrder', xml_data)
+        response = self.post('CreateOrder', xml_data)
+        if type(response) == dict:
+            return response[u'OrderID']
+        else:
+            return response
 
     def change_pre_advice_status(self, pre_advice_data):
         ''' change a pre-advice status '''
@@ -153,6 +168,7 @@ class SprintClient:
         }
         return self.post('CreateProducts', xml_data)
 
+    @classmethod
     def request_inventory(self, product_ean=False):
         '''Request the data about the available stock'''
         xml_data = {
