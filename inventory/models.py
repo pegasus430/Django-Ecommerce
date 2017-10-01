@@ -548,7 +548,11 @@ class Product(models.Model):
     def available_stock(self):
         '''show the available stock in SprintPack'''
         client = SprintClient()
-        return client.request_inventory(ean_code=self.ean_code)[u'Claimable']
+        try:
+            return client.request_inventory(ean_code=self.ean_code)[u'Claimable']
+        except Exception as e:
+            logger.error('{} failed to fetch available product stock from Sprintpack. Reason: \n{}'.format(self.sku, e))
+            return 'Unknown - {}'.format(e)
 
     def create_item_in_sprintpack(self):
         if not self.ean_code:
