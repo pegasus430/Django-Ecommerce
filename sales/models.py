@@ -64,7 +64,7 @@ class SalesOrder(models.Model):
 
     client = models.ForeignKey(Relation,  limit_choices_to={'is_client': True})
     # invoice_to = models.ForeignKey(RelationAddress, related_name='invoice_to')
-    client_reference = models.CharField(max_length=100, blank=True, null=True)
+    client_reference = models.CharField(max_length=15, blank=True, null=True)
     ship_to = models.ForeignKey(RelationAddress, related_name='ship_to')
     ship_from = models.ForeignKey(StockLocation)
 
