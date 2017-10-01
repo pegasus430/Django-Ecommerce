@@ -166,15 +166,17 @@ class SprintClient:
 
     def create_product(self, ean_code, sku, description):
         '''create one product'''
-        data = {
+        xml_data = [{
             'ean_code': ean_code,
             'sku': sku, 
             'description': description,
-        }
-        return self.create_products([data])
+        }]
+        return self.post('CreateProducts', [data])
 
     def create_products(self, product_list):
-        '''create a list of dicts with product_data'''
+        '''create a list of dicts with product_data
+        :param product_list: list of dicts in format [{'ean_code': 2222, 'sku': '99-kdk-kdk-kdkd', 'description': '....'}]
+        '''
         ##TODO: Cut description to max 60chars
         xml_data = {
             'products': product_list
