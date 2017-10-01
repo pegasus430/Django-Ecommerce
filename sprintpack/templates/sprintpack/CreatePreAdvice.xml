@@ -1,0 +1,13 @@
+{% extends "sprintpack/base.xml" %}
+
+{% block body %}
+<PreAdvice>
+	<DateExpected>{{post_data.date_of_delivery}}</DateExpected>
+	{% for product in post_data.product_list %}
+	<PreAdviceLine>
+		<ProductID>{{product.ean_code}}</ProductID>
+		<Pieces>{{product.qty}}</Pieces>
+	</PreAdviceLine>
+	{% endfor %}
+</PreAdvice>
+{% endblock %}

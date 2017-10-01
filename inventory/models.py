@@ -11,6 +11,8 @@ from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 from taggit.managers import TaggableManager
 
+from sprintpack.api import SprintClient
+
 import logging
 logger = logging.getLogger(__name__)
 
@@ -527,6 +529,11 @@ class Product(models.Model):
         for bom in self.productbillofmaterial_set.all():
             total_cost += bom.cost
         return total_cost
+
+    def available_stock(self):
+        '''show the available stock in SprintPack'''
+        client = SprintClient()
+        return self.request
 
 
 class ProductBillOfMaterial(models.Model):
