@@ -7,6 +7,8 @@ from inventory.reports import return_stock_status_for_order
 
 from contacts.models import OwnAddress
 
+from sprintpack.api import SprintClient
+
 
 class ProductionOrder(models.Model):
     STATUS_CHOICES = (
@@ -79,6 +81,8 @@ class ProductionOrderDelivery(models.Model):
     carrier = models.CharField(max_length=3)
     est_delivery_date = models.DateField()
 
+    _sprintpack_pre_advice_id = models.CharField(max_length=100, blank=True, null=True)
+
     def __unicode__(self):
         return '{} {}'.format(
             self.production_order,
@@ -93,3 +97,14 @@ class ProductionOrderDelivery(models.Model):
                    product=product.product,
                    qty=product.qty)
         super(ProductionOrderDelivery, self).save(*args, **kwargs)
+
+    def create_sprintpack_pre_advice(self):
+        if not self._sprintpack_pre_advice_id:
+            response = SprintClient().create_pre_advice(
+                self.est_delivery_date,
+                [{'ean_code': prod.product.ean_code, 'qty': prod.qty} for prod in self.productionorderdeliveryitem_set.all()])
+            self._sprintpack_pre_advice_id = response
+            self.save()
+        else:
+            raise Exception('{} is already forwarded to sprintpack with id'.format(self.id, self._sprintpack_pre_advice_id))
+

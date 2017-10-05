@@ -2,7 +2,8 @@ from django.contrib import admin
 from defaults.admin import DefaultAdmin, DefaultInline
 
 from .models import *
-from .helpers import print_production_order_report
+from .helpers import print_production_order_report, \
+    pre_advice_sprintpack
 
 ###############
 ### Inlines ###
@@ -27,6 +28,7 @@ class ProductionOrderItemAdmin(DefaultAdmin):
 
 class ProductionOrderDeliveryAdmin(DefaultAdmin):
     inlines = [ProductionOrderDeliveryItemInline]
+    actions = [pre_advice_sprintpack]
 
 
 admin.site.register(ProductionOrder, ProductionOrderAdmin)

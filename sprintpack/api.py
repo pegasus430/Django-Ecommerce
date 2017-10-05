@@ -104,10 +104,14 @@ class SprintClient:
         }
         
         response = self.post('CreatePreAdvice', xml_data)
+        logger.info('Created pre-advice with delivery {} and goods {}'.format(
+            expected_date_of_delivery, product_list))
         if type(response) == dict:
             return response[u'PreAdviceID']
         else:
+            logger.debug(response)
             return response
+
 
     def create_order(self, order_number, order_reference, company_name,
         contact_name, address1, address2, postcode, city, country, phone,
