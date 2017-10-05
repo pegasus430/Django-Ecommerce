@@ -10,6 +10,9 @@ from .helpers import print_production_order_report
 class ProductionOrderItemInline(DefaultInline):
 	model = ProductionOrderItem
 
+class ProductionOrderDeliveryItem(DefaultInline):
+	model = ProductionOrderDelivery
+
 #####################
 ### Custom Admins ###
 #####################
@@ -22,6 +25,10 @@ class ProductionOrderAdmin(DefaultAdmin):
 class ProductionOrderItemAdmin(DefaultAdmin):
 	pass
 
+class ProductionOrderDeliveryAdmin(DefaultAdmin):
+	pass
+
 
 admin.site.register(ProductionOrder, ProductionOrderAdmin)
 admin.site.register(ProductionOrderItem, ProductionOrderItemAdmin)
+admin.site.register(ProductionOrderDelivery, ProductionOrderDeliveryAdmin)
