@@ -8,25 +8,25 @@ from .helpers import print_production_order_report
 ### Inlines ###
 ###############
 class ProductionOrderItemInline(DefaultInline):
-	model = ProductionOrderItem
+    model = ProductionOrderItem
 
-class ProductionOrderDeliveryItem(DefaultInline):
-	model = ProductionOrderDelivery
+class ProductionOrderDeliveryItemInline(DefaultInline):
+    model = ProductionOrderDelivery
 
 #####################
 ### Custom Admins ###
 #####################
 class ProductionOrderAdmin(DefaultAdmin):
-	inlines = [ProductionOrderItemInline]
-	readonly_fields = ['missing_materials', 'total_items']
-	list_display = ['__unicode__', 'status']
-	actions = [print_production_order_report]
+    inlines = [ProductionOrderItemInline]
+    readonly_fields = ['missing_materials', 'total_items']
+    list_display = ['__unicode__', 'status']
+    actions = [print_production_order_report]
 
 class ProductionOrderItemAdmin(DefaultAdmin):
-	pass
+    pass
 
 class ProductionOrderDeliveryAdmin(DefaultAdmin):
-	pass
+    inlines = [ProductionOrderDeliveryItemInline]
 
 
 admin.site.register(ProductionOrder, ProductionOrderAdmin)
