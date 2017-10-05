@@ -83,6 +83,9 @@ class ProductionOrderDelivery(models.Model):
 
     _sprintpack_pre_advice_id = models.CharField(max_length=100, blank=True, null=True)
 
+    class Meta:
+        verbose_name_plural = "ProductionOrderDeliveries"
+
     def __unicode__(self):
         return '{} {}'.format(
             self.production_order,
@@ -107,4 +110,5 @@ class ProductionOrderDelivery(models.Model):
             self.save()
         else:
             raise Exception('{} is already forwarded to sprintpack with id'.format(self.id, self._sprintpack_pre_advice_id))
+
 
