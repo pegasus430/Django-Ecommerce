@@ -57,3 +57,39 @@ class ProductionOrderItem(models.Model):
     class Meta:
         unique_together = ('production_order', 'product')
 
+
+
+class ProductionOrderDeliveryItem(models.Model):
+    production_order_delivery = models.ForeignKey('ProductionOrderDelivery')
+    product = models.ForeignKey(Product)
+    qty = models.IntegerField()
+
+    class Meta:
+        unique_together = ('product', 'production_order_delivery')
+
+    def __unicode__(self):
+        return '{} {} {}'.format(
+            self.production_order_delivery,
+            self.product,
+            self.qty)
+
+
+class ProductionOrderDelivery(models.Model):
+    production_order = models.ForeignKey(ProductionOrder)
+    carrier = models.CharField(max_length=3)
+    est_delivery_date = models.DateField()
+
+    def __unicode__(self):
+        return '{} {}'.format(
+            self.production_order,
+            self.id)
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            super(ProductionOrderDelivery, self).save(*args, **kwargs)
+            for product in self.production_order.productionorderitem_set.all():
+                ProductionOrderDeliveryItem.objects.create(
+                   production_order_delivery=self,
+                   product=product.product,
+                   qty=product.qty)
+        super(ProductionOrderDelivery, self).save(*args, **kwargs)
