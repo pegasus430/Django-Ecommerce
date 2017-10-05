@@ -29,6 +29,7 @@ class ProductionOrderItemAdmin(DefaultAdmin):
 class ProductionOrderDeliveryAdmin(DefaultAdmin):
     inlines = [ProductionOrderDeliveryItemInline]
     actions = [pre_advice_sprintpack]
+    readonly_fields = ['_sprintpack_pre_advice_id',]
 
 
 admin.site.register(ProductionOrder, ProductionOrderAdmin)
