@@ -175,7 +175,7 @@ class SprintClient:
             'sku': sku, 
             'description': description,
         }]
-        return self.post('CreateProducts', data)
+        return self.create_products(data)
 
     def create_products(self, product_list):
         '''create a list of dicts with product_data
