@@ -21,3 +21,11 @@
 - integrate rest of things
 
 
+## Api integration
+> CreateProduct = Done
+> CreatePreAdvice = Done
+> CreateOrder
+> RequestOrderStatus
+> RequestInventory = Done
+
+
