@@ -20,6 +20,7 @@ class AbstractAddress(models.Model):
     city = models.CharField(max_length=100, blank=True, null=True)
     postcode = models.CharField(max_length=100, blank=True, null=True)
     country = models.CharField(max_length=2, choices=COUNTRY_CHOICES)
+    remark = models.TextField(blank=True, null=True)
 
     class Meta:
         abstract = True
