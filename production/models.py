@@ -84,7 +84,7 @@ class ProductionOrderDelivery(models.Model):
     _sprintpack_pre_advice_id = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
-        verbose_name_plural = "ProductionOrderDeliveries"
+        verbose_name_plural = "Production order deliveries"
 
     def __unicode__(self):
         return '{} {}'.format(
