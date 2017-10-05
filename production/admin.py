@@ -11,7 +11,7 @@ class ProductionOrderItemInline(DefaultInline):
     model = ProductionOrderItem
 
 class ProductionOrderDeliveryItemInline(DefaultInline):
-    model = ProductionOrderDelivery
+    model = ProductionOrderDeliveryItem
 
 #####################
 ### Custom Admins ###
