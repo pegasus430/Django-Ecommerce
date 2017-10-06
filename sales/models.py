@@ -205,3 +205,7 @@ class SalesOrderDelivery(models.Model):
         self._sprintpack_order_id = response
         self.save()
 
+    @property 
+    def request_sprintpack_order_status(self):
+        return SprintClient().request_order_status(self._sprintpack_order_id)
+

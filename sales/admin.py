@@ -43,7 +43,7 @@ class SalesOrderProductAdmin(DefaultAdmin):
 class SalesOrderDeliveryAdmin(DefaultAdmin):
     inlines = [SalesOrderDeliveryItemInline]
     actions = [print_picking_lists, print_customs_invoice, ship_with_sprintpack]
-    readonly_fields = ['_sprintpack_order_id']
+    readonly_fields = ['request_sprintpack_order_status', '_sprintpack_order_id']
 
 class PriceListAdmin(DefaultAdmin):
     inlines = [PriceListItemInline]
