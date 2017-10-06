@@ -6,8 +6,12 @@ from inventory.models import StockLocation, Product
 from inventory.reports import return_stock_status_for_order
 
 from contacts.models import OwnAddress
-
 from sprintpack.api import SprintClient
+
+from .documents import picking_list
+
+import logging
+logger = logging.getLogger(__name__)
 
 
 class ProductionOrder(models.Model):
@@ -108,7 +112,13 @@ class ProductionOrderDelivery(models.Model):
                 [{'ean_code': prod.product.ean_code, 'qty': prod.qty} for prod in self.productionorderdeliveryitem_set.all()])
             self._sprintpack_pre_advice_id = response
             self.save()
+            logger.info('Created pre-advice for production order {}'.format(self.production_order))
         else:
+            logger.warning('Skipping pre-advice, already informed sprintpack about production order {}'.format(self.production_order))
             raise Exception('{} is already forwarded to sprintpack with id'.format(self.id, self._sprintpack_pre_advice_id))
+
+    def picking_list(self):
+        '''create picking_list for a production-order shipment'''
+        return picking_list(self)
 
 

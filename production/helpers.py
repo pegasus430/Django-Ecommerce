@@ -11,6 +11,10 @@ def print_production_order_report_admin(production_orders):
 
     return multiple_files_to_zip_httpresponse(items, 'purchase_orders')
 
+def print_picking_list_admin(production_order_shipments):
+    items = {doc_name: pr.picking_list() for pr in production_order_shipments}
+    return multiple_files_to_zip_httpresponse(items, 'picking_lists')
+
 
 def pre_advice_sprintpack_admin(production_order_delivery):
     ''' send pre-advice for production order shipment to sprintpack '''
@@ -21,6 +25,10 @@ def pre_advice_sprintpack_admin(production_order_delivery):
 def print_production_order_report(modeladmin, request, queryset):
     return print_production_order_report_admin(queryset)
 print_production_order_report.short_description = 'Print Production Orders' 
+
+def print_picking_lists(modeladmin, request, queryset):
+    return print_picking_list_admin(queryset)
+print_picking_lists.short_description = 'Print Picking lists' 
 
 def pre_advice_sprintpack(modeladmin, request, queryset):
     for shipment in queryset:   

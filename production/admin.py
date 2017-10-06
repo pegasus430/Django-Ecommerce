@@ -3,6 +3,7 @@ from defaults.admin import DefaultAdmin, DefaultInline
 
 from .models import *
 from .helpers import print_production_order_report, \
+    print_picking_lists, \
     pre_advice_sprintpack
 
 ###############
@@ -28,7 +29,7 @@ class ProductionOrderItemAdmin(DefaultAdmin):
 
 class ProductionOrderDeliveryAdmin(DefaultAdmin):
     inlines = [ProductionOrderDeliveryItemInline]
-    actions = [pre_advice_sprintpack]
+    actions = [print_picking_lists, pre_advice_sprintpack]
     readonly_fields = ['_sprintpack_pre_advice_id',]
 
 
