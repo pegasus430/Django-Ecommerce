@@ -5,7 +5,7 @@ from django.db import models
 from defaults.helpers import get_model_fields
 from xero_local import api as xero_api
 
-from .countries import COUNTRY_CHOICES
+from .countries import COUNTRY_CHOICES, EU_COUNTRIES
 
 class AbstractAddress(models.Model):
     business_name = models.CharField(max_length=100)
@@ -24,6 +24,13 @@ class AbstractAddress(models.Model):
 
     class Meta:
         abstract = True
+
+    @property 
+    def is_eu_country(self):
+        if self.country in EU_COUNTRIES:
+            return True
+        else:
+            return False
 
     @property 
     def contact_full_name(self):
