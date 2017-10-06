@@ -24,7 +24,52 @@ class AbstractAddress(models.Model):
 
     class Meta:
         abstract = True
- 
+
+    @property 
+    def contact_full_name(self):
+        if self.contact_first_name:
+            if self.contact_name:
+                return u'{} {}'.format(self.contact_first_name, self.contact_name)
+            else:
+                return u'{}'.format(self.contact_first_name)
+        else:
+            if self.contact_name:
+                return u'{}'.format(self.contact_name)
+        
+        return False
+
+    def printing_address_list(self, include_phone=False):
+        address_lines = []
+        address_lines.append(self.business_name)
+
+        if self.contact_full_name:
+            address_lines.append(self.contact_full_name)
+        
+        if self.address1:
+            address_lines.append(self.address1)
+
+        if self.address2:
+            address_lines.append(self.address2)
+
+        if self.city:
+            if self.postcode:
+                address_lines.append(u'{} {}'.format(self.city, self.postcode))
+            else:
+                address_lines.append(u'{}'.format(self.city))
+        else:
+            if self.postcode:
+                address_lines.append(u'{}'.format(self.postcode))
+
+        address_lines.append(self.get_country_display())
+
+        if include_phone and self.contact_phone:
+            address_lines.append(u'Tel: {}'.format(self.contact_phone))
+
+        return address_lines
+
+    def printing_address_newlines(self, include_phone=False):
+        return '\n'.join(self.printing_address_list(include_phone=include_phone))
+
 
 ##############
 ## Contacts ##

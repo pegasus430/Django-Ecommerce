@@ -1,5 +1,5 @@
 from .reports import production_order_report
-from defaults.helpers import multiple_files_to_zip_httpresponse
+from defaults.helpers import dynamic_file_httpresponse
 
 from sprintpack.api import SprintClient
 
@@ -9,11 +9,11 @@ def print_production_order_report_admin(production_orders):
         doc_name = 'Production order {} #{}.pdf'.format(pr.production_location.own_address.company_name, pr.id)
         items[doc_name] = production_order_report(pr)
 
-    return multiple_files_to_zip_httpresponse(items, 'purchase_orders')
+    return dynamic_file_httpresponse(items, 'purchase_orders')
 
 def print_picking_list_admin(production_order_shipments):
-    items = {doc_name: pr.picking_list() for pr in production_order_shipments}
-    return multiple_files_to_zip_httpresponse(items, 'picking_lists')
+    items = {'Production Shipment {}.pdf'.format(pr.id): pr.picking_list() for pr in production_order_shipments}
+    return dynamic_file_httpresponse(items, 'picking_lists')
 
 
 def pre_advice_sprintpack_admin(production_order_delivery):
