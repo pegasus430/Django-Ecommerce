@@ -7,7 +7,10 @@ from django.db import models
 from inventory.models import Product, StockLocation
 from contacts.models import Relation, RelationAddress
 
+from sprintpack.api import SprintClient
+
 from .helpers import get_correct_sales_order_item_price
+from .documents import picking_list, customs_invoice
 
 import logging
 logger = logging.getLogger(__name__)
@@ -116,3 +119,86 @@ class SalesOrderProduct(models.Model):
         if self.unit_price is None or self.unit_price == '':
             self.unit_price = get_correct_sales_order_item_price(self.product, self.qty)
         super(SalesOrderProduct, self).save(*args, **kwargs)
+
+
+
+
+class SalesOrderDeliveryItem(models.Model):
+    sales_order_delivery = models.ForeignKey('SalesOrderDelivery')
+    product = models.ForeignKey(Product)
+    qty = models.IntegerField()
+
+    class Meta:
+        unique_together = ('product', 'sales_order_delivery')
+
+    def __unicode__(self):
+        return '{} {} {}'.format(
+            self.sales_order_delivery,
+            self.product,
+            self.qty)
+
+
+class SalesOrderDelivery(models.Model):
+    sales_order = models.ForeignKey(SalesOrder)
+    _sprintpack_order_id = models.CharField(max_length=100, blank=True, null=True)
+
+    class Meta:
+        verbose_name_plural = "Sales order deliveries"
+
+    def __unicode__(self):
+        return '{} {}'.format(
+            self.sales_order,
+            self.id)
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            super(SalesOrderDelivery, self).save(*args, **kwargs)
+            for product in self.sales_order.salesorderproduct_set.all():
+                SalesOrderDeliveryItem.objects.create(
+                   sales_order_delivery=self,
+                   product=product.product.product,
+                   qty=product.qty)
+        super(SalesOrderDelivery, self).save(*args, **kwargs)
+
+    def ship_order_with_sprintpack(self):
+        if not self._sprintpack_order_id:
+            response = SprintClient().create_order()
+            logger.info('Shipped order with sprintpack {}'.format(self.sales_order))
+        else:
+            logger.warning('Skipping create_order, already informed sprintpack about production shipment {}'.format(self.sales_order))
+            raise Exception('{} is already shipped with sprintpack with id'.format(self.id, self._sprintpack_order_id))
+
+    def picking_list(self):
+        '''create picking_list for a sales-order shipment'''
+        return picking_list(self)
+
+    def customs_invoice(self):
+        '''create an invoice for customs which always includes a shipping-cost'''
+        return customs_invoice(self)
+
+    def ship_with_sprintpack(self):
+        '''ship with sprintpack'''
+        client = self.sales_order.client
+        sales_order = self.sales_order
+        product_order_list = [{'ean_code': prod.product.product.ean_code, 'qty': prod.qty} \
+            for prod in sales_order.salesorderproduct_set.all()]
+
+        attachment_file_list = [self.picking_list()]
+        if not sales_order.ship_to.is_eu_country():
+            attachment_file_list.append(self.customs_invoice())*3
+
+        response = SprintClient().create_order(
+            order_number=sales_order.id, 
+            order_reference=sales_order.client_reference, 
+            company_name=client.business_name,
+            contact_name=client.full_name, 
+            address1=client.address1, 
+            address2=client.address2, 
+            postcode=client.postcode, 
+            city=client.city, 
+            country=client.country, 
+            phone=client.contact_phone,
+            product_order_list=product_order_list, 
+            attachment_file_list=attachment_file_list
+            )
+

@@ -1,5 +1,7 @@
 from .reports import export_pricelist_pdf, export_pricelist_csv
 
+from defaults.helpers import dynamic_file_httpresponse
+
 from xero_local import api as xero_api
 
 ROUND_DIGITS = 2
@@ -43,6 +45,14 @@ def get_correct_sales_order_item_price(pricelist_item, qty):
                 return price
 
 
+def print_picking_list_admin(sales_order_shipments):
+    items = {'Order Shipment {}.pdf'.format(pr.id): pr.picking_list() for pr in sales_order_shipments}
+    return dynamic_file_httpresponse(items, 'picking_lists')
+
+
+def print_customs_invoice_admin(sales_order_shipments):
+    items = {'Commercial Invoice {}.pdf'.format(pr.id): pr.customs_invoice() for pr in sales_order_shipments}
+    return dynamic_file_httpresponse(items, 'Commercial_invoices')
 
 ## Admin helper ##
 def set_prices_admin_action(modeladmin, request, queryset):
@@ -98,3 +108,12 @@ def create_sales_invoice(modeladmin, request, queryset):
         
         q.save()
 create_sales_invoice.short_description = 'Create Sales Invoices'
+
+def print_picking_lists(modeladmin, request, queryset):
+    return print_picking_list_admin(queryset)
+print_picking_lists.short_description = 'Print Picking lists' 
+
+
+def print_customs_invoice(modeladmin, request, queryset):
+    return print_customs_invoice_admin(queryset)
+print_customs_invoice.short_description = 'Print Customs Invoice'

@@ -238,6 +238,8 @@ class UmbrellaProductModel(models.Model):
     production_remark_en = models.TextField(blank=True, null=True)
     production_remark_cz = models.TextField(blank=True, null=True)
 
+    customs_code_export = models.CharField(max_length=10, blank=True, null=True)
+
     ## When saving, you need to save all of the nested attached products. So they may re-assign the sku
     ## FIXME: Write test for override below
     def save(self, *args, **kwargs):
@@ -310,6 +312,11 @@ class ProductModel(models.Model):
     def number_of_patterns(self):
         ''' return the number of patterns present '''
         return len(self.productmodelpattern_set.all())
+
+    @property
+    def customs_code_export(self):
+        '''return the customs code form umbrella-product-model'''
+        return self.umbrella_product_model.customs_code_export
 
 
 class ProductModelPattern(models.Model):
@@ -553,6 +560,12 @@ class Product(models.Model):
         except Exception as e:
             logger.error('{} failed to fetch available product stock from Sprintpack. Reason: \n{}'.format(self.sku, e))
             return 'Unknown - {}'.format(e)
+
+    @property
+    def customs_code_export(self):
+        '''return the customs code for export from product-model'''
+        return self.product_model.customs_code_export   
+             
 
     def create_item_in_sprintpack(self):
         if not self.ean_code:
