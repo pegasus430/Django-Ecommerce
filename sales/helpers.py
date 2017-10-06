@@ -54,6 +54,10 @@ def print_customs_invoice_admin(sales_order_shipments):
     items = {'Commercial Invoice {}.pdf'.format(pr.id): pr.customs_invoice() for pr in sales_order_shipments}
     return dynamic_file_httpresponse(items, 'Commercial_invoices')
 
+def ship_with_sprintpack_admin(shipments):
+    for shipment in shipments:
+        shipment.ship_with_sprintpack()
+
 ## Admin helper ##
 def set_prices_admin_action(modeladmin, request, queryset):
     for q in queryset:
@@ -117,3 +121,7 @@ print_picking_lists.short_description = 'Print Picking lists'
 def print_customs_invoice(modeladmin, request, queryset):
     return print_customs_invoice_admin(queryset)
 print_customs_invoice.short_description = 'Print Customs Invoice'
+
+def ship_with_sprintpack(modeladmin, request, queryset):
+    return ship_with_sprintpack_admin(queryset)
+ship_with_sprintpack.short_description = 'Ship with sprintpack'

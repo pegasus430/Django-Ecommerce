@@ -48,20 +48,27 @@ class SprintClient:
     def encode_file_to_base64(path_or_link_or_file_contents):
         '''encode a file to base64 data from either file-contents, local path or http(s) url'''
 
-        if os.path.isfile(path_or_link_or_file_contents):
-            extension = path_or_link_or_file_contents[-3:].lower()
-            if extension != 'pdf':
-                raise WrongFileTypeError('{} is not supported.  Only PDF.'.format(extension))
+        try:
+            if os.path.isfile(path_or_link_or_file_contents):
+                extension = path_or_link_or_file_contents[-3:].lower()
+                if extension != 'pdf':
+                    raise WrongFileTypeError('{} is not supported.  Only PDF.'.format(extension))
 
-            if path_or_link_or_file_contents.startswith('http'):
-                file_content = requests.get(path_or_link_or_file_contents).content
+                if path_or_link_or_file_contents.startswith('http'):
+                    file_content = requests.get(path_or_link_or_file_contents).content
+                else:
+                    with open(path_or_link_or_file_contents, 'rb') as f:
+                        file_content = f.read()
             else:
-                with open(path_or_link_or_file_contents, 'rb') as f:
-                    file_content = f.read()
-        else:
+                file_content = path_or_link_or_file_contents
+        except TypeError:
             file_content = path_or_link_or_file_contents
 
-        return base64.b64encode(file_content)
+        try:
+            return base64.b64encode(file_content)
+        except:
+            logger.error('Failed to encode file. content: \n{}'.format(file_content))
+            raise
 
 
     def post(self, soapaction, data=False):

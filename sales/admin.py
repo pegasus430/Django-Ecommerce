@@ -10,7 +10,8 @@ from .helpers import clear_b2b_prices_admin_action,\
     export_costlist_csv_admin_action,\
     create_sales_invoice, \
     print_picking_lists, \
-    print_customs_invoice
+    print_customs_invoice, \
+    ship_with_sprintpack
 
 ###############
 ### Inlines ###
@@ -31,7 +32,7 @@ class SalesOrderAdmin(DefaultAdmin):
     list_display = ['__unicode__', 'status', 'get_total_order_value', 'created_at', 'is_paid']
     inlines = [SalesOrderProductInline]
     readonly_fields = ['total_order_value']
-    actions = [create_sales_invoice, print_picking_lists]
+    actions = [create_sales_invoice]
 
     def get_total_order_value(self, obj):
         return obj.total_order_value
@@ -41,7 +42,7 @@ class SalesOrderProductAdmin(DefaultAdmin):
 
 class SalesOrderDeliveryAdmin(DefaultAdmin):
     inlines = [SalesOrderDeliveryItemInline]
-    actions = [print_picking_lists, print_customs_invoice]
+    actions = [print_picking_lists, print_customs_invoice, ship_with_sprintpack]
     readonly_fields = ['_sprintpack_order_id']
 
 class PriceListAdmin(DefaultAdmin):

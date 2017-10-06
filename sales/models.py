@@ -184,14 +184,14 @@ class SalesOrderDelivery(models.Model):
             for prod in sales_order.salesorderproduct_set.all()]
 
         attachment_file_list = [self.picking_list()]
-        if not sales_order.ship_to.is_eu_country():
+        if not sales_order.ship_to.is_eu_country:
             attachment_file_list.append(self.customs_invoice())*3
 
         response = SprintClient().create_order(
             order_number=sales_order.id, 
             order_reference=sales_order.client_reference, 
             company_name=client.business_name,
-            contact_name=client.full_name, 
+            contact_name=client.contact_full_name, 
             address1=client.address1, 
             address2=client.address2, 
             postcode=client.postcode, 
@@ -201,4 +201,7 @@ class SalesOrderDelivery(models.Model):
             product_order_list=product_order_list, 
             attachment_file_list=attachment_file_list
             )
+
+        self._sprintpack_order_id = response[u'OrderID']
+        self.save()
 
