@@ -201,7 +201,7 @@ class SalesOrderDelivery(models.Model):
             product_order_list=product_order_list, 
             attachment_file_list=attachment_file_list
             )
-
+        logger.debug(response)
         self._sprintpack_order_id = response[u'OrderID']
         self.save()
 
