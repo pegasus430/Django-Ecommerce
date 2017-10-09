@@ -7,18 +7,18 @@ def purchase_order_report(purchase_order):
 
     doc = SuzysDocument()
 
-    doc.add_text('Purchase Order for {}'.format(purchase_order.supplier.business_name), 'Title')
+    doc.add_text(u'Purchase Order for {}'.format(purchase_order.supplier.business_name), 'Title')
     
     delivery_date = purchase_order.est_delivery or 'Unconfirmed'
     po_info = [
-        'Our Reference: PO{}'.format(purchase_order.id),
-        'Delivery Date {}'.format(delivery_date),
+        u'Our Reference: PO{}'.format(purchase_order.id),
+        u'Delivery Date {}'.format(delivery_date),
     ]
     table_widths = [0.5, 0.5]
     doc.add_table([po_info], table_widths, bold_header_row=False, line_under_header_row=False, box_line=True)
 
 
-    address_format = '''{company.company_name}
+    address_format = u'''{company.company_name}
         {company.address1}
         {company.address2}
         {company.postcode} {company.city}
