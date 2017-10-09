@@ -109,7 +109,7 @@ class SuzysDocument:
                 if isinstance(cell, Image):
                     processed_row.append(cell)
                 else:
-                    processed_row.append(Paragraph(str(cell), column_style))
+                    processed_row.append(Paragraph(unicode(cell), column_style))
 
             final_table_data.append(processed_row)
 
