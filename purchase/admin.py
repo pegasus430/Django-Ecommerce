@@ -27,6 +27,7 @@ class DeliveryAttachmentInline(DefaultInline):
 class PurchaseOrderAdmin(DefaultAdmin):
     readonly_fields = ['order_value', 'created_at', 'updated_at', 'id']
     list_display = ['__unicode__', 'status']
+    list_filter = ['status', 'supplier']
     inlines = [PurchaseOrderItemInline, PurchaseOrderConfirmationAttachmentInline]
     actions = [print_purchase_order_report, mark_as_awaiting_for_confirmation, mark_as_awaiting_delivery]
 
