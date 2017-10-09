@@ -10,7 +10,7 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_CENTER
 
 from transport.models import InternalTransport
-from printing.documents import stylesheet
+from printing.stylesheets import stylesheet
 
 import os
 from io import BytesIO
