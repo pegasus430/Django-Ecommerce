@@ -24,7 +24,7 @@ def print_address_label_admin(addresses):
 def print_commission_report_admin(agents):
     reports = {}
     for agent in agents:
-        reports[u'{}.pdf'.format(agent.contact_first_name)] = commission_report(agent)
+        reports[u'Comission Report {}.pdf'.format(agent.contact_first_name)] = commission_report(agent)
 
     logger.debug('Returning {} commission reports'.format(len(reports)))
     return dynamic_file_httpresponse(reports, u'Commission Reports')
