@@ -36,7 +36,16 @@ def commission_report(agent):
             ])
     report.add_table(table_data, col_widths)
 
+    sales_total = 0
+    for s in order_list:
+        sales_total += s[u'sale total']
+    report.add_body_text(u'Sales total: {}'.format(commission_total))
     report.add_body_text(u'Commission total: {}'.format(commission_total))
     report.add_body_text(u'Please send your commission-note to S-Company ltd with this document attached')
+
+    report.add_heading(u'Below our agreed percentages for your information:')
+    for tier in agent.agentcommission_set.all():
+        report.add_text(u'{}% for sales greater then {}'.format(tier.percentage, tier.from_amount), 'Bullet')
+
 
     return report.print_document()
