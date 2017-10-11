@@ -56,8 +56,9 @@ class Agent(AbstractAddress):
         for relation in self.relation_set.all().filter(salesorder__is_paid=True, salesorder__paid_commission=False):
             orders.extend(relation.salesorder_set.filter(is_paid=True, paid_commission=False))
         
-        logger.debug(u'Processing orders :\n {}'.format(orders))
+        logger.debug(u'Processing orders : {}')
         for order in orders:
+            logger.debug(u'Order #{}'.format(order.id))
             try:
                 date_paid = order.paid_on_date.strftime('%d/%m/%Y')
             except AttributeError:
