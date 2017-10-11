@@ -115,3 +115,10 @@ class SalesOrderProduct(models.Model):
         if self.unit_price is None or self.unit_price == '':
             self.unit_price = get_correct_sales_order_item_price(self.product, self.qty)
         super(SalesOrderProduct, self).save(*args, **kwargs)
+
+
+class SalesOrderNote(models.Model):
+    salesorder = models.ForeignKey(SalesOrder)
+    note = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
