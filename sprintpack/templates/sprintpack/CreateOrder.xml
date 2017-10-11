@@ -22,7 +22,7 @@
     <Pieces>{{orderline.qty}}</Pieces>
   </OrderLine>
   {% endfor %}
-  <AdditionalDocuments>
+  <AdditionalDocument>
     {% for document in post_data.additional_documents %}
     <BinData>{{document}}</BinData>
     {% endfor %}
