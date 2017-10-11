@@ -39,8 +39,8 @@ def commission_report(agent):
     sales_total = 0
     for s in order_list:
         sales_total += s[u'sale total']
-    report.add_body_text(u'''Sales total: {}
-        Commission total: {}
+    report.add_body_text(u'''Sales total payments received: {}
+        Commission owed: {}
         Please send your commission-note to S-Company ltd with this document attached'''.format(
             sales_total,
             commission_total))
