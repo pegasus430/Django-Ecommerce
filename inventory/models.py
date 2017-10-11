@@ -361,6 +361,7 @@ class UmbrellaProduct(models.Model):
     umbrella_product_model = models.ForeignKey(UmbrellaProductModel)
     colour = models.ForeignKey(Colour)
     accounting_code = models.CharField(max_length=20, default='212', choices=ACCOUNT_CODE_CHOICES)
+    hs_code = models.CharField(max_length=8, blank=True, null=True, verbose_name='HS Code for export.')
 
     active = models.BooleanField(default=True)
     complete = models.BooleanField(default=False)

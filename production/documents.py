@@ -1,4 +1,4 @@
-from printing.documents import SuzysDocument
+from printing_tools.documents import SuzysDocument
 
 def picking_list(production_order_shipment):
     '''create a picking_list for a production_order'''
