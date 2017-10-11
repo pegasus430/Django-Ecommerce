@@ -10,7 +10,6 @@ def commission_report(agent):
     report = SuzysDocument()
 
     order_list, commission_total = agent.comission_owed()
-    sorted_order_list = sorted(order_list, key=lambda k: k['order data']) 
 
     agent_name = u'{} {}'.format(agent.contact_first_name, agent.contact_name)
 
@@ -26,7 +25,7 @@ def commission_report(agent):
     table_data = []
 
     table_data.append(table_headers)
-    for order in sorted_order_list:
+    for order in order_list:
         table_data.append([
             order[u'order #'],
             order[u'client name'],
