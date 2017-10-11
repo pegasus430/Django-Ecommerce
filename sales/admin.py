@@ -23,13 +23,18 @@ class PriceListItemInline(DefaultInline):
 ### Custom Admins ###
 #####################
 class SalesOrderAdmin(DefaultAdmin):
-    list_display = ['__unicode__', 'status', 'get_total_order_value', 'created_at', 'is_paid']
+    list_display = ['__unicode__', 'status', 'get_total_order_value', 'created_at', 'is_paid', 'get_agent', 'paid_commission']
+    list_filter = ['is_paid', 'client__agent', 'paid_commission']
     inlines = [SalesOrderProductInline]
     readonly_fields = ['total_order_value']
     actions = [create_sales_invoice]
 
     def get_total_order_value(self, obj):
         return obj.total_order_value
+
+    def get_agent(self, obj):
+        return obj.client.agent
+    get_agent.short_description = 'Agent'
 
 class SalesOrderProductAdmin(DefaultAdmin):
     list_display = ['product', 'qty', 'unit_price']
