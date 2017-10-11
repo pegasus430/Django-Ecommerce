@@ -207,5 +207,8 @@ class SalesOrderDelivery(models.Model):
 
     @property 
     def request_sprintpack_order_status(self):
-        return SprintClient().request_order_status(self._sprintpack_order_id)
+        try:
+            return SprintClient().request_order_status(self._sprintpack_order_id)
+        except Exception:
+            return False
 
