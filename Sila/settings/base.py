@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #'django.contrib.sites',  ## needed for django-allauth
 
-    'django_nose',  ## you want to monitor how much test-code you write, no?
+    # 'django_nose',  ## you want to monitor how much test-code you write, no?
     'taggit',
     'imagekit',
 
@@ -107,10 +107,10 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+# TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 NOSE_ARGS = [
-    '--with-coverage',
-    '--cover-package=inventory,contacts,defaults,purchase,transport',
+    # '--with-coverage',
+    # '--cover-package=,contacts,defaults,purchase,transport',
 ]
 
 # Static files (CSS, JavaScript, Images)
@@ -198,6 +198,11 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': False,
         },
+        'contacts': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },         
         'inventory': {
             'handlers': ['console', 'file'],
             'level': 'DEBUG',

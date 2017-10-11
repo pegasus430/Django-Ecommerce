@@ -7,6 +7,9 @@ from xero_local import api as xero_api
 
 from .countries import COUNTRY_CHOICES
 
+import logging
+logger = logging.getLogger(__name__)
+
 class AbstractAddress(models.Model):
     business_name = models.CharField(max_length=100)
     contact_first_name = models.CharField(max_length=100, blank=True, null=True)
@@ -36,6 +39,52 @@ class Agent(AbstractAddress):
 
     def __unicode__(self):
         return self.name
+
+    def return_commission(self, amount):
+        for tier in self.agentcommission_set.all().order_by('-from_amount'):
+            if amount >= tier.from_amount:
+                return round(amount / 100 * tier.percentage, 2)
+
+        raise Exception('No known AgentoCommission Structure')
+
+    def comission_owed(self):
+        '''return a list of dicts with all of the unpaid comissions with order number, sales amount and total commission value'''
+        commissions = []
+        sales_total = 0.0
+        for relation in self.relation_set.all().filter(salesorder__is_paid=True, salesorder__paid_commission=False):
+            orders = relation.salesorder_set.filter(is_paid=True, paid_commission=False)
+            for order in orders:
+                try:
+                    date_paid = order.paid_on_date.strftime('%d/%m/%Y')
+                except AttributeError:
+                    date_paid = u'Unkown'
+
+                commissions.append({u'order #': order.id,
+                    u'order data': order.created_at.strftime('%d/%m/%Y'),
+                    u'client name': order.client.business_name,
+                    u'sale total': order.total_order_value,
+                    u'date paid':  date_paid})
+                sales_total += order.total_order_value
+
+        commission_total = self.return_commission(sales_total)
+        return commissions, commission_total
+
+
+class AgentCommission(models.Model):
+    agent = models.ForeignKey('Agent')
+    from_amount = models.FloatField(default=0.0)
+    percentage = models.FloatField(default=0.0)
+
+    class Meta:
+        ordering = ('from_amount',)
+
+    def __unicode__(self):
+        return u'{} receives {} from {}'.format(
+            self.agent.name,
+            self.percentage,
+            self.from_amount)
+
+
 
 class RelationAddress(AbstractAddress):
     relation = models.ForeignKey('Relation')

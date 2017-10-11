@@ -83,6 +83,20 @@ class SuzysDocument:
         self.add_vertical_space(10)
 
 
+    def add_title(self, content):
+        '''adds a title'''
+        self.add_text(content, 'Title')
+
+    def add_heading(self, content):
+        '''adds a heading2'''
+        self.add_text(content, 'Heading2')
+
+
+    def add_body_text(self, content):
+        '''adds body text'''
+        self.add_text(content, 'BodyText')
+
+
     def add_text(self, content, style):
         ''' expects content and a style that is present in the default stylesheet'''
         self.elements.append(Paragraph(content.replace('\n', "<br></br>"), self.styles[style]))
