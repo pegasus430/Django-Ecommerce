@@ -160,13 +160,13 @@ class SalesOrderDelivery(models.Model):
                    qty=product.qty)
         super(SalesOrderDelivery, self).save(*args, **kwargs)
 
-    def ship_order_with_sprintpack(self):
-        if not self._sprintpack_order_id:
-            response = SprintClient().create_order()
-            logger.info('Shipped order with sprintpack {}'.format(self.sales_order))
-        else:
-            logger.warning('Skipping create_order, already informed sprintpack about production shipment {}'.format(self.sales_order))
-            raise Exception('{} is already shipped with sprintpack with id'.format(self.id, self._sprintpack_order_id))
+    # def ship_order_with_sprintpack(self):
+    #     if not self._sprintpack_order_id:
+    #         response = SprintClient().create_order()
+    #         logger.info('Shipped order with sprintpack {}'.format(self.sales_order))
+    #     else:
+    #         logger.warning('Skipping create_order, already informed sprintpack about production shipment {}'.format(self.sales_order))
+    #         raise Exception('{} is already shipped with sprintpack with id'.format(self.id, self._sprintpack_order_id))
 
     def picking_list(self):
         '''create picking_list for a sales-order shipment'''
