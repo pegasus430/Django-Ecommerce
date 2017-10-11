@@ -6,16 +6,16 @@ def commission_report(agent):
     report = SuzysDocument()
 
     order_list, commission_total = agent.comission_owed()
-    agent_name = '{} {}'.format(agent.contact_first_name, agent.contact_name)
+    agent_name = u'{} {}'.format(agent.contact_first_name, agent.contact_name)
 
     ## title and instructions
-    report.add_title('Commission report {} {}'.format(
+    report.add_title(u'Commission report {} {}'.format(
         agent_name,
         datetime.date.today().strftime('%d/%m/%Y')))
 
     ## Commission details
-    report.add_heading('Commission Detail')
-    table_headers = ['Order #', 'Client Name', 'Date Ordered', 'Date Paid', 'Order Amount']
+    report.add_heading(u'Commission Detail')
+    table_headers = [u'Order #', u'Client Name', u'Date Ordered', u'Date Paid', u'Order Amount']
     col_widths = [0.12, 0.33, 0.18, 0.18, 0.19]
     table_data = []
 
@@ -31,6 +31,6 @@ def commission_report(agent):
     report.add_table(table_data, col_widths)
 
     report.add_body_text(u'Commission total: {}'.format(commission_total))
-    report.add_body_text('Please send your commission-note to S-Company ltd with this document attached')
+    report.add_body_text(u'Please send your commission-note to S-Company ltd with this document attached')
 
     return report.print_document()
