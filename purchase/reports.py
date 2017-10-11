@@ -1,4 +1,4 @@
-from printing.documents import SuzysDocument
+from printing_tools.documents import SuzysDocument
 
 from .models import *
 

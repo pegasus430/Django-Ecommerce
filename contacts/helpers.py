@@ -1,4 +1,4 @@
-from printing.labels import simple_label_38x90
+from printing_tools.labels import simple_label_38x90
 from defaults.helpers import multiple_files_to_zip_httpresponse
 
 def print_address_label_admin(addresses):

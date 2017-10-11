@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'sales',
     'transport',
     'production',
+    'printing_tools',
     
     'xero_local',
 

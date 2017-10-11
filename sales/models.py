@@ -79,6 +79,8 @@ class SalesOrder(models.Model):
     _xero_invoice_id = models.CharField(max_length=100, blank=True, null=True)
 
     is_paid = models.BooleanField(default=False)
+    paid_comission = models.BooleanField(default=False)
+    paid_on_date = models.DateField(blank=True, null=True)
 
     def __unicode__(self):
         return 'Order #{} for {}'.format(self.id, self.client)

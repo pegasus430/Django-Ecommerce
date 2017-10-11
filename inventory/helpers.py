@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from copy import deepcopy
 import StringIO, zipfile
 
-from printing.labels import box_barcode_label, washinglabel, stock_label_38x90, sample_washinglabel
+from printing_tools.labels import box_barcode_label, washinglabel, stock_label_38x90, sample_washinglabel
 from defaults.helpers import dynamic_file_httpresponse
 
 from .reports import production_notes_for_umbrella_product
