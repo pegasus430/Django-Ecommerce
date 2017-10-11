@@ -24,3 +24,7 @@ class DefaultAdmin(admin.ModelAdmin):
 class DefaultInline(admin.TabularInline):
     extra = 0
     classes = ['collapse']
+
+class DefaultExpandedInline(admin.TabularInline):
+    extra = 0
+    # classes = ['collapse']    

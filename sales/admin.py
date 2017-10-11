@@ -1,5 +1,5 @@
 from django.contrib import admin
-from defaults.admin import DefaultAdmin, DefaultInline
+from defaults.admin import DefaultAdmin, DefaultInline, DefaultExpandedInline
 
 from .models import *
 from .helpers import clear_b2b_prices_admin_action,\
@@ -16,6 +16,9 @@ from .helpers import clear_b2b_prices_admin_action,\
 class SalesOrderProductInline(DefaultInline):
     model=SalesOrderProduct
 
+class SalesOrderNoteInline(DefaultExpandedInline):
+    model = SalesOrderNote
+
 class PriceListItemInline(DefaultInline):
     model=PriceListItem
 
@@ -25,7 +28,7 @@ class PriceListItemInline(DefaultInline):
 class SalesOrderAdmin(DefaultAdmin):
     list_display = ['__unicode__', 'status', 'get_total_order_value', 'created_at', 'is_paid', 'get_agent', 'paid_commission']
     list_filter = ['is_paid', 'client__agent', 'paid_commission']
-    inlines = [SalesOrderProductInline]
+    inlines = [SalesOrderProductInline, SalesOrderNoteInline]
     readonly_fields = ['total_order_value']
     actions = [create_sales_invoice]
 
