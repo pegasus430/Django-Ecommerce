@@ -4,7 +4,7 @@ from .models import *
 from django.core.mail import EmailMessage
 from django.conf import settings
 
-from printing.documents import SuzysDocument, ImageTable
+from printing_tools.documents import SuzysDocument, ImageTable
 
 from StringIO import StringIO
 import datetime

@@ -65,6 +65,7 @@ class SuzysDocument:
         self.add_table(table_data, [0.15, 0.35, 0.35, 0.15], line_under_header_row=False)
         self.add_vertical_space(10)
 
+    
     def add_text(self, content, style):
         ''' expects content and a style that is present in the default stylesheet'''
         self.elements.append(Paragraph(content.replace('\n', "<br></br>"), self.styles[style]))
@@ -73,10 +74,14 @@ class SuzysDocument:
         ''' add a title to a page '''
         self.add_text(content, 'Title')
 
+    def add_heading(self, content):
+        '''adds a heading2'''
+        self.add_text(content, 'Heading2')
+
     def add_paragraph(self, content):
         ''' add a piece of body/paragraph to a page '''
         self.add_text(content, 'BodyText')
-        
+
     def add_table(self, table_data, table_widths, bold_header_row=True, line_under_header_row=True,
             box_line=False):
         ''' expects:
@@ -99,7 +104,7 @@ class SuzysDocument:
                 if isinstance(cell, Image):
                     processed_row.append(cell)
                 else:
-                    processed_row.append(Paragraph(str(cell), column_style))
+                    processed_row.append(Paragraph(unicode(cell), column_style))
 
             final_table_data.append(processed_row)
 

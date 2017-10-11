@@ -82,6 +82,8 @@ class SalesOrder(models.Model):
     _xero_invoice_id = models.CharField(max_length=100, blank=True, null=True)
 
     is_paid = models.BooleanField(default=False)
+    paid_commission = models.BooleanField(default=False)
+    paid_on_date = models.DateField(blank=True, null=True)
 
     class Meta:
         ordering = ('created_at',)
@@ -121,6 +123,11 @@ class SalesOrderProduct(models.Model):
         super(SalesOrderProduct, self).save(*args, **kwargs)
 
 
+class SalesOrderNote(models.Model):
+    salesorder = models.ForeignKey(SalesOrder)
+    note = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 class SalesOrderDeliveryItem(models.Model):
