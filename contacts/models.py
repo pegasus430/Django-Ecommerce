@@ -57,6 +57,7 @@ class Agent(AbstractAddress):
             orders.extend(relation.salesorder_set.filter(is_paid=True, paid_commission=False))
         
         logger.debug(u'Processing orders : {}')
+        orders = list(set(orders))
         for order in orders:
             logger.debug(u'Order #{}'.format(order.id))
             try:
