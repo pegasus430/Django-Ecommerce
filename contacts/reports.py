@@ -1,11 +1,17 @@
 import datetime
+
+from operator import itemgetter
+
 from printing_tools.documents import SuzysDocument
+
 
 def commission_report(agent):
     ''' return pdf with commission report '''
     report = SuzysDocument()
 
     order_list, commission_total = agent.comission_owed()
+    sorted_order_list = sorted(order_list, key=lambda k: k['order data']) 
+
     agent_name = u'{} {}'.format(agent.contact_first_name, agent.contact_name)
 
     ## title and instructions
@@ -20,7 +26,7 @@ def commission_report(agent):
     table_data = []
 
     table_data.append(table_headers)
-    for order in order_list:
+    for order in sorted_order_list:
         table_data.append([
             order[u'order #'],
             order[u'client name'],

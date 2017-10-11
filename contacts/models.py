@@ -56,20 +56,19 @@ class Agent(AbstractAddress):
         for relation in self.relation_set.all().filter(salesorder__is_paid=True, salesorder__paid_commission=False):
             orders.extend(relation.salesorder_set.filter(is_paid=True, paid_commission=False))
         
-        logger.debug(u'Processing orders : {}')
         orders = list(set(orders))
         for order in orders:
-            logger.debug(u'Order #{}'.format(order.id))
             try:
                 date_paid = order.paid_on_date.strftime('%d/%m/%Y')
             except AttributeError:
                 date_paid = u'Unkown'
 
-            commissions.append({u'order #': order.id,
+            commision_item = {u'order #': order.id,
                 u'order data': order.created_at.strftime('%d/%m/%Y'),
                 u'client name': order.client.business_name,
                 u'sale total': order.total_order_value,
-                u'date paid':  date_paid})
+                u'date paid':  date_paid}
+            commissions.append(commision_item)
             sales_total += order.total_order_value
 
         commission_total = self.return_commission(sales_total)
