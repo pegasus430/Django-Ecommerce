@@ -124,7 +124,7 @@ class SprintClient:
 
     def create_order(self, order_number, order_reference, company_name,
         contact_name, address1, address2, postcode, city, country, phone,
-        product_order_list, attachment_file_list):
+        product_order_list, attachment_file_list, partial_delivery):
         '''Create an order:
         :param order_number: order-number of the order 
         :param order_reference: Customer reference of the order
@@ -140,10 +140,15 @@ class SprintClient:
         :param attachment_file_list: List of paths or file-contents
         :return: Sprintpack OrderID
         '''
-        ## TODO: Test
+        if partial_delivery:
+            partial_delivery = 0
+        else:
+            partial_delivery = 999
+
         xml_data = {
             'order_number': order_number,
-            'order_reference':order_reference,
+            'order_reference': order_reference,
+            'daysretention': partial_delivery,
             'customer': {
                 'company_name': company_name,
                 'contact_name': contact_name,

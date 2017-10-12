@@ -4,6 +4,7 @@
 <Order>
   <OrderNumber>{{post_data.order_number}}</OrderNumber>
   <Reference>{{post_data.order_reference}}</Reference>
+  <DaysRetention>{{post_data.daysretention}}</DaysRetention>
   <Customer>
     <Name>{{post_data.customer.company_name}}</Name>
     <Name2>{{post_data.customer.contact_name}}</Name2>

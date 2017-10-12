@@ -74,6 +74,7 @@ class SalesOrder(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     estimated_delivery = models.DateField(blank=True, null=True)
+    partial_delivery_allowed = models.BooleanField(default=False)
 
     status = models.CharField(choices=STATUS_CHOICES, max_length=2, default='DR')
 
@@ -190,7 +191,8 @@ class SalesOrderDelivery(models.Model):
         product_order_list = [{'ean_code': prod.product.product.ean_code, 'qty': prod.qty} \
             for prod in sales_order.salesorderproduct_set.all()]
 
-        attachment_file_list = [self.picking_list()]
+        # attachment_file_list = [self.picking_list()]
+        attachment_file_list = []
         if not sales_order.ship_to.is_eu_country:
             attachment_file_list.append(self.customs_invoice())*3
 
@@ -206,7 +208,8 @@ class SalesOrderDelivery(models.Model):
             country=client.country, 
             phone=client.contact_phone,
             product_order_list=product_order_list, 
-            attachment_file_list=attachment_file_list
+            attachment_file_list=attachment_file_list,
+            partial_delivery=sales_order.partial_delivery_allowed
             )
         logger.debug(response)
         self._sprintpack_order_id = response
