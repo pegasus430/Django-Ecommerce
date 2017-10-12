@@ -26,6 +26,6 @@
     {% for document in post_data.additional_documents %}
     <BinData>{{document}}</BinData>
     {% endfor %}
-  </AdditionalDocuments>
+  </AdditionalDocument>
 </Order>
 {% endblock %}
