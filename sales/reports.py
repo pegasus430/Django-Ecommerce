@@ -52,8 +52,6 @@ def export_pricelist_csv(pricelist, include_cost=False):
     return response
 
 
-
-
 def export_pricelist_pdf(pricelist):
     ''' export a pricelist to pdf '''
     # Create the HttpResponse object with the appropriate PDF headers.
