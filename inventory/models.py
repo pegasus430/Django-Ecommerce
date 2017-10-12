@@ -554,9 +554,10 @@ class ProductBillOfMaterial(models.Model):
         location = self.product.umbrella_product.collection.production_location
         try:
             quantity_in_stock = StockLocationItem.objects.get(location=location, material=self.material).quantity_in_stock
+            return quantity_in_stock
         except StockLocationItem.DoesNotExist:
             return 0
-        return round(quantity_in_stock / self.quantity_needed, 2)
+
 
 #######################
 ### Stock Movements ###
