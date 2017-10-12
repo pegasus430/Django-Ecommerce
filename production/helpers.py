@@ -10,7 +10,15 @@ def print_production_order_report_admin(production_orders):
 	return multiple_files_to_zip_httpresponse(items, 'purchase_orders')
 
 
+def helper_mark_awaiting_delivery_admin(production_orders):
+	for po in production_orders:
+		po.mark_awaiting_delivery()
+
 #### Admin helpers ###
 def print_production_order_report(modeladmin, request, queryset):
     return print_production_order_report_admin(queryset)
 print_production_order_report.short_description = 'Print Production Orders'	
+
+def mark_awaiting_delivery_admin(modeladmin, request, queryset):
+    return helper_mark_awaiting_delivery_admin(queryset)
+mark_awaiting_delivery_admin.short_description = 'Mark as awaiting delivery'	
