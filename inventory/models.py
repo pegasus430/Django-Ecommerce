@@ -614,9 +614,10 @@ class ProductBillOfMaterial(models.Model):
         location = self.product.umbrella_product.collection.production_location
         try:
             quantity_in_stock = StockLocationItem.objects.get(location=location, material=self.material).quantity_in_stock
+            return quantity_in_stock
         except StockLocationItem.DoesNotExist:
             return 0
-        return round(quantity_in_stock / self.quantity_needed, 2)
+
 
 #######################
 ### Stock Movements ###
@@ -632,18 +633,24 @@ class StockLocationMovement(models.Model):
     def save(self, *args, **kwargs):
         ## If StockMovement is new, update or create the stocklocation.
         if not self.pk:
-            logger.debug('Changing stock for {} in {} with {}'.format(
-                self.material, self.stock_location, self.qty_change))
-
             item, created = StockLocationItem.objects.get_or_create(
                 material=self.material,
                 location=self.stock_location)
+
+            stock_value_old = item.quantity_in_stock
 
             if created:
                 item.quantity_in_stock = self.qty_change
             else:
                 item.quantity_in_stock += self.qty_change
             item.save()
+            item.refresh_from_db()
+
+            stock_value_new = item.quantity_in_stock
+
+            logger.debug('Changed stock for {} in {} with {}. Old value was {}, new value is {}'.format(
+                self.material, self.stock_location, self.qty_change, stock_value_old, stock_value_new))            
+
         super(StockLocationMovement, self).save(*args, **kwargs)
 
     def __unicode__(self):

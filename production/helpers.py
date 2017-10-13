@@ -21,6 +21,10 @@ def pre_advice_sprintpack_admin(production_order_delivery):
     production_order_delivery.create_sprintpack_pre_advice()
 
 
+def helper_mark_awaiting_delivery_admin(production_orders):
+	for po in production_orders:
+		po.mark_awaiting_delivery()
+
 #### Admin helpers ###
 def print_production_order_report(modeladmin, request, queryset):
     return print_production_order_report_admin(queryset)
@@ -34,3 +38,7 @@ def pre_advice_sprintpack(modeladmin, request, queryset):
     for shipment in queryset:   
         return pre_advice_sprintpack_admin(shipment)
 pre_advice_sprintpack.short_description = 'Inform Distribution center about new shipment'   
+
+def mark_awaiting_delivery_admin(modeladmin, request, queryset):
+    return helper_mark_awaiting_delivery_admin(queryset)
+mark_awaiting_delivery_admin.short_description = 'Mark as awaiting delivery'	
