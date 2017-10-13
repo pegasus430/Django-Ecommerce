@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     
     'xero_local',
 
-    #'huey.contrib.djhuey', 
+    'huey.contrib.djhuey', 
 ]
 
 MIDDLEWARE_CLASSES = (
@@ -258,37 +258,37 @@ CACHES = {
     }
 }
 
-# ## http://huey.readthedocs.io/en/latest/django.html
-# HUEY = {
-#     'name': 'stockwebhuey',  # Use db name for huey.
-#     'result_store': True,  # Store return values of tasks.
-#     'events': True,  # Consumer emits events allowing real-time monitoring.
-#     'store_none': False,  # If a task returns None, do not save to results.
-#     'always_eager': False,  # If DEBUG=True, run synchronously.
-#     'store_errors': True,  # Store error info if task throws exception.
-#     'blocking': False,  # Poll the queue rather than do blocking pop.
-#     'connection': {
-#         'host': 'localhost',
-#         'port': 6379,
-#         'db': 0,
-#         'connection_pool': None,  # Definitely you should use pooling!
-#         # ... tons of other options, see redis-py for details.
+## http://huey.readthedocs.io/en/latest/django.html
+HUEY = {
+    'name': 'sila_huey',  # Use db name for huey.
+    'result_store': True,  # Store return values of tasks.
+    'events': True,  # Consumer emits events allowing real-time monitoring.
+    'store_none': False,  # If a task returns None, do not save to results.
+    'always_eager': False,  # If DEBUG=True, run synchronously.
+    'store_errors': True,  # Store error info if task throws exception.
+    'blocking': False,  # Poll the queue rather than do blocking pop.
+    'connection': {
+        'host': 'localhost',
+        'port': 6379,
+        'db': 0,
+        'connection_pool': None,  # Definitely you should use pooling!
+        # ... tons of other options, see redis-py for details.
 
-#         # huey-specific connection parameters.
-#         'read_timeout': 1,  # If not polling (blocking pop), use timeout.
-#         'max_errors': 1000,  # Only store the 1000 most recent errors.
-#         'url': None,  # Allow Redis config via a DSN.
-#     },
-#     'consumer': {
-#         'workers': 1,  ### DONT ADD EXTRA WORKERS OR YOUR MAGENTO WILL GO UP IN SMOKE!!!! (tends to generate duplicate skus in magento db)
-#         'worker_type': 'thread',
-#         'initial_delay': 0.1,  # Smallest polling interval, same as -d.
-#         'backoff': 1.15,  # Exponential backoff using this rate, -b.
-#         'max_delay': 10.0,  # Max possible polling interval, -m.
-#         'utc': True,  # Treat ETAs and schedules as UTC datetimes.
-#         'scheduler_interval': 1,  # Check schedule every second, -s.
-#         'periodic': True,  # Enable crontab feature.
-#         'check_worker_health': True,  # Enable worker health checks.
-#         'health_check_interval': 1,  # Check worker health every second.
-#     },
-# }
+        # huey-specific connection parameters.
+        'read_timeout': 1,  # If not polling (blocking pop), use timeout.
+        'max_errors': 1000,  # Only store the 1000 most recent errors.
+        'url': None,  # Allow Redis config via a DSN.
+    },
+    'consumer': {
+        'workers': 1,  ### DONT ADD EXTRA WORKERS OR YOUR MAGENTO WILL GO UP IN SMOKE!!!! (tends to generate duplicate skus in magento db)
+        'worker_type': 'thread',
+        'initial_delay': 0.1,  # Smallest polling interval, same as -d.
+        'backoff': 1.15,  # Exponential backoff using this rate, -b.
+        'max_delay': 10.0,  # Max possible polling interval, -m.
+        'utc': True,  # Treat ETAs and schedules as UTC datetimes.
+        'scheduler_interval': 1,  # Check schedule every second, -s.
+        'periodic': True,  # Enable crontab feature.
+        'check_worker_health': True,  # Enable worker health checks.
+        'health_check_interval': 1,  # Check worker health every second.
+    },
+}
