@@ -103,6 +103,8 @@ class ProductionOrderDeliveryItem(models.Model):
 class ProductionOrderDelivery(models.Model):
     production_order = models.ForeignKey(ProductionOrder)
     carrier = models.CharField(max_length=3)
+    cost_of_transport = models.FloatField(default=0)
+    number_of_pallets = models.IntegerField(default=0)
     est_delivery_date = models.DateField()
 
     _sprintpack_pre_advice_id = models.CharField(max_length=100, blank=True, null=True)
@@ -141,4 +143,10 @@ class ProductionOrderDelivery(models.Model):
         '''create picking_list for a production-order shipment'''
         return picking_list(self)
 
+    @property 
+    def number_of_items(self):
+        items = 0
+        for i in self.productionorderdeliveryitem_set.all():
+            items += i.qty
+        return items
 
