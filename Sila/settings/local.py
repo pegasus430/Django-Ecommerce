@@ -4,6 +4,7 @@ import os
 
 
 ENVIRONMENT = 'Local'
+ADMIN_SITE_HEADER = "Sila Local"
 
 DATABASES = {
     'default': {

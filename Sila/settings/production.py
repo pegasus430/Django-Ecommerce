@@ -1,6 +1,7 @@
 from .base import TEMPLATES, INSTALLED_APPS, MIDDLEWARE_CLASSES, SPRINTPACK
 
 ENVIRONMENT = 'Production'
+ADMIN_SITE_HEADER = "Sila Production-Server"
 DEBUG = False
 TEMPLATES[0]['OPTIONS']['debug'] = DEBUG
 
