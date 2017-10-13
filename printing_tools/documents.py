@@ -12,7 +12,7 @@ from reportlab.lib.enums import TA_CENTER
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from .stylesheets import stylesheet
 
 from io import BytesIO
 
@@ -20,23 +20,6 @@ from django.conf import settings
 
 import textwrap
 import os
-
-
-def stylesheet():
-    ''' Override the getSampleStyleSheet, and add own styles'''
-    styles = getSampleStyleSheet()
-    pdfmetrics.registerFont(TTFont('Arial', os.path.join(settings.STATIC_ROOT, 'pdf/Arial.ttf')))
-    styles.add(ParagraphStyle(name='BodyTextCenter', parent=styles['BodyText'], alignment=TA_CENTER))
-    styles.add(ParagraphStyle(name='Bold', parent=styles['BodyText'], fontName='Helvetica-Bold'))
-
-    styles['Title'].fontName = 'Arial'
-    styles['BodyText'].fontName = 'Arial'
-    styles['Bullet'].fontName = 'Arial'
-    styles['Heading1'].fontName = 'Arial'
-    styles['Heading2'].fontName = 'Arial'
-    styles['Heading3'].fontName = 'Arial'
-    styles['BodyTextCenter'].fontName = 'Arial'
-    return styles
 
 
 class SuzysDocument:
@@ -75,31 +58,35 @@ class SuzysDocument:
         canvas.restoreState()
 
     def add_invoice_delivery_headers(self, invoice_to, deliver_to):
+        # table_data = [
+        #     ['', 'Invoice To', 'Deliver To', ''],
+        #     ['', invoice_to, deliver_to, ''],
+        # ]
+        # self.add_table(table_data, [0.15, 0.35, 0.35, 0.15], line_under_header_row=False)
+
         table_data = [
-            ['', 'Invoice To', 'Deliver To', ''],
-            ['', invoice_to, deliver_to, ''],
+            ['Invoice To', 'Deliver To'],
+            [invoice_to, deliver_to],
         ]
-        self.add_table(table_data, [0.15, 0.35, 0.35, 0.15], line_under_header_row=False)
+        self.add_table(table_data, [0.5, 0.5], line_under_header_row=False)
         self.add_vertical_space(10)
 
-
+    
+    def add_text(self, content, style):
+        ''' expects content and a style that is present in the default stylesheet'''
+        self.elements.append(Paragraph(content.replace('\n', "<br></br>"), self.styles[style]))
+    
     def add_title(self, content):
-        '''adds a title'''
+        ''' add a title to a page '''
         self.add_text(content, 'Title')
 
     def add_heading(self, content):
         '''adds a heading2'''
         self.add_text(content, 'Heading2')
 
-
-    def add_body_text(self, content):
-        '''adds body text'''
+    def add_paragraph(self, content):
+        ''' add a piece of body/paragraph to a page '''
         self.add_text(content, 'BodyText')
-
-
-    def add_text(self, content, style):
-        ''' expects content and a style that is present in the default stylesheet'''
-        self.elements.append(Paragraph(content.replace('\n', "<br></br>"), self.styles[style]))
 
     def add_table(self, table_data, table_widths, bold_header_row=True, line_under_header_row=True,
             box_line=False):
@@ -132,6 +119,10 @@ class SuzysDocument:
             final_table_widths.append(width*table_width)
 
         table = Table(final_table_data, colWidths=final_table_widths)
+        table.setStyle(TableStyle([
+            ('VALIGN',(0,0),(-1,-1),'TOP') ## Align cells to top
+        ]))
+
         if line_under_header_row:
             table.setStyle(TableStyle([
                 ('LINEBELOW', (0,0), (num_cols,0), 1, colors.black),  ## Add line below headers
@@ -139,10 +130,10 @@ class SuzysDocument:
             ]))
         if box_line:
             table.setStyle(TableStyle([
-                ('LINEBELOW', (0,0), (num_cols,0), 1, colors.black),  ## Add line below headers
-                ('LINEABOVE', (0,0), (num_cols,0), 1, colors.black),  ## Add line below headers
-                ('LINEBEFORE', (0,0), (num_cols,0), 1, colors.black),  ## Add line below headers
-                ('LINEAFTER', (0,0), (num_cols,0), 1, colors.black),  ## Add line below headers
+                ('LINEBELOW', (0,0), (num_cols,0), 1, colors.black),
+                ('LINEABOVE', (0,0), (num_cols,0), 1, colors.black),
+                ('LINEBEFORE', (0,0), (num_cols,0), 1, colors.black),
+                ('LINEAFTER', (0,0), (num_cols,0), 1, colors.black),
                 ('VALIGN',(0,0),(-1,-1),'TOP') ## Align cells to top
             ]))
         self.elements.append(table)        
@@ -159,6 +150,10 @@ class SuzysDocument:
 
     def add_vertical_space(self, height_in_mm):
         self.elements.append(Spacer(width=0, height=height_in_mm*mm))
+
+
+    def add_page_break(self):
+        self.elements.append(PageBreak())
 
 
     def print_document(self):

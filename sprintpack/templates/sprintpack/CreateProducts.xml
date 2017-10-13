@@ -1,0 +1,9 @@
+{% extends "sprintpack/base.xml" %}
+
+{% block body %}
+<CreateProducts>
+{% for product in post_data.products %}
+	{% include "sprintpack/includes/product.xml" with product=product %}
+{% endfor %}
+</CreateProducts>
+{% endblock %}

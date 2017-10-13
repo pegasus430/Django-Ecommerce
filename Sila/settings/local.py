@@ -1,5 +1,5 @@
 from .dev import *
-from .base import BASE_DIR#, HUEY
+from .base import BASE_DIR, SPRINTPACK
 import os
 
 
@@ -25,5 +25,7 @@ MEDIA_ROOT = 'media/'
 
 DEBUG = True
 COMPRESS_OFFLINE = False
+
+SPRINTPACK['connect_to_server'] = True
 
 # HUEY['consumer']['periodic'] = False ## Disable crons on local setup.

@@ -133,8 +133,8 @@ class UmbrellaProductBillOfMaterialAdmin(admin.ModelAdmin):
 
 
 class ProductAdmin(admin.ModelAdmin):
-    readonly_fields = ('sku', 'cost')    
-    list_display = ['name','sku', 'active', 'complete', 'ean_code']  
+    readonly_fields = ('sku', 'available_stock', 'cost', '_created_in_sprintpack') 
+    list_display = ['name','sku', 'active', 'complete', 'ean_code', 'available_stock']  
     list_filter = ['umbrella_product__collection', 'umbrella_product__colour', 
         'umbrella_product__umbrella_product_model__product_type', 'product_model__size',  
         'product_model__umbrella_product_model__number', 'complete', 'active']

@@ -9,11 +9,12 @@ from reportlab.lib import colors
 from reportlab.graphics.barcode.eanbc import Ean13BarcodeWidget
 from reportlab.platypus import Flowable
 
-from defaults.stylesheets import stylesheet, stylesheet_washinglabels, stylesheet_labels
+from .stylesheets import stylesheet, stylesheet_washinglabels, stylesheet_labels
 
 from io import BytesIO
 
 import textwrap
+import datetime
 
 def simple_label_38x90(text):
     '''
@@ -187,6 +188,7 @@ def sample_washinglabel(product):
 
     elements.append(Spacer(30*mm, 15*mm))
     elements.append(Paragraph('PRODUCTION SAMPLE',styles['Bold']))
+    elements.append(Paragraph('{}'.format(datetime.date.today().strftime('%d/%m/%Y')),styles['Bold']))
     elements.append(Spacer(30*mm, 20*mm))
     elements.append(Paragraph(product_title, styles['Bold']))
     elements.append(Paragraph(product_colour, styles['NormalSmall']))

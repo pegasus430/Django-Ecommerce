@@ -38,13 +38,13 @@ def commission_report(agent):
     sales_total = 0
     for s in order_list:
         sales_total += s[u'sale total']
-    report.add_body_text(u'''Sales total payments received: {}
+    report.add_paragraph(u'''Sales total payments received: {}
         Commission owed: {}
         Please send your commission-note to S-Company ltd with this document attached'''.format(
             sales_total,
             commission_total))
-    # report.add_body_text(u'Commission total: {}'.format(commission_total))
-    # report.add_body_text(u'Please send your commission-note to S-Company ltd with this document attached')
+    # report.add_paragraph(u'Commission total: {}'.format(commission_total))
+    # report.add_paragraph(u'Please send your commission-note to S-Company ltd with this document attached')
 
     report.add_heading(u'Below our agreed percentages for your information:')
     for tier in agent.agentcommission_set.all():

@@ -7,7 +7,10 @@ from django.db import models
 from inventory.models import Product, StockLocation
 from contacts.models import Relation, RelationAddress
 
+from sprintpack.api import SprintClient
+
 from .helpers import get_correct_sales_order_item_price
+from .documents import picking_list, customs_invoice
 
 import logging
 logger = logging.getLogger(__name__)
@@ -64,13 +67,15 @@ class SalesOrder(models.Model):
 
     client = models.ForeignKey(Relation,  limit_choices_to={'is_client': True})
     # invoice_to = models.ForeignKey(RelationAddress, related_name='invoice_to')
-    client_reference = models.CharField(max_length=100, blank=True, null=True)
+    client_reference = models.CharField(max_length=15, blank=True, null=True)
     ship_to = models.ForeignKey(RelationAddress, related_name='ship_to')
     ship_from = models.ForeignKey(StockLocation)
+    transport_cost = models.FloatField(default=0)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     estimated_delivery = models.DateField(blank=True, null=True)
+    partial_delivery_allowed = models.BooleanField(default=False)
 
     status = models.CharField(choices=STATUS_CHOICES, max_length=2, default='DR')
 
@@ -81,6 +86,9 @@ class SalesOrder(models.Model):
     is_paid = models.BooleanField(default=False)
     paid_commission = models.BooleanField(default=False)
     paid_on_date = models.DateField(blank=True, null=True)
+
+    class Meta:
+        ordering = ('created_at',)
 
     def __unicode__(self):
         return 'Order #{} for {}'.format(self.id, self.client)
@@ -95,6 +103,13 @@ class SalesOrder(models.Model):
             value -= value * (self.discount_pct / 100)
             
         return value
+
+    @property 
+    def payment_terms(self):
+        if self.client.payment_days == 0:
+            return u'Advance Payment'
+        else:
+            return u'Net {} days'.format(self.client.payment_days)
 
 
 class SalesOrderProduct(models.Model):
@@ -122,3 +137,99 @@ class SalesOrderNote(models.Model):
     note = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+class SalesOrderDeliveryItem(models.Model):
+    sales_order_delivery = models.ForeignKey('SalesOrderDelivery')
+    product = models.ForeignKey(Product)
+    qty = models.IntegerField()
+
+    class Meta:
+        unique_together = ('product', 'sales_order_delivery')
+
+    def __unicode__(self):
+        return '{} {} {}'.format(
+            self.sales_order_delivery,
+            self.product,
+            self.qty)
+
+
+class SalesOrderDelivery(models.Model):
+    sales_order = models.ForeignKey(SalesOrder)
+    _sprintpack_order_id = models.CharField(max_length=100, blank=True, null=True)
+
+    class Meta:
+        verbose_name_plural = "Sales order deliveries"
+
+    def __unicode__(self):
+        return '{} {}'.format(
+            self.sales_order,
+            self.id)
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            ## Auto-Add products to deliver
+            ## FIXME: Only add remaining products
+            super(SalesOrderDelivery, self).save(*args, **kwargs)
+            for product in self.sales_order.salesorderproduct_set.all():
+                SalesOrderDeliveryItem.objects.create(
+                   sales_order_delivery=self,
+                   product=product.product.product,
+                   qty=product.qty)
+        super(SalesOrderDelivery, self).save(*args, **kwargs)
+
+    # def ship_order_with_sprintpack(self):
+    #     if not self._sprintpack_order_id:
+    #         response = SprintClient().create_order()
+    #         logger.info('Shipped order with sprintpack {}'.format(self.sales_order))
+    #     else:
+    #         logger.warning('Skipping create_order, already informed sprintpack about production shipment {}'.format(self.sales_order))
+    #         raise Exception('{} is already shipped with sprintpack with id'.format(self.id, self._sprintpack_order_id))
+
+    def picking_list(self):
+        '''create picking_list for a sales-order shipment'''
+        return picking_list(self)
+
+    def customs_invoice(self):
+        '''create an invoice for customs which always includes a shipping-cost'''
+        return customs_invoice(self)
+
+    def ship_with_sprintpack(self):
+        '''ship with sprintpack'''
+        client = self.sales_order.client
+        sales_order = self.sales_order
+        product_order_list = [{'ean_code': prod.product.product.ean_code, 'qty': prod.qty} \
+            for prod in sales_order.salesorderproduct_set.all()]
+
+        # attachment_file_list = [self.picking_list()]
+        attachment_file_list = []
+        if not sales_order.ship_to.is_eu_country:
+            ## We need 3 copies
+            attachment_file_list.append(self.customs_invoice())
+
+        response = SprintClient().create_order(
+            order_number=sales_order.id, 
+            order_reference=sales_order.client_reference, 
+            company_name=client.business_name,
+            contact_name=client.contact_full_name, 
+            address1=client.address1, 
+            address2=client.address2, 
+            postcode=client.postcode, 
+            city=client.city, 
+            country=client.country, 
+            phone=client.contact_phone,
+            product_order_list=product_order_list, 
+            attachment_file_list=attachment_file_list,
+            partial_delivery=sales_order.partial_delivery_allowed
+            )
+        logger.debug(response)
+        self._sprintpack_order_id = response
+        self.save()
+
+    @property 
+    def request_sprintpack_order_status(self):
+        try:
+            return SprintClient().request_order_status(self._sprintpack_order_id)
+        except Exception:
+            return False
+

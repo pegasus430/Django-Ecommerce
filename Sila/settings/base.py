@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'sales',
     'transport',
     'production',
+    'sprintpack',    
     'printing_tools',
     
     'xero_local',
@@ -123,6 +124,13 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
+
+
+SPRINTPACK = {
+    'webshopcode': 99,
+    'url': 'http://ewms.sprintpack.be:1450/',
+    'connect_to_server': True,
+}
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -218,6 +226,22 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         }, 
+        'sprintpack': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },     
+        'sales': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },  
+        'production': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },  
+
     },        
 }
 

@@ -1,0 +1,8 @@
+{% extends "sprintpack/base.xml" %}
+
+{% block body %}
+<RequestInventory>
+	{% if post_data.ean_code %}<Product>{{post_data.ean_code}}</Product>{% endif %}
+	<Inventory>{{post_data.inventory}}</Inventory>
+</RequestInventory>
+{% endblock %}

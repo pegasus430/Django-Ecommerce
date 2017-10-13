@@ -1,0 +1,32 @@
+{% extends "sprintpack/base.xml" %}
+
+{% block body %}
+<Order>
+  <OrderNumber>{{post_data.order_number}}</OrderNumber>
+  <Reference>{{post_data.order_reference}}</Reference>
+  <DaysRetention>{{post_data.daysretention}}</DaysRetention>
+  <Customer>
+    <Name>{{post_data.customer.company_name}}</Name>
+    <Name2>{{post_data.customer.contact_name}}</Name2>
+    <Address1>{{post_data.customer.address1}}</Address1>
+    {%if post_data.customer.address2%}
+    <Address2>{{post_data.customer.address2}}</Address2>
+    {% endif %}
+    <PostalCode1>{{post_data.customer.postcode}}</PostalCode1>
+    <City>{{post_data.customer.city}}</City>
+    <Country>{{post_data.customer.country}}</Country>
+    <Telephone>{{post_data.customer.phone}}</Telephone>
+  </Customer>
+  {% for orderline in post_data.orderlines %}
+  <OrderLine>
+    <ProductID>{{orderline.ean_code}}</ProductID>
+    <Pieces>{{orderline.qty}}</Pieces>
+  </OrderLine>
+  {% endfor %}
+  <AdditionalDocument>
+    {% for document in post_data.additional_documents %}
+    <BinData>{{document}}</BinData>
+    {% endfor %}
+  </AdditionalDocument>
+</Order>
+{% endblock %}

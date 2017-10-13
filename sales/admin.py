@@ -8,7 +8,10 @@ from .helpers import clear_b2b_prices_admin_action,\
     export_pricelist_pdf_admin_action,\
     export_pricelist_csv_admin_action,\
     export_costlist_csv_admin_action,\
-    create_sales_invoice
+    create_sales_invoice, \
+    print_picking_lists, \
+    print_customs_invoice, \
+    ship_with_sprintpack
 
 ###############
 ### Inlines ###
@@ -21,6 +24,9 @@ class SalesOrderNoteInline(DefaultExpandedInline):
 
 class PriceListItemInline(DefaultInline):
     model=PriceListItem
+
+class SalesOrderDeliveryItemInline(DefaultInline):
+    model=SalesOrderDeliveryItem
 
 #####################
 ### Custom Admins ###
@@ -41,6 +47,11 @@ class SalesOrderAdmin(DefaultAdmin):
 
 class SalesOrderProductAdmin(DefaultAdmin):
     list_display = ['product', 'qty', 'unit_price']
+
+class SalesOrderDeliveryAdmin(DefaultAdmin):
+    inlines = [SalesOrderDeliveryItemInline]
+    actions = [print_picking_lists, print_customs_invoice, ship_with_sprintpack]
+    readonly_fields = ['request_sprintpack_order_status', '_sprintpack_order_id']
 
 class PriceListAdmin(DefaultAdmin):
     inlines = [PriceListItemInline]
@@ -65,5 +76,6 @@ class PriceListItemAdmin(DefaultAdmin):
 
 admin.site.register(SalesOrder, SalesOrderAdmin)
 admin.site.register(SalesOrderProduct, SalesOrderProductAdmin)
+admin.site.register(SalesOrderDelivery, SalesOrderDeliveryAdmin)
 admin.site.register(PriceList, PriceListAdmin)
 admin.site.register(PriceListItem, PriceListItemAdmin)

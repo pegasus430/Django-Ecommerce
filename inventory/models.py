@@ -11,6 +11,8 @@ from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 from taggit.managers import TaggableManager
 
+from sprintpack.api import SprintClient
+
 import logging
 logger = logging.getLogger(__name__)
 
@@ -236,6 +238,8 @@ class UmbrellaProductModel(models.Model):
     production_remark_en = models.TextField(blank=True, null=True)
     production_remark_cz = models.TextField(blank=True, null=True)
 
+    customs_code_export = models.CharField(max_length=10, blank=True, null=True)
+
     ## When saving, you need to save all of the nested attached products. So they may re-assign the sku
     ## FIXME: Write test for override below
     def save(self, *args, **kwargs):
@@ -309,6 +313,11 @@ class ProductModel(models.Model):
         ''' return the number of patterns present '''
         return len(self.productmodelpattern_set.all())
 
+    @property
+    def customs_code_export(self):
+        '''return the customs code form umbrella-product-model'''
+        return self.umbrella_product_model.customs_code_export
+
 
 class ProductModelPattern(models.Model):
     PATTERN_TYPE_CHOICES = (
@@ -352,6 +361,8 @@ class UmbrellaProduct(models.Model):
     umbrella_product_model = models.ForeignKey(UmbrellaProductModel)
     colour = models.ForeignKey(Colour)
     accounting_code = models.CharField(max_length=20, default='212', choices=ACCOUNT_CODE_CHOICES)
+    export_hs_code = models.CharField(max_length=8, blank=True, null=True, verbose_name='HS Code for export.')
+    export_composition_description = models.CharField(max_length=100, blank=True, null=True)
 
     active = models.BooleanField(default=True)
     complete = models.BooleanField(default=False)
@@ -420,6 +431,10 @@ class UmbrellaProduct(models.Model):
     @property 
     def number_of_sizes(self):
         return len(self.product_set.all())
+
+    @property 
+    def country_of_origin(self):
+        return self.collection.production_location.own_address.get_country_display()
 
 
 class UmbrellaProductImage(models.Model):
@@ -505,13 +520,27 @@ class Product(models.Model):
 
     sku = models.CharField(max_length=15, blank=True, null=True, unique=True)
 
+    _created_in_sprintpack = models.BooleanField(default=False)
+
     class Meta:
         ordering = ('sku', 'product_model')
 
-    ## Set sku on any save 
     def save(self, *args, **kwargs):
+        ## Set sku on any save
         self.sku = '{}-{}'.format(self.umbrella_product.base_sku, self.product_model.size.short_size)
+        
         super(Product, self).save(*args, **kwargs)
+
+        ## Create the inventry product in sprintpack
+        try:
+            if not self._created_in_sprintpack:
+                self.create_item_in_sprintpack()
+                self._created_in_sprintpack = True
+                self.save()
+        except Exception as e:
+            logger.error('Failed to created poduct {} in Sprintpack inventory due to: {}'.format(self.sku, e))
+            raise
+
 
     @property 
     def name(self):
@@ -527,6 +556,37 @@ class Product(models.Model):
         for bom in self.productbillofmaterial_set.all():
             total_cost += bom.cost
         return total_cost
+
+    @property 
+    def available_stock(self):
+        '''show the available stock in SprintPack'''
+        client = SprintClient()
+        try:
+            return client.request_inventory(ean_code=self.ean_code)[u'Claimable']
+        except Exception as e:
+            logger.error('{} failed to fetch available product stock from Sprintpack. Reason: \n{}'.format(self.sku, e))
+            return 'Unknown - {}'.format(e)
+
+    @property
+    def customs_code_export(self):
+        '''return the customs code for export from product-model'''
+        return self.product_model.customs_code_export   
+             
+
+    def create_item_in_sprintpack(self):
+        if not self.ean_code:
+            error_string= 'ean_code missing for {}, cannot create product in inventory'.format(self.sku)
+            logger.error(error_string)
+            raise Exception(error_string)
+
+        response = SprintClient().create_product(ean_code=self.ean_code, sku=self.sku, description=self.name)
+        if response['Status'] == u'OK':
+            logger.info('Created {} in sprintpack inventory'.format(self.sku))
+            return True
+        else:
+            error_string = 'Failed to create {} in Sprintpack. Response: \n{}'.format(self.sku, response)
+            logger.error(error_string)
+            raise Exception(error_string)
 
 
 class ProductBillOfMaterial(models.Model):

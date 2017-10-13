@@ -46,6 +46,7 @@ class PurchaseOrder(models.Model):
             self.save()
 
     def mark_as_awaiting_delivery(self):
+        ## FIXME: not marking status to WA
         logger.debug('Bump to WA - awaiting_delivery #{}'.format(self.id))
         logger.debug('Going to add temporary stock for {}'.format(self))
 
@@ -134,7 +135,7 @@ class Delivery(models.Model):
                 ## Ordered = 200
                 ## OnItsWay-stock = 200
                 ## Partial delivery = 100
-                ## After mark_confirmed, OnItsWay-stock = 0 instaead of 100
+                ## After mark_confirmed, OnItsWay-stock = 0 instead of 100
                 StockLocationMovement.objects.create(stock_location=stocklocation,
                     material=item.material,qty_change=item.qty)
 
@@ -163,11 +164,13 @@ class Delivery(models.Model):
 
         if self.delivered is None:
             self.delivered = datetime.date.today()
+            
         self._is_confirmed = True
         self.save()
 
     def save(self, *args, **kwargs):
         ## if delivery is new, aut-add all products
+        ## FIXME: Only add remaining products
         if not self.pk:
             super(Delivery, self).save(*args, **kwargs)
             for item in self.purchase_order.purchaseorderitem_set.all():

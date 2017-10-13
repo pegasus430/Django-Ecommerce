@@ -6,6 +6,12 @@ from inventory.models import StockLocation, Product, StockLocationMovement, Stoc
 from inventory.reports import return_stock_status_for_order
 
 from contacts.models import OwnAddress
+from sprintpack.api import SprintClient
+
+from .documents import picking_list
+
+import logging
+logger = logging.getLogger(__name__)
 
 import logging
 logger = logging.getLogger(__name__)
@@ -76,4 +82,63 @@ class ProductionOrderItem(models.Model):
 
     class Meta:
         unique_together = ('production_order', 'product')
+
+
+
+class ProductionOrderDeliveryItem(models.Model):
+    production_order_delivery = models.ForeignKey('ProductionOrderDelivery')
+    product = models.ForeignKey(Product)
+    qty = models.IntegerField()
+
+    class Meta:
+        unique_together = ('product', 'production_order_delivery')
+
+    def __unicode__(self):
+        return '{} {} {}'.format(
+            self.production_order_delivery,
+            self.product,
+            self.qty)
+
+
+class ProductionOrderDelivery(models.Model):
+    production_order = models.ForeignKey(ProductionOrder)
+    carrier = models.CharField(max_length=3)
+    est_delivery_date = models.DateField()
+
+    _sprintpack_pre_advice_id = models.CharField(max_length=100, blank=True, null=True)
+
+    class Meta:
+        verbose_name_plural = "Production order deliveries"
+
+    def __unicode__(self):
+        return '{} {}'.format(
+            self.production_order,
+            self.id)
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            super(ProductionOrderDelivery, self).save(*args, **kwargs)
+            for product in self.production_order.productionorderitem_set.all():
+                ProductionOrderDeliveryItem.objects.create(
+                   production_order_delivery=self,
+                   product=product.product,
+                   qty=product.qty)
+        super(ProductionOrderDelivery, self).save(*args, **kwargs)
+
+    def create_sprintpack_pre_advice(self):
+        if not self._sprintpack_pre_advice_id:
+            response = SprintClient().create_pre_advice(
+                self.est_delivery_date,
+                [{'ean_code': prod.product.ean_code, 'qty': prod.qty} for prod in self.productionorderdeliveryitem_set.all()])
+            self._sprintpack_pre_advice_id = response
+            self.save()
+            logger.info('Created pre-advice for production order {}'.format(self.production_order))
+        else:
+            logger.warning('Skipping pre-advice, already informed sprintpack about production order {}'.format(self.production_order))
+            raise Exception('{} is already forwarded to sprintpack with id'.format(self.id, self._sprintpack_pre_advice_id))
+
+    def picking_list(self):
+        '''create picking_list for a production-order shipment'''
+        return picking_list(self)
+
 

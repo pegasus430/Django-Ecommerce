@@ -28,6 +28,7 @@ def print_address_label_admin(addresses):
 
     return dynamic_file_httpresponse(label_data, u'address_labels')
 
+
 def print_commission_report_admin(agents):
     reports = {}
     for agent in agents:

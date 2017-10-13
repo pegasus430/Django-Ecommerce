@@ -52,8 +52,6 @@ def export_pricelist_csv(pricelist, include_cost=False):
     return response
 
 
-
-
 def export_pricelist_pdf(pricelist):
     ''' export a pricelist to pdf '''
     # Create the HttpResponse object with the appropriate PDF headers.
@@ -88,64 +86,4 @@ def export_pricelist_pdf(pricelist):
     elements.append(table)
     p.build(elements) 
 
-    # p = canvas.Canvas(buffer, pagesize=A4)
-    # p.setLineWidth(.3)
-    # p.setFont('Helvetica', 12)
-
-
-
-    # img_height = 42.01
-    # img_width = 205
-    # img_top_location = a4_height - img_height + 2
-    # img_left_margin = 2.5
-    # p.drawImage('/Users/sascha/Sites/Sila/sales/static/letterhead.png', img_left_margin*mm, img_top_location*mm, width=img_width*mm, height=img_height*mm, mask='auto')
-
-    # string_top_location = img_top_location - 10
-    # p.setFont('Helvetica', 14)
-    # p.drawString(page_margin*mm, string_top_location*mm ,'Price list - 23 August 2017')
-    # string_top_location -= line_height - 2
-    # p.line(page_margin*mm, string_top_location*mm, page_width*mm, string_top_location*mm)
-
-
-    # ## Draw headers
-    # string_top_location -= line_height
-    # p.setFont('Helvetica', 11)
-    # headers = ['SKU', 'RRP', 'Per 1', 'Per 6', 'Per 12', 'Per 48']
-    # column_width = (page_width - page_margin) / len(headers)
-    # column_location = page_margin
-    # for header in headers:
-    #     p.drawString(column_location*mm, string_top_location*mm, header)
-    #     column_location += column_width
-    # string_top_location -= line_height 
-    # p.line(page_margin*mm, string_top_location*mm, page_width*mm, string_top_location*mm)
-           
-    # string_top_location -= line_height * 1.5
-    # for item in pricelist.pricelistitem_set.all():
-    #     p.setFont('Helvetica', 10)
-    #     string_top_location -= line_height
-    #     column_location = page_margin
-    #     data = item.__dict__
-    #     for header in headers:
-    #         if header.lower() == 'sku':
-    #             item_data = item.product.sku
-    #         else:
-    #             item_data = data[header.replace(' ', '_').lower()]
-
-    #         p.drawString(column_location*mm, string_top_location*mm, '{}'.format(item_data))
-    #         column_location += column_width
-
-    # # p.drawString(275,725,'AMOUNT OWED:')
-    # # p.drawString(500,725,"$1,000.00")
-    # # p.line(378,723,580,723)
-
-    # # p.drawString(30,703,'RECEIVED BY:')
-    # # p.line(120,700,580,700)
-    # # p.drawString(120,703,"JOHN DOE")
- 
-    # # Close the PDF object cleanly.
-    # p.showPage()
-    # p.save()
-    # pdf = buffer.getvalue()
-    # buffer.close()
-    # response.write(pdf)
     return response

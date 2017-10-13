@@ -1,9 +1,9 @@
 from os.path import abspath, dirname, join
-from .base import TEMPLATES, INSTALLED_APPS, DOMAIN_DEVELOPMENT, ADMINS
+from .base import TEMPLATES, INSTALLED_APPS, DOMAIN_DEVELOPMENT, ADMINS, SPRINTPACK
 from .production import DATABASES
 
 ENVIRONMENT = 'DEV'
-DEBUG = False
+DEBUG = True
 COMPRESS_OFFLINE = True
 TEMPLATES[0]['OPTIONS']['debug'] = DEBUG
 
@@ -27,5 +27,8 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     }
 }
+
+SPRINTPACK['connect_to_server'] = True
+SPRINTPACK['webshopcode'] = 99
 
 # EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'

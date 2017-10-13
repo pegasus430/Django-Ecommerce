@@ -2,6 +2,9 @@
 
 ## Todos
 
+- add printing and defaults to django packages
+- cleanup the mess with stylesheets
+- move tranport document, and perhaps some labels to the new printing lib
 - production-order block stock and remove stock
 - merge dev and master
 - Magento order and client export
