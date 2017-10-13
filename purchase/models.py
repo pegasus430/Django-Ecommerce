@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.db.models import Q
 
 from inventory.models import Material, StockLocation, StockLocationMovement, StockLocationOnItsWayMovement
 from contacts.models import OwnAddress, Relation
@@ -108,7 +109,7 @@ class PurchaseOrderConfirmationAttachment(models.Model):
 
 
 class Delivery(models.Model):
-    purchase_order = models.ForeignKey(PurchaseOrder)
+    purchase_order = models.ForeignKey(PurchaseOrder, limit_choices_to=Q(status='WA') | Q(status='PL'))
 
     delivered = models.DateField(null=True, blank=True)
     _is_confirmed = models.BooleanField(default=False)
@@ -169,13 +170,20 @@ class Delivery(models.Model):
         self.save()
 
     def save(self, *args, **kwargs):
-        ## if delivery is new, aut-add all products
-        ## FIXME: Only add remaining products
+        ## if delivery is new, aut-add all products that haven't been delivered yet
         if not self.pk:
             super(Delivery, self).save(*args, **kwargs)
+            item_dict = {}
             for item in self.purchase_order.purchaseorderitem_set.all():
-                ## TODO: make qty data dynamic, only that are not delivered, and only qty to be received
-                DeliveryItem.objects.create(delivery=self, material=item.material, qty=item.qty)
+                item_dict[item.material] = item.qty
+
+            for delivery in self.purchase_order.delivery_set.all():
+                for delivered_item in delivery.deliveryitem_set.all():
+                    item_dict[delivered_item.material] -= delivered_item.qty
+
+            for material,quantity in item_dict.items():
+                if quantity > 0:
+                    DeliveryItem.objects.create(delivery=self, material=material, qty=quantity)
         else:
             super(Delivery, self).save(*args, **kwargs)
 
