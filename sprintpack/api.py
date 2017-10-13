@@ -222,8 +222,6 @@ class SprintClient:
          
     def request_order_status(self, order_number):
         '''request the status of an order'''
-        ## FIXME: client.request_order_status(2222) >> Throws expat-error on BPOST link - invalid excaping of &
-        ## Request sent to Orlando on 30/09/2017
         xml_data = {
             'order_number': order_number
         }
