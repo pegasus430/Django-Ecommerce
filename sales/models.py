@@ -66,7 +66,6 @@ class SalesOrder(models.Model):
     )
 
     client = models.ForeignKey(Relation,  limit_choices_to={'is_client': True})
-    # invoice_to = models.ForeignKey(RelationAddress, related_name='invoice_to')
     client_reference = models.CharField(max_length=15, blank=True, null=True)
     ship_to = models.ForeignKey(RelationAddress, related_name='ship_to')
     ship_from = models.ForeignKey(StockLocation)
@@ -169,22 +168,23 @@ class SalesOrderDelivery(models.Model):
     def save(self, *args, **kwargs):
         if not self.id:
             ## Auto-Add products to deliver
-            ## FIXME: Only add remaining products
             super(SalesOrderDelivery, self).save(*args, **kwargs)
-            for product in self.sales_order.salesorderproduct_set.all():
+            products_to_add = {}
+            for pr in self.sales_order.salesorderproduct_set.all():
+                product = pr.product.product
+                products_to_add[product] = pr.qty
+
+            for delivery in self.sales_order.salesorderdelivery_set.all():
+                for pr in delivery.salesorderdeliveryitem_set.all():
+                    product = pr.product
+                    products_to_add[product] -= pr.qty
+
+            for product, qty in products_to_add.items():
                 SalesOrderDeliveryItem.objects.create(
                    sales_order_delivery=self,
-                   product=product.product.product,
-                   qty=product.qty)
+                   product=product,
+                   qty=qty)
         super(SalesOrderDelivery, self).save(*args, **kwargs)
-
-    # def ship_order_with_sprintpack(self):
-    #     if not self._sprintpack_order_id:
-    #         response = SprintClient().create_order()
-    #         logger.info('Shipped order with sprintpack {}'.format(self.sales_order))
-    #     else:
-    #         logger.warning('Skipping create_order, already informed sprintpack about production shipment {}'.format(self.sales_order))
-    #         raise Exception('{} is already shipped with sprintpack with id'.format(self.id, self._sprintpack_order_id))
 
     def picking_list(self):
         '''create picking_list for a sales-order shipment'''
