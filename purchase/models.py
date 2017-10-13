@@ -15,7 +15,7 @@ class PurchaseOrder(models.Model):
     STATUS_CHOICES = (
         ('DR', 'Draft'),
         ('WC', 'Waiting for confirmation'),
-        ('WA', 'Waiting delivery'),
+        ('WA', 'Awaiting delivery'),
         ('PL', 'Partially Delivered'),
         ('DL', 'Delivered'),
         ('IN', 'Invoice added'),
@@ -47,7 +47,6 @@ class PurchaseOrder(models.Model):
             self.save()
 
     def mark_as_awaiting_delivery(self):
-        ## FIXME: not marking status to WA
         logger.debug('Bump to WA - awaiting_delivery #{}'.format(self.id))
         logger.debug('Going to add temporary stock for {}'.format(self))
 
@@ -60,8 +59,10 @@ class PurchaseOrder(models.Model):
                     item.save()        
 
             self._awaiting_delivery = True
-            self.satus = 'WA'
+            self.status = 'WA'
             self.save()
+        else:
+            logger.info('Purchase Order #{} already marked as _awaiting_delivery'.format(self.id))
 
     def order_value(self):
         value = 0.0
