@@ -146,7 +146,7 @@ class ProductionOrderDelivery(models.Model):
     @property 
     def number_of_items(self):
         items = 0
-        for i in self.production_order.productionorderitem_set.all():
+        for i in self.productionorderdeliveryitem_set.all():
             items += i.qty
         return items
 
