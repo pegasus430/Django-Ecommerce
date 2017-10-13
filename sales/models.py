@@ -202,7 +202,10 @@ class SalesOrderDelivery(models.Model):
         # attachment_file_list = [self.picking_list()]
         attachment_file_list = []
         if not sales_order.ship_to.is_eu_country:
-            attachment_file_list.append(self.customs_invoice())*3
+            ## We need 3 copies
+            attachment_file_list.append(self.customs_invoice())
+            attachment_file_list.append(self.customs_invoice())
+            attachment_file_list.append(self.customs_invoice())
 
         response = SprintClient().create_order(
             order_number=sales_order.id, 
