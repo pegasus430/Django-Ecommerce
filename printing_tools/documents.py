@@ -58,11 +58,17 @@ class SuzysDocument:
         canvas.restoreState()
 
     def add_invoice_delivery_headers(self, invoice_to, deliver_to):
+        # table_data = [
+        #     ['', 'Invoice To', 'Deliver To', ''],
+        #     ['', invoice_to, deliver_to, ''],
+        # ]
+        # self.add_table(table_data, [0.15, 0.35, 0.35, 0.15], line_under_header_row=False)
+
         table_data = [
-            ['', 'Invoice To', 'Deliver To', ''],
-            ['', invoice_to, deliver_to, ''],
+            ['Invoice To', 'Deliver To'],
+            [invoice_to, deliver_to],
         ]
-        self.add_table(table_data, [0.15, 0.35, 0.35, 0.15], line_under_header_row=False)
+        self.add_table(table_data, [0.5, 0.5], line_under_header_row=False)
         self.add_vertical_space(10)
 
     
@@ -113,6 +119,10 @@ class SuzysDocument:
             final_table_widths.append(width*table_width)
 
         table = Table(final_table_data, colWidths=final_table_widths)
+        table.setStyle(TableStyle([
+            ('VALIGN',(0,0),(-1,-1),'TOP') ## Align cells to top
+        ]))
+
         if line_under_header_row:
             table.setStyle(TableStyle([
                 ('LINEBELOW', (0,0), (num_cols,0), 1, colors.black),  ## Add line below headers
@@ -120,10 +130,10 @@ class SuzysDocument:
             ]))
         if box_line:
             table.setStyle(TableStyle([
-                ('LINEBELOW', (0,0), (num_cols,0), 1, colors.black),  ## Add line below headers
-                ('LINEABOVE', (0,0), (num_cols,0), 1, colors.black),  ## Add line below headers
-                ('LINEBEFORE', (0,0), (num_cols,0), 1, colors.black),  ## Add line below headers
-                ('LINEAFTER', (0,0), (num_cols,0), 1, colors.black),  ## Add line below headers
+                ('LINEBELOW', (0,0), (num_cols,0), 1, colors.black),
+                ('LINEABOVE', (0,0), (num_cols,0), 1, colors.black),
+                ('LINEBEFORE', (0,0), (num_cols,0), 1, colors.black),
+                ('LINEAFTER', (0,0), (num_cols,0), 1, colors.black),
                 ('VALIGN',(0,0),(-1,-1),'TOP') ## Align cells to top
             ]))
         self.elements.append(table)        

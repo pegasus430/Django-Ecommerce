@@ -70,6 +70,7 @@ class SalesOrder(models.Model):
     client_reference = models.CharField(max_length=15, blank=True, null=True)
     ship_to = models.ForeignKey(RelationAddress, related_name='ship_to')
     ship_from = models.ForeignKey(StockLocation)
+    transport_cost = models.FloatField(default=0)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -102,6 +103,13 @@ class SalesOrder(models.Model):
             value -= value * (self.discount_pct / 100)
             
         return value
+
+    @property 
+    def payment_terms(self):
+        if self.client.payment_days == '0':
+            return u'Advance Payment'
+        else:
+            return u'Net {} days'.format(self.client.payment_days)
 
 
 class SalesOrderProduct(models.Model):

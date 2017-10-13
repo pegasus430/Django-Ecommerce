@@ -111,7 +111,7 @@ def create_sales_invoice(modeladmin, request, queryset):
             q._xero_invoice_id = invoice_id
         
         q.save()
-create_sales_invoice.short_description = 'Create Sales Invoices'
+create_sales_invoice.short_description = 'Generate sales invoice in Xero'
 
 def print_picking_lists(modeladmin, request, queryset):
     return print_picking_list_admin(queryset)

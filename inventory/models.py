@@ -361,7 +361,8 @@ class UmbrellaProduct(models.Model):
     umbrella_product_model = models.ForeignKey(UmbrellaProductModel)
     colour = models.ForeignKey(Colour)
     accounting_code = models.CharField(max_length=20, default='212', choices=ACCOUNT_CODE_CHOICES)
-    hs_code = models.CharField(max_length=8, blank=True, null=True, verbose_name='HS Code for export.')
+    export_hs_code = models.CharField(max_length=8, blank=True, null=True, verbose_name='HS Code for export.')
+    export_composition_description = models.CharField(max_length=100, blank=True, null=True)
 
     active = models.BooleanField(default=True)
     complete = models.BooleanField(default=False)
@@ -430,6 +431,10 @@ class UmbrellaProduct(models.Model):
     @property 
     def number_of_sizes(self):
         return len(self.product_set.all())
+
+    @property 
+    def country_of_origin(self):
+        return self.collection.production_location.own_address.get_country_display()
 
 
 class UmbrellaProductImage(models.Model):

@@ -72,8 +72,12 @@ class AbstractAddress(models.Model):
 
         address_lines.append(self.get_country_display())
 
-        if include_phone and self.contact_phone:
-            address_lines.append(u'Tel: {}'.format(self.contact_phone))
+        if include_phone:
+            if self.contact_phone:
+                address_lines.append(u'Tel: {}'.format(self.contact_phone))
+
+            if self.contact_mobile:
+                address_lines.append(u'Mob: {}'.format(self.contact_mobile))
 
         return address_lines
 
