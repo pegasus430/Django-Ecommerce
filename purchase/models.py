@@ -132,19 +132,10 @@ class Delivery(models.Model):
 
             for item in self.deliveryitem_set.filter(added_to_stock=False):
                 stocklocation = self.purchase_order.ship_to
-                ## FIXME: There is an issue here.  Example:
-                ## Stock = 100
-                ## Ordered = 200
-                ## OnItsWay-stock = 200
-                ## Partial delivery = 100
-                ## After mark_confirmed, OnItsWay-stock = 0 instead of 100
                 StockLocationMovement.objects.create(stock_location=stocklocation,
                     material=item.material,qty_change=item.qty)
-
-                temp_qty_change = PurchaseOrderItem.objects.get(material=item.material,
-                    purchase_order=self.purchase_order).qty * -1  ## deliveries are not always correct. So use PO value
                 StockLocationOnItsWayMovement.objects.create(stock_location=stocklocation,
-                    material=item.material,qty_change=temp_qty_change)
+                    material=item.material,qty_change=-item.qty)
 
                 po_item = PurchaseOrderItem.objects.get(
                     purchase_order=self.purchase_order,
