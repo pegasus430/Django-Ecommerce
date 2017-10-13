@@ -106,7 +106,7 @@ class SalesOrder(models.Model):
 
     @property 
     def payment_terms(self):
-        if self.client.payment_days == '0':
+        if self.client.payment_days == 0:
             return u'Advance Payment'
         else:
             return u'Net {} days'.format(self.client.payment_days)
