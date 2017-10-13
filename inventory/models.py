@@ -17,8 +17,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-## FIXME:  Add all __unicode__ and other generated strings to tests
-
 ################
 ### Abstract ### 
 ################
@@ -37,7 +35,7 @@ class ProductionNoteAbstract(models.Model):
                                       options={'quality': 60})
 
     def __unicode__(self):
-        return '{}'.format(self.name_en)   
+        return u'{}'.format(self.name_en)   
 
     class Meta:
         abstract = True
@@ -136,7 +134,7 @@ class MaterialImage(models.Model):
     image = models.ImageField(upload_to='media/materials/images/%Y/%m/%d')
 
     def __unicode__(self):
-        return 'Image for {}'.format(self.material)
+        return u'Image for {}'.format(self.material)
 
 
 class MaterialDataSheet(models.Model):
@@ -145,7 +143,7 @@ class MaterialDataSheet(models.Model):
     datasheet = models.FileField(upload_to='media/materials/datasheets/%Y/%m/%d')
 
     def __unicode__(self):
-        return '{} {}'.format(self.name, self.material)
+        return u'{} {}'.format(self.name, self.material)
 
 
 class StockLocationItem(models.Model):
@@ -157,7 +155,7 @@ class StockLocationItem(models.Model):
     comment = models.TextField(null=True, blank=True)
 
     def __unicode__(self):
-        return '{} {} of {} available in {}'.format(
+        return u'{} {} of {} available in {}'.format(
             self.quantity_in_stock,
             self.material.unit_usage,
             self.material.name,
@@ -204,7 +202,7 @@ class SizeBreed(models.Model):
     size = models.ForeignKey(Size)
 
     def __unicode__(self):
-        return '{} has size {}'.format(self.dog_breed, self.size)
+        return u'{} has size {}'.format(self.dog_breed, self.size)
 
 
 class Colour(models.Model):
@@ -253,7 +251,7 @@ class UmbrellaProductModel(models.Model):
         return [i.collection for i in self.umbrellaproduct_set.all()]
 
     def __unicode__(self):
-        return '{} item # {}'.format(self.name, self.number)
+        return u'{} item # {}'.format(self.name, self.number)
 
 
 class UmbrellaProductModelProductionDescription(models.Model):
@@ -266,7 +264,7 @@ class UmbrellaProductModelProductionDescription(models.Model):
                 null=True)
 
     def __unicode__(self):
-        return '{} for {}'.format(self.name, self.umbrella_product_model)
+        return u'{} for {}'.format(self.name, self.umbrella_product_model)
 
 
 class UmbrellaProductModelProductionNote(ProductionNoteAbstract):
@@ -298,7 +296,7 @@ class ProductModel(models.Model):
         ordering = ('umbrella_product_model', 'size')
 
     def __unicode__(self):
-        return '{}, size: {}'.format(self.umbrella_product_model, self.size)
+        return u'{}, size: {}'.format(self.umbrella_product_model, self.size)
 
     @property
     def total_pattern_surface_area(self):
@@ -394,7 +392,7 @@ class UmbrellaProduct(models.Model):
         super(UmbrellaProduct, self).save(*args, **kwargs)
         ## Create new products when a model changes to a new one.
         if self.umbrella_product_model != self.__original_umbrella_product_model:
-            logger.info('{}: umbrella_product_model was changed from {} to {}.  Creating new matching items'.format(
+            logger.info(u'{}: umbrella_product_model was changed from {} to {}.  Creating new matching items'.format(
                 self.name,
                 self.__original_umbrella_product_model,
                 self.umbrella_product_model,
@@ -408,7 +406,7 @@ class UmbrellaProduct(models.Model):
 
         ## Regenerate skus when a umbrellaproduct-colour changes
         if self.colour != self.__original_colour:
-            logger.info('{}: colour was changed from {} to {}.  Regenerating product skus'.format(
+            logger.info(u'{}: colour was changed from {} to {}.  Regenerating product skus'.format(
                 self.name,
                 self.__original_colour,
                 self.colour,
@@ -423,7 +421,7 @@ class UmbrellaProduct(models.Model):
 
     @property
     def base_sku(self):
-        return '{collection}-{model}-{colour}'.format(
+        return u'{collection}-{model}-{colour}'.format(
             collection=self.collection.number,
             model=self.umbrella_product_model.number,
             colour=self.colour.code)
@@ -472,13 +470,13 @@ class UmbrellaProductBillOfMaterial(models.Model):
             if created:
                 product_bom.quantity_needed=self.quantity_needed
                 product_bom.save()
-                logger.info('Auto-Created ProductBillOfMaterial {}'.format(product_bom.id))
+                logger.info(u'Auto-Created ProductBillOfMaterial {}'.format(product_bom.id))
             elif not created and product_bom.use_default_qty:
                 product_bom.quantity_needed=self.quantity_needed
                 product_bom.save()
-                logger.info('Auto-Updated ProductBillOfMaterial {}'.format(product_bom.id))
+                logger.info(u'Auto-Updated ProductBillOfMaterial {}'.format(product_bom.id))
             else:
-                logger.info('SKIPPED Auto-Updated or Create ProductBillOfMaterial {}'.format(product_bom.id))
+                logger.info(u'SKIPPED Auto-Updated or Create ProductBillOfMaterial {}'.format(product_bom.id))
         super(UmbrellaProductBillOfMaterial, self).save(*args, **kwargs)
 
     ## Delete the same bom for all products in product_set
@@ -492,13 +490,13 @@ class UmbrellaProductBillOfMaterial(models.Model):
                         product=product)
                 product_bom_id = product_bom.id
                 product_bom.delete()
-                logger.info('Auto-Deleted ProductBillOfMaterial {}'.format(product_bom_id))
+                logger.info(u'Auto-Deleted ProductBillOfMaterial {}'.format(product_bom_id))
             except ProductBillOfMaterial.DoesNotExist:
-                logger.info('FAILED Auto-Delete ProductBillOfMaterial in product {} object missing'.format(product.id))
+                logger.info(u'FAILED Auto-Delete ProductBillOfMaterial in product {} object missing'.format(product.id))
         super(UmbrellaProductBillOfMaterial, self).delete(*args, **kwargs)
 
     def __unicode__(self):
-        return '{} {}'.format(self.quantity_needed, self.material)
+        return u'{} {}'.format(self.quantity_needed, self.material)
 
     @property 
     def cost(self):
@@ -538,16 +536,16 @@ class Product(models.Model):
                 self._created_in_sprintpack = True
                 self.save()
         except Exception as e:
-            logger.error('Failed to created poduct {} in Sprintpack inventory due to: {}'.format(self.sku, e))
+            logger.error(u'Failed to created poduct {} in Sprintpack inventory due to: {}'.format(self.sku, e))
             raise
 
 
     @property 
     def name(self):
-        return '{} {}'.format(self.umbrella_product, self.product_model.size)
+        return u'{} {}'.format(self.umbrella_product, self.product_model.size)
     
     def __unicode__(self):
-        return '{} {}'.format(self.sku, self.name)
+        return u'{} {}'.format(self.sku, self.name)
 
     @property 
     def cost(self):
@@ -564,8 +562,8 @@ class Product(models.Model):
         try:
             return client.request_inventory(ean_code=self.ean_code)[u'Claimable']
         except Exception as e:
-            logger.error('{} failed to fetch available product stock from Sprintpack. Reason: \n{}'.format(self.sku, e))
-            return 'Unknown - {}'.format(e)
+            logger.error(u'{} failed to fetch available product stock from Sprintpack. Reason: \n{}'.format(self.sku, e))
+            return u'Unknown - {}'.format(e)
 
     @property
     def customs_code_export(self):
@@ -575,16 +573,16 @@ class Product(models.Model):
 
     def create_item_in_sprintpack(self):
         if not self.ean_code:
-            error_string= 'ean_code missing for {}, cannot create product in inventory'.format(self.sku)
+            error_string= u'ean_code missing for {}, cannot create product in inventory'.format(self.sku)
             logger.error(error_string)
             raise Exception(error_string)
 
         response = SprintClient().create_product(ean_code=self.ean_code, sku=self.sku, description=self.name)
         if response['Status'] == u'OK':
-            logger.info('Created {} in sprintpack inventory'.format(self.sku))
+            logger.info(u'Created {} in sprintpack inventory'.format(self.sku))
             return True
         else:
-            error_string = 'Failed to create {} in Sprintpack. Response: \n{}'.format(self.sku, response)
+            error_string = u'Failed to create {} in Sprintpack. Response: \n{}'.format(self.sku, response)
             logger.error(error_string)
             raise Exception(error_string)
 
@@ -602,7 +600,7 @@ class ProductBillOfMaterial(models.Model):
         ordering = ('material__supplier', 'material', 'product')
 
     def __unicode__(self):
-        return '{} {}'.format(self.quantity_needed, self.material)
+        return u'{} {}'.format(self.quantity_needed, self.material)
 
     @property 
     def cost(self):
@@ -648,13 +646,13 @@ class StockLocationMovement(models.Model):
 
             stock_value_new = item.quantity_in_stock
 
-            logger.debug('Changed stock for {} in {} with {}. Old value was {}, new value is {}'.format(
+            logger.debug(u'Changed stock for {} in {} with {}. Old value was {}, new value is {}'.format(
                 self.material, self.stock_location, self.qty_change, stock_value_old, stock_value_new))            
 
         super(StockLocationMovement, self).save(*args, **kwargs)
 
     def __unicode__(self):
-        return 'Changed qty of {} in {} with {}'.format(
+        return u'Changed qty of {} in {} with {}'.format(
             self.material, self.stock_location, self.qty_change)
 
 
@@ -669,7 +667,7 @@ class StockLocationOnItsWayMovement(models.Model):
     def save(self, *args, **kwargs):
         ## If StockMovement is new, update or create the stocklocation.
         if not self.pk:
-            logger.debug('Changing stock for {} in {} with {}'.format(
+            logger.debug(u'Changing stock for {} in {} with {}'.format(
                 self.material, self.stock_location, self.qty_change))
 
             item, created = StockLocationItem.objects.get_or_create(
@@ -684,7 +682,7 @@ class StockLocationOnItsWayMovement(models.Model):
         super(StockLocationOnItsWayMovement, self).save(*args, **kwargs)
 
     def __unicode__(self):
-        return 'Changed qty of {} in {} with {}'.format(
+        return u'Changed qty of {} in {} with {}'.format(
             self.material, self.stock_location, self.qty_change)   
 
 
@@ -701,7 +699,7 @@ def on_creation_generate_boms_from_umbrella_product(sender, instance, created, *
                     material=umbrella_bom.material,
                     quantity_needed=umbrella_bom.quantity_needed,
                     product=instance)
-            logger.info('Auto-Created ProductBillOfMaterial on Product.Create {}'.format(product_bom.id))
+            logger.info(u'Auto-Created ProductBillOfMaterial on Product.Create {}'.format(product_bom.id))
 
         
 

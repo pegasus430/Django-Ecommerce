@@ -34,7 +34,7 @@ env.user_key_file = '/Users/sascha/.ssh/id_rsa.pub'
 env.app_name = 'Sila'
 env.django_dir = 'sila'
 env.requirements_file = 'requirements.txt'
-env.setup_huey = False
+env.setup_huey = True
 
 env.venv_path =  'venv'
 env.user_home = path.join('/home/', env.user) + '/'

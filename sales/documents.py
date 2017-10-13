@@ -22,7 +22,10 @@ def picking_list(sales_order_shipment):
 
 
 def customs_invoice(sales_order_shipment):
-    '''create a picking_list for a sales_order'''
+    '''
+    create a picking_list for a sales_order.
+    Loosly based on: http://www.dhl.co.uk/content/dam/downloads/g0/express/customs_regulations_russia/export_import_guidelines_to_russia.pdf
+    '''
     sales_order = sales_order_shipment.sales_order
     sales_order_items = sales_order.salesorderproduct_set.all()
 

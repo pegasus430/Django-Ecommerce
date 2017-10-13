@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.db.models import Q
 
 from inventory.models import Material, StockLocation, StockLocationMovement, StockLocationOnItsWayMovement
 from contacts.models import OwnAddress, Relation
@@ -14,7 +15,7 @@ class PurchaseOrder(models.Model):
     STATUS_CHOICES = (
         ('DR', 'Draft'),
         ('WC', 'Waiting for confirmation'),
-        ('WA', 'Waiting delivery'),
+        ('WA', 'Awaiting delivery'),
         ('PL', 'Partially Delivered'),
         ('DL', 'Delivered'),
         ('IN', 'Invoice added'),
@@ -46,7 +47,6 @@ class PurchaseOrder(models.Model):
             self.save()
 
     def mark_as_awaiting_delivery(self):
-        ## FIXME: not marking status to WA
         logger.debug('Bump to WA - awaiting_delivery #{}'.format(self.id))
         logger.debug('Going to add temporary stock for {}'.format(self))
 
@@ -59,8 +59,10 @@ class PurchaseOrder(models.Model):
                     item.save()        
 
             self._awaiting_delivery = True
-            self.satus = 'WA'
+            self.status = 'WA'
             self.save()
+        else:
+            logger.info('Purchase Order #{} already marked as _awaiting_delivery'.format(self.id))
 
     def order_value(self):
         value = 0.0
@@ -108,7 +110,7 @@ class PurchaseOrderConfirmationAttachment(models.Model):
 
 
 class Delivery(models.Model):
-    purchase_order = models.ForeignKey(PurchaseOrder)
+    purchase_order = models.ForeignKey(PurchaseOrder, limit_choices_to=Q(status='WA') | Q(status='PL'))
 
     delivered = models.DateField(null=True, blank=True)
     _is_confirmed = models.BooleanField(default=False)
@@ -130,19 +132,10 @@ class Delivery(models.Model):
 
             for item in self.deliveryitem_set.filter(added_to_stock=False):
                 stocklocation = self.purchase_order.ship_to
-                ## FIXME: There is an issue here.  Example:
-                ## Stock = 100
-                ## Ordered = 200
-                ## OnItsWay-stock = 200
-                ## Partial delivery = 100
-                ## After mark_confirmed, OnItsWay-stock = 0 instead of 100
                 StockLocationMovement.objects.create(stock_location=stocklocation,
                     material=item.material,qty_change=item.qty)
-
-                temp_qty_change = PurchaseOrderItem.objects.get(material=item.material,
-                    purchase_order=self.purchase_order).qty * -1  ## deliveries are not always correct. So use PO value
                 StockLocationOnItsWayMovement.objects.create(stock_location=stocklocation,
-                    material=item.material,qty_change=temp_qty_change)
+                    material=item.material,qty_change=-item.qty)
 
                 po_item = PurchaseOrderItem.objects.get(
                     purchase_order=self.purchase_order,
@@ -169,13 +162,20 @@ class Delivery(models.Model):
         self.save()
 
     def save(self, *args, **kwargs):
-        ## if delivery is new, aut-add all products
-        ## FIXME: Only add remaining products
+        ## if delivery is new, aut-add all products that haven't been delivered yet
         if not self.pk:
             super(Delivery, self).save(*args, **kwargs)
+            item_dict = {}
             for item in self.purchase_order.purchaseorderitem_set.all():
-                ## TODO: make qty data dynamic, only that are not delivered, and only qty to be received
-                DeliveryItem.objects.create(delivery=self, material=item.material, qty=item.qty)
+                item_dict[item.material] = item.qty
+
+            for delivery in self.purchase_order.delivery_set.all():
+                for delivered_item in delivery.deliveryitem_set.all():
+                    item_dict[delivered_item.material] -= delivered_item.qty
+
+            for material,quantity in item_dict.items():
+                if quantity > 0:
+                    DeliveryItem.objects.create(delivery=self, material=material, qty=quantity)
         else:
             super(Delivery, self).save(*args, **kwargs)
 

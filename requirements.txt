@@ -11,3 +11,5 @@ django-taggit==0.22.1
 django-imagekit==4.0.1
 zeep==2.4.0
 xmltodict==0.11.0
+huey==1.5.1
+redis==2.10.6
