@@ -152,6 +152,10 @@ class SuzysDocument:
         self.elements.append(Spacer(width=0, height=height_in_mm*mm))
 
 
+    def add_page_break(self):
+        self.elements.append(PageBreak())
+
+
     def print_document(self):
         self.doc.build(self.elements, onFirstPage=self._add_letterhead, onLaterPages=self._add_letterhead)
         pdf = self.buffer.getvalue()

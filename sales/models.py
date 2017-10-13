@@ -168,6 +168,8 @@ class SalesOrderDelivery(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.id:
+            ## Auto-Add products to deliver
+            ## FIXME: Only add remaining products
             super(SalesOrderDelivery, self).save(*args, **kwargs)
             for product in self.sales_order.salesorderproduct_set.all():
                 SalesOrderDeliveryItem.objects.create(
@@ -203,8 +205,6 @@ class SalesOrderDelivery(models.Model):
         attachment_file_list = []
         if not sales_order.ship_to.is_eu_country:
             ## We need 3 copies
-            attachment_file_list.append(self.customs_invoice())
-            attachment_file_list.append(self.customs_invoice())
             attachment_file_list.append(self.customs_invoice())
 
         response = SprintClient().create_order(
