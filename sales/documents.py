@@ -7,7 +7,7 @@ def picking_list(sales_order_shipment):
 
     document = SuzysDocument()
 
-    document.add_title('Picking List {}'.format(sales_order_shipment))
+    document.add_title(u'Picking List {}'.format(sales_order_shipment))
 
     document.add_invoice_delivery_headers(
         sales_order.client.printing_address_newlines().replace('\n', '<br></br>'),
@@ -37,10 +37,10 @@ def customs_invoice(sales_order_shipment):
         document.add_title('Commercial Invoice')
 
         ## Invoice info
-        table_data = [['Invoice number: {}'.format(sales_order.invoice_number),
-            'Invoice date: {}'.format(sales_order.created_at.strftime('%d/%m/%Y')),
-            'Delivery terms: DAP {}'.format(sales_order.ship_to.city),
-            'Payment terms: {}'.format(sales_order.payment_terms),
+        table_data = [[u'Invoice number: {}'.format(sales_order.invoice_number),
+            u'Invoice date: {}'.format(sales_order.created_at.strftime('%d/%m/%Y')),
+            u'Delivery terms: DAP {}'.format(sales_order.ship_to.city),
+            u'Payment terms: {}'.format(sales_order.payment_terms),
             ]]
         document.add_table(table_data, [1.0/len(table_data[0])]*len(table_data[0]), bold_header_row=False, 
             line_under_header_row=False, box_line=True)
@@ -55,7 +55,7 @@ def customs_invoice(sales_order_shipment):
             'HS Code', 'Unit Price (EUR)', 'Total Price (EUR)']]
         table_columns_width = [0.3, 0.2, 0.1, 0.25, 0.15]
         for prod in sales_order_items:
-            product_name = '{}, pet {}, art: {}, {}'.format(prod.product.product.name, 
+            product_name = u'{}, pet {}, art: {}, {}'.format(prod.product.product.name, 
                 prod.product.product.product_model.umbrella_product_model.get_product_type_display(),
                 prod.product.product.sku,
                 prod.product.product.umbrella_product.export_composition_description)
