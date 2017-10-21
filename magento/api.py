@@ -9,6 +9,8 @@ import base64
 import sys
 import logging
 
+from django.conf import settings
+
 reload(sys)
 sys.setdefaultencoding('UTF8')
 
@@ -28,12 +30,12 @@ class TimeoutTransport(xmlrpclib.SafeTransport):
 
 
 class MagentoServer:
-    def __init__(self, config_object):
-        self.config = config_object
+    def __init__(self):
+        self.config = settings.MAGENTO_SERVER
 
-        xmlrpc_url = self.config.api_url
-        user = self.config.host_api_username
-        passwd = self.config.host_api_key
+        xmlrpc_url = self.config['xmlrpc_url']
+        user = self.config['user']
+        passwd = self.config['passwd']
 
         self.apiserver = xmlrpclib.Server(xmlrpc_url)
         self.session =  self.apiserver.login(user, passwd)
@@ -114,10 +116,27 @@ class MagentoServer:
         return self.call('catalog_product.update', [product['sku'], product])
 
 
-    def update_stock(self, product):
+    def update_stock(self, sku, qty, backorders=True):
         ''' updates the product:
-        product = {'sku': 'some sku', 'qty': 0, 'in_stock': 1, 'backorders': 1}
+        :param sku:  your sku
+        :param qty:  qty available
+        :param backorders: should you accept backorders, default True
         '''
+        product = {
+            'sku': sku, 
+            'qty': qty,
+        }
+
+        if qty > 0:
+            product['in_stock'] = 1
+        else:
+            product['in_stock'] = 0
+
+        if backorders:
+            product['backorders'] = 1
+        else:
+            product['backorders'] = 0
+        
         return self.call('cataloginventory_stock_item.update', [product['sku'], product])
 
 

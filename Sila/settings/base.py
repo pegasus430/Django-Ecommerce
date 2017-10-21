@@ -132,6 +132,12 @@ SPRINTPACK = {
     'connect_to_server': True,
 }
 
+MAGENTO_SERVER = {
+    'xmlrpc_url': 'https://api:ajdaj8372@dev.suzys.eu/index.php/api/xmlrpc',
+    'user': 'dev',
+    'passwd': 'somekey7788',
+}
+
 # Additional locations of static files
 STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
