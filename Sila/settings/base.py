@@ -47,9 +47,10 @@ INSTALLED_APPS = [
     'sales',
     'transport',
     'production',
-    'sprintpack',    
     'printing_tools',
-    
+
+    'sprintpack',
+    'magento',
     'xero_local',
 
     'huey.contrib.djhuey', 
@@ -131,6 +132,12 @@ SPRINTPACK = {
     'webshopcode': 99,
     'url': 'http://ewms.sprintpack.be:1450/',
     'connect_to_server': True,
+}
+
+MAGENTO_SERVER = {
+    'xmlrpc_url': 'https://api:ajdaj8372@dev.suzys.eu/index.php/api/xmlrpc',
+    'user': 'dev',
+    'passwd': 'somekey7788',
 }
 
 # Additional locations of static files
@@ -246,8 +253,12 @@ LOGGING = {
             'handlers': ['console', 'file'],
             'level': 'DEBUG',
             'propagate': True,
-        },         
-
+        },   
+        'magento': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },                
     },        
 }
 

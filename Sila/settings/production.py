@@ -45,3 +45,9 @@ MEDIA_ROOT = '/home/sila/media/'
 
 SPRINTPACK['webshopcode'] = 32
 SPRINTPACK['connect_to_server'] = True
+
+MAGENTO_SERVER = {
+    'xmlrpc_url': 'https://www.suzys.eu/index.php/api/xmlrpc',
+    'user': 'dev',
+    'passwd': 'somekey7788',
+}
