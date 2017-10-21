@@ -46,9 +46,10 @@ INSTALLED_APPS = [
     'sales',
     'transport',
     'production',
-    'sprintpack',    
     'printing_tools',
-    
+
+    'sprintpack',
+    'magento',
     'xero_local',
 
     'huey.contrib.djhuey', 
@@ -251,8 +252,12 @@ LOGGING = {
             'handlers': ['console', 'file'],
             'level': 'DEBUG',
             'propagate': True,
-        },         
-
+        },   
+        'magento': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },                
     },        
 }
 
