@@ -10,6 +10,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+@db_periodic_task(crontab(hour='3', minute='0'))
 def update_stock_for_all_products():
     magento = MagentoServer()
     for product in Product.objects.all():
