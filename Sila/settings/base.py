@@ -19,6 +19,7 @@ DOMAIN_STAGING = ['staging.sila.network']
 DOMAIN_DEVELOPMENT = ['dev.sila.network']
 DOMAIN_FEATURE_START = 'feature-'
 
+ADMIN_SITE_HEADER = "Sila Base"
 
 DEBUG = False
 

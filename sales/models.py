@@ -87,7 +87,7 @@ class SalesOrder(models.Model):
     paid_on_date = models.DateField(blank=True, null=True)
 
     class Meta:
-        ordering = ('created_at',)
+        ordering = ('-created_at',)
 
     def __unicode__(self):
         return 'Order #{} for {}'.format(self.id, self.client)
