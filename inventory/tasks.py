@@ -16,8 +16,7 @@ def update_stock_for_all_products():
         sku = product.sku
         qty = product.available_stock
         try:
-
             response = magento.update_stock(sku, qty)
-            logger.info('Updated {sku} to new qty {qty}'.format(sku, qty))
+            logger.info('Updated {} to new qty {}'.format(sku, qty))
         except Exception as e:
-            logger.error('Failed to update {sku} to new qty {qty} with message {e}'.format(sku, qty, e))
+            logger.error('Failed to update {} to new qty {} with message {}'.format(sku, qty, e))
