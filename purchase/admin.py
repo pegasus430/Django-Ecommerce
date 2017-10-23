@@ -31,6 +31,12 @@ class PurchaseOrderAdmin(DefaultAdmin):
     inlines = [PurchaseOrderItemInline, PurchaseOrderConfirmationAttachmentInline]
     actions = [print_purchase_order_report, mark_as_awaiting_for_confirmation, mark_as_awaiting_delivery]
 
+
+class PurchaseOrderItemAdmin(DefaultAdmin):
+    list_display = ['__unicode__', 'purchase_order','material', 'unit_price']
+    search_fields = ['material__sku_supplier', 'material']
+    # list_filter = []
+
 class DeliveryAdmin(DefaultAdmin):
     list_display = ['__unicode__', 'status']
     inlines = [DeliveryItemInline, DeliveryAttachmentInline]
@@ -39,4 +45,5 @@ class DeliveryAdmin(DefaultAdmin):
 
 
 admin.site.register(PurchaseOrder, PurchaseOrderAdmin)
+admin.site.register(PurchaseOrderItem, PurchaseOrderItemAdmin)
 admin.site.register(Delivery, DeliveryAdmin)
