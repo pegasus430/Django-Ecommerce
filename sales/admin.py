@@ -33,8 +33,8 @@ class SalesOrderDeliveryItemInline(DefaultInline):
 #####################
 class SalesOrderAdmin(DefaultAdmin):
     list_display = ['__unicode__', 'status', 'get_total_order_value', 'created_at', 'is_paid', 
-        'get_agent', 'paid_commission', 'partial_delivery_allowed']
-    list_filter = ['is_paid', 'client__agent', 'paid_commission']
+        'get_agent', 'paid_commission']
+    list_filter = ['is_paid', 'client__agent', 'paid_commission', 'partial_delivery_allowed']
     inlines = [SalesOrderProductInline, SalesOrderNoteInline]
     readonly_fields = ['total_order_value']
     actions = [create_sales_invoice]
