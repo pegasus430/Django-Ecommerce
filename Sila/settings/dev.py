@@ -34,4 +34,11 @@ CACHES = {
 SPRINTPACK['connect_to_server'] = True
 SPRINTPACK['webshopcode'] = 99
 
+MAGENTO_SERVER = {
+    'xmlrpc_url': 'https://api:ajdaj8372@dev.suzys.eu/index.php/api/xmlrpc',
+    'user': 'dev',
+    'passwd': 'somekey7788',
+}
+
+
 # EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'

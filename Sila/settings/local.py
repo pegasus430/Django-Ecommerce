@@ -29,4 +29,11 @@ COMPRESS_OFFLINE = False
 
 SPRINTPACK['connect_to_server'] = True
 
+MAGENTO_SERVER = {
+    'xmlrpc_url': 'https://api:ajdaj8372@dev.suzys.eu/index.php/api/xmlrpc',
+    'user': 'dev',
+    'passwd': 'somekey7788',
+}
+
+
 # HUEY['consumer']['periodic'] = False ## Disable crons on local setup.
