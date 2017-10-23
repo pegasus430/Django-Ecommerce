@@ -34,7 +34,7 @@ class PurchaseOrderAdmin(DefaultAdmin):
 
 class PurchaseOrderItemAdmin(DefaultAdmin):
     list_display = ['__unicode__', 'purchase_order','material', 'unit_price']
-    search_fields = ['material__sku_supplier', 'material']
+    search_fields = ['material__sku_supplier']
     # list_filter = []
 
 class DeliveryAdmin(DefaultAdmin):
