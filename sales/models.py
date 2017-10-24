@@ -162,9 +162,7 @@ class SalesOrderDelivery(models.Model):
         verbose_name_plural = "Sales order deliveries"
 
     def __unicode__(self):
-        return '{} {}'.format(
-            self.sales_order,
-            self.id)
+        return u'{}'.format(self.id)
 
     def save(self, *args, **kwargs):
         if not self.id:
