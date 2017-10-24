@@ -58,6 +58,7 @@ def customs_invoice(sales_order_shipment):
         table_data = [['Product', 'Country of Origin', 'Qty (pieces)', 
             'HS Code', 'Unit Price (EUR)', 'Total Price (EUR)']]
         table_columns_width = [0.3, 0.2, 0.1, 0.25, 0.15]
+        total_shipment_value = 0.0
         for prod in sales_order_shipment_items:
             product_name = u'{}, pet {}, art: {}, {}'.format(prod.product.name, 
                 prod.product.product_model.umbrella_product_model.get_product_type_display(),
@@ -67,11 +68,12 @@ def customs_invoice(sales_order_shipment):
             table_data.append([product_name, prod.product.umbrella_product.country_of_origin,\
                 sold_item.qty, prod.product.umbrella_product.export_hs_code, sold_item.unit_price, \
                 sold_item.qty * sold_item.unit_price])
+            total_shipment_value += sold_item.qty * sold_item.unit_price
         table_data.append(['', '', '', '', '', ''])    
-        table_data.append(['<b>Total price EUR</b>', sales_order.total_order_value, '', '', '', ''])
+        table_data.append(['<b>Total price EUR</b>', total_shipment_value, '', '', '', ''])
         table_data.append(['<b>Freight cost EUR</b>', sales_order.transport_cost, '', '', '', ''])
         table_data.append(['<b>Total for payment EUR</b>', 
-            sales_order.total_order_value + sales_order.transport_cost,
+            total_shipment_value + sales_order.transport_cost,
             '', '', '', ''])
         # table_data.append(['', '', '', '', '', ''])    
         # table_data.append(['<b>Gross Weight</b>', '', '', '', '', ''])    
