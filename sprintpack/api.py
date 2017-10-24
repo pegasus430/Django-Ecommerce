@@ -165,9 +165,11 @@ class SprintClient:
 
         xml_data[u'orderlines'] = product_order_list
 
-        xml_data['additional_documents'] = []
-        for f in attachment_file_list:
-            xml_data['additional_documents'].append(self.encode_file_to_base64(f))
+        if len(attachment_file_list) > 0:
+            xml_data['additional_documents'] = [self.encode_file_to_base64(f) \
+                for f in attachment_file_list]
+            # for f in attachment_file_list:
+                # xml_data['additional_documents'].append(self.encode_file_to_base64(f))
 
         response = self.post('CreateOrder', xml_data)
         if type(response) == dict:
