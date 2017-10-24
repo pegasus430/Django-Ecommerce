@@ -232,3 +232,10 @@ class SalesOrderDelivery(models.Model):
         except Exception:
             return False
 
+    @property
+    def sprintpack_shipment_status(self):
+        try:
+            return self.request_sprintpack_order_status['OrderStatus']
+        except KeyError:
+            return False
+
