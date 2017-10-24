@@ -38,7 +38,10 @@ class PurchaseOrder(models.Model):
     _awaiting_delivery = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return 'Purchase Order {} {} ref:{}'.format(self.supplier, self.created_at, self.supplier_reference)
+        if self.supplier_reference:
+            return u'PO{} {} ref:{}'.format(self.id, self.supplier, self.supplier_reference)
+        else:
+            return u'PO{} {}'.format(self.id, self.supplier, self.supplier_reference)
 
     def mark_as_awaiting_for_confirmation(self):
         higher_stati = ['WA', 'PL', 'DL', 'IN']
