@@ -208,8 +208,8 @@ class SalesOrderDelivery(models.Model):
             attachment_file_list.append(self.customs_invoice())
 
         response = SprintClient().create_order(
-            order_number=sales_order.id, 
-            order_reference=sales_order.client_reference, 
+            order_number=self.id, ## allow free shipping
+            order_reference='{} {}'.format(sales_order.id, sales_order.client_reference), 
             company_name=client.business_name,
             contact_name=client.contact_full_name, 
             address1=client.address1, 
