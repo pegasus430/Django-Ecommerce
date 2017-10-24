@@ -10,6 +10,7 @@ from django.conf import settings
 
 from .exceptions import UnkownError, WrongFileTypeError
 from xml.parsers.expat import ExpatError
+from unidecode import unidecode
 
 import logging
 logger = logging.getLogger(__name__)
@@ -146,23 +147,23 @@ class SprintClient:
             partial_delivery = 999
 
         xml_data = {
-            'order_number': order_number,
-            'order_reference': order_reference,
-            'daysretention': partial_delivery,
-            'customer': {
-                'company_name': company_name,
-                'contact_name': contact_name,
-                'address1': address1,
-                'address2': address2,
-                'postcode': postcode, 
-                'city': city,
-                'country': country, ## 2 letter ISO format
-                'phone': phone,
+            u'order_number': order_number,
+            u'order_reference': unidecode(order_reference),
+            u'daysretention': partial_delivery,
+            u'customer': {
+                u'company_name': unidecode(company_name),
+                u'contact_name': unidecode(contact_name),
+                u'address1': unidecode(address1),
+                u'address2': unidecode(address2),
+                u'postcode': unidecode(postcode), 
+                u'city': unidecode(city),
+                u'country': country, ## 2 letter ISO format
+                u'phone': phone,
             },
-            'orderlines': product_order_list,
+            u'orderlines': product_order_list,
         }
 
-        xml_data['orderlines'] = product_order_list
+        xml_data[u'orderlines'] = product_order_list
 
         xml_data['additional_documents'] = []
         for f in attachment_file_list:
