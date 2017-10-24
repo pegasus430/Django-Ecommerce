@@ -62,6 +62,7 @@ class SalesOrder(models.Model):
         ('PM', 'Pending Materials'),
         ('PR', 'In Production'),
         ('PS', 'Pending Shipping'),
+        ('PD', 'Partially Shipped'),
         ('SH', 'Shipped'),
     )
 
