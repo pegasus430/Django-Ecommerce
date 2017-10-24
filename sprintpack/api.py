@@ -237,7 +237,8 @@ class SprintClient:
             u'RCV': u'Received in system',
             u'PCK': u'Ready for picking',
             u'SCN': u'Order is being processed / picked.',
-            u'RDY': u'Packed and waiting for shipmentlabel LBL – Packed, Labeled and waiting for shipment SHP - Shipped',
+            u'RDY': u'Packed and waiting for shipmentlabel',
+            u'LBL': u'Packed, Labeled and waiting for shipment SHP - Shipped',
             u'PSH': u'Partly Shipped',
             u'CNL': u'Cancelled',
         }
