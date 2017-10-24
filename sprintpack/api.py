@@ -238,7 +238,8 @@ class SprintClient:
             u'PCK': u'Ready for picking',
             u'SCN': u'Order is being processed / picked.',
             u'RDY': u'Packed and waiting for shipmentlabel',
-            u'LBL': u'Packed, Labeled and waiting for shipment SHP - Shipped',
+            u'LBL': u'Packed, Labeled and waiting for shipment',
+            u'SHP': u'Shipped',
             u'PSH': u'Partly Shipped',
             u'CNL': u'Cancelled',
         }
