@@ -233,7 +233,7 @@ class SalesOrderDelivery(models.Model):
             return False
 
     @property
-    def sprintpack_shipment_status(self):
+    def request_sprintpack_order_status_label(self):
         try:
             return SprintClient().request_order_status_label(self._sprintpack_order_id)
         except KeyError:
