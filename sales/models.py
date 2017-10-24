@@ -210,7 +210,7 @@ class SalesOrderDelivery(models.Model):
 
         response = SprintClient().create_order(
             order_number=self.id, ## allow free shipping
-            order_reference=u'{} {}'.format(sales_order.id, sales_order.client_reference), 
+            order_reference=sales_order.id,
             company_name=client.business_name,
             contact_name=client.contact_full_name, 
             address1=client.address1, 
