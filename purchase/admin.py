@@ -38,7 +38,7 @@ class PurchaseOrderItemAdmin(DefaultAdmin):
     # list_filter = []
 
 class DeliveryAdmin(DefaultAdmin):
-    list_display = ['__unicode__', 'status']
+    list_display = ['__unicode__', 'status', 'delivered']
     inlines = [DeliveryItemInline, DeliveryAttachmentInline]
     readonly_fields = ['_is_confirmed']
     actions = [mark_confirmed]
