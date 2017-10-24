@@ -3,7 +3,7 @@ from printing_tools.documents import SuzysDocument
 def picking_list(sales_order_shipment):
     '''create a picking_list for a sales_order'''
     sales_order = sales_order_shipment.sales_order
-    sales_order_items = sales_order.salesorderproduct_set.all()
+    sales_order_shipment_items = sales_order_shipment.salesorderdeliveryitem_set.all()
 
     document = SuzysDocument()
 
@@ -15,7 +15,7 @@ def picking_list(sales_order_shipment):
 
     table_data = [['sku', 'ean_code', 'qty']]
     [table_data.append([prod.product.product.sku, prod.product.product.ean_code, prod.qty])\
-        for prod in sales_order_items]
+        for prod in sales_order_shipment_items]
     document.add_table(table_data, [0.33]*3)
 
     return document.print_document()
@@ -27,7 +27,7 @@ def customs_invoice(sales_order_shipment):
     Loosly based on: http://www.dhl.co.uk/content/dam/downloads/g0/express/customs_regulations_russia/export_import_guidelines_to_russia.pdf
     '''
     sales_order = sales_order_shipment.sales_order
-    sales_order_items = sales_order.salesorderproduct_set.all()
+    sales_order_shipment_items = sales_order_shipment.salesorderdeliveryitem_set.all()
 
     document = SuzysDocument()
 
@@ -54,7 +54,7 @@ def customs_invoice(sales_order_shipment):
         table_data = [['Product', 'Country of Origin', 'Qty (pieces)', 
             'HS Code', 'Unit Price (EUR)', 'Total Price (EUR)']]
         table_columns_width = [0.3, 0.2, 0.1, 0.25, 0.15]
-        for prod in sales_order_items:
+        for prod in sales_order_shipment_items:
             product_name = u'{}, pet {}, art: {}, {}'.format(prod.product.product.name, 
                 prod.product.product.product_model.umbrella_product_model.get_product_type_display(),
                 prod.product.product.sku,
