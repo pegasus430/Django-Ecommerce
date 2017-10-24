@@ -43,7 +43,7 @@ class ProductionOrder(models.Model):
 
     def __unicode__(self):
         if self.reference:
-            return u'PR{} {} ref:{}'.format(self.id, self.reference)
+            return u'PR{} ref:{}'.format(self.id, self.reference)
         else:
             return u'PR{}'.format(self.id)
 
