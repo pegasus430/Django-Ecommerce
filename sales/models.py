@@ -200,7 +200,7 @@ class SalesOrderDelivery(models.Model):
         client = self.sales_order.client
         sales_order = self.sales_order
         product_order_list = [{'ean_code': prod.product.ean_code, 'qty': prod.qty} \
-            for prod in sales_order.salesorderdeliveryitem_set.all()]
+            for prod in self.salesorderdeliveryitem_set.all()]
 
         # attachment_file_list = [self.picking_list()]
         attachment_file_list = []
