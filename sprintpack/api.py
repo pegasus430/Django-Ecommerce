@@ -229,3 +229,17 @@ class SprintClient:
             'order_number': order_number
         }
         return self.post('RequestOrderStatus', xml_data)
+
+
+    def request_order_status_label(self, order_number):
+        '''request the status label of an order'''
+        status_map = {
+            u'RCV': u'Received in system',
+            u'PCK': u'Ready for picking',
+            u'SCN': u'Order is being processed / picked.',
+            u'RDY': u'Packed and waiting for shipmentlabel LBL – Packed, Labeled and waiting for shipment SHP - Shipped',
+            u'PSH': u'Partly Shipped',
+            u'CNL': u'Cancelled',
+        }
+        status = self.request_order_status(order_number)['OrderStatus'][0]
+        return status_map[status]
