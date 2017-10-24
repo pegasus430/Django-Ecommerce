@@ -22,6 +22,7 @@ class ProductionOrder(models.Model):
         ('DR', 'Draft'),
         ('WC', 'Waiting for confirmation'),
         ('WA', 'Waiting delivery'),
+        ('PD', 'Partially Delivered'),
         ('DL', 'Delivered'),
         ('IN', 'Invoice added'),
     )
