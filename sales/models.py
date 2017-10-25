@@ -162,7 +162,7 @@ class SalesOrderDelivery(models.Model):
         verbose_name_plural = "Sales order deliveries"
 
     def __unicode__(self):
-        return u'{}'.format(self.id)
+        return u'Shipment #{}'.format(self._shipment_reference())
 
     def save(self, *args, **kwargs):
         if not self.id:
@@ -217,7 +217,7 @@ class SalesOrderDelivery(models.Model):
         response = SprintClient().create_order(
             order_number=self.id, ## Provide shipment id instead of order-id for uniqueness reasons.
             order_reference=self._shipment_reference(),  ## used combined reference for uniqueness reasons.
-            company_name=client.business_name,
+            company_name=client.businesse_name,
             contact_name=client.contact_full_name, 
             address1=client.address1, 
             address2=client.address2, 
