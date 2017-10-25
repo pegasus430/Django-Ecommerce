@@ -185,6 +185,13 @@ class SalesOrderDelivery(models.Model):
                    qty=qty)
         super(SalesOrderDelivery, self).save(*args, **kwargs)
 
+    def _sales_order_shipment_id(self):  
+        return SalesOrderDelivery.objects.filter(sales_order=self.sales_order,
+            id__lt=self.id).order_by('id').count() + 1  ## +1 since queryset starts with 0 
+
+    def _shipment_reference(self):
+        return u'{}-{}'.format(self.sales_order.id, self._sales_order_shipment_id())
+
     def picking_list(self):
         '''create picking_list for a sales-order shipment'''
         return picking_list(self)
@@ -192,6 +199,7 @@ class SalesOrderDelivery(models.Model):
     def customs_invoice(self):
         '''create an invoice for customs which always includes a shipping-cost'''
         return customs_invoice(self)
+
 
     def ship_with_sprintpack(self):
         '''ship with sprintpack'''
@@ -207,8 +215,8 @@ class SalesOrderDelivery(models.Model):
             attachment_file_list.append(self.customs_invoice())
 
         response = SprintClient().create_order(
-            order_number=self.id, ## allow free shipping
-            order_reference=u'{}'.format(sales_order.id), ## FIXME: Toevoegen -2, -3 voor deelleveringen
+            order_number=self.id, ## Provide shipment id instead of order-id for uniqueness reasons.
+            order_reference=self._shipment_reference(),  ## used combined reference for uniqueness reasons.
             company_name=client.business_name,
             contact_name=client.contact_full_name, 
             address1=client.address1, 
