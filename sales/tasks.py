@@ -14,7 +14,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-# @db_periodic_task(crontab(minute='*'))
+@db_periodic_task(crontab(minute='*'))
 def fetch_magento_orders(status='processing'):
     logger.debug('Connecting to magento')
     magento = MagentoServer()
