@@ -32,8 +32,9 @@ class SalesOrderDeliveryItemInline(DefaultInline):
 ### Custom Admins ###
 #####################
 class SalesOrderAdmin(DefaultAdmin):
-    list_display = ['__unicode__', 'status', 'get_total_order_value', 'created_at', 'is_paid', 'get_agent', 'paid_commission']
-    list_filter = ['is_paid', 'client__agent', 'paid_commission']
+    list_display = ['__unicode__', 'status', 'get_total_order_value', 'created_at', 'is_paid', 
+        'get_agent', 'paid_commission']
+    list_filter = ['is_paid', 'client__agent', 'paid_commission', 'partial_delivery_allowed', 'status']
     inlines = [SalesOrderProductInline, SalesOrderNoteInline]
     readonly_fields = ['total_order_value']
     actions = [create_sales_invoice]
@@ -49,16 +50,19 @@ class SalesOrderProductAdmin(DefaultAdmin):
     list_display = ['product', 'qty', 'unit_price']
 
 class SalesOrderDeliveryAdmin(DefaultAdmin):
+    list_display = ['__unicode__', 'sales_order', 'request_sprintpack_order_status_label']
     inlines = [SalesOrderDeliveryItemInline]
     actions = [print_picking_lists, print_customs_invoice, ship_with_sprintpack]
     readonly_fields = ['request_sprintpack_order_status', '_sprintpack_order_id']
 
 class PriceListAdmin(DefaultAdmin):
     inlines = [PriceListItemInline]
-    actions = [export_pricelist_pdf_admin_action, export_pricelist_csv_admin_action, export_costlist_csv_admin_action]
+    actions = [export_pricelist_pdf_admin_action, export_pricelist_csv_admin_action, 
+        export_costlist_csv_admin_action]
 
 class PriceListItemAdmin(DefaultAdmin):
-    list_display = ['__unicode__', 'get_sku', 'price_list', 'rrp', 'per_1', 'per_6', 'per_12', 'per_48', 'get_cost']
+    list_display = ['__unicode__', 'get_sku', 'price_list', 'rrp', 'per_1', 
+        'per_6', 'per_12', 'per_48', 'get_cost']
     list_filter = ['price_list']
     search_fields = ['product__sku']
     actions = [clear_b2b_prices_admin_action, 

@@ -22,6 +22,7 @@ class ProductionOrder(models.Model):
         ('DR', 'Draft'),
         ('WC', 'Waiting for confirmation'),
         ('WA', 'Waiting delivery'),
+        ('PD', 'Partially Delivered'),
         ('DL', 'Delivered'),
         ('IN', 'Invoice added'),
     )
@@ -42,8 +43,10 @@ class ProductionOrder(models.Model):
     _marked_for_delivery = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return 'Production Order {} {} ref:{}'.format(self.production_location, 
-            self.created_at, self.reference)
+        if self.reference:
+            return u'PR{} ref:{}'.format(self.id, self.reference)
+        else:
+            return u'PR{}'.format(self.id)
 
     def save(self, *args, **kwargs):
         if not self.pk and not self.reference:

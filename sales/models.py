@@ -62,6 +62,7 @@ class SalesOrder(models.Model):
         ('PM', 'Pending Materials'),
         ('PR', 'In Production'),
         ('PS', 'Pending Shipping'),
+        ('PD', 'Partially Shipped'),
         ('SH', 'Shipped'),
     )
 
@@ -161,9 +162,7 @@ class SalesOrderDelivery(models.Model):
         verbose_name_plural = "Sales order deliveries"
 
     def __unicode__(self):
-        return '{} {}'.format(
-            self.sales_order,
-            self.id)
+        return u'Shipment #{}'.format(self._shipment_reference())
 
     def save(self, *args, **kwargs):
         if not self.id:
@@ -186,6 +185,13 @@ class SalesOrderDelivery(models.Model):
                    qty=qty)
         super(SalesOrderDelivery, self).save(*args, **kwargs)
 
+    def _sales_order_shipment_id(self):  
+        return SalesOrderDelivery.objects.filter(sales_order=self.sales_order,
+            id__lt=self.id).order_by('id').count() + 1  ## +1 since queryset starts with 0 
+
+    def _shipment_reference(self):
+        return u'{}-{}'.format(self.sales_order.id, self._sales_order_shipment_id())
+
     def picking_list(self):
         '''create picking_list for a sales-order shipment'''
         return picking_list(self)
@@ -194,12 +200,13 @@ class SalesOrderDelivery(models.Model):
         '''create an invoice for customs which always includes a shipping-cost'''
         return customs_invoice(self)
 
+
     def ship_with_sprintpack(self):
         '''ship with sprintpack'''
         client = self.sales_order.client
         sales_order = self.sales_order
-        product_order_list = [{'ean_code': prod.product.product.ean_code, 'qty': prod.qty} \
-            for prod in sales_order.salesorderproduct_set.all()]
+        product_order_list = [{'ean_code': prod.product.ean_code, 'qty': prod.qty} \
+            for prod in self.salesorderdeliveryitem_set.all()]
 
         # attachment_file_list = [self.picking_list()]
         attachment_file_list = []
@@ -208,8 +215,8 @@ class SalesOrderDelivery(models.Model):
             attachment_file_list.append(self.customs_invoice())
 
         response = SprintClient().create_order(
-            order_number=self.id, ## allow free shipping
-            order_reference='{} {}'.format(sales_order.id, sales_order.client_reference), 
+            order_number=self.id, ## Provide shipment id instead of order-id for uniqueness reasons.
+            order_reference=self._shipment_reference(),  ## used combined reference for uniqueness reasons.
             company_name=client.business_name,
             contact_name=client.contact_full_name, 
             address1=client.address1, 
@@ -231,5 +238,12 @@ class SalesOrderDelivery(models.Model):
         try:
             return SprintClient().request_order_status(self._sprintpack_order_id)
         except Exception:
+            return False
+
+    @property
+    def request_sprintpack_order_status_label(self):
+        try:
+            return SprintClient().request_order_status_label(self._sprintpack_order_id)
+        except KeyError:
             return False
 

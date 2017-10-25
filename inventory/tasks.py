@@ -10,6 +10,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+@db_periodic_task(crontab(hour='3', minute='0'))
 def update_stock_for_all_products():
     magento = MagentoServer()
     for product in Product.objects.all():
@@ -19,4 +20,4 @@ def update_stock_for_all_products():
             response = magento.update_stock(sku, qty)
             logger.info('Updated {} to new qty {}'.format(sku, qty))
         except Exception as e:
-            logger.error('Failed to update {} to new qty {} with message {}'.format(sku, qty, e))
+            logger.warning('Failed to update {} to new qty {} with message {}'.format(sku, qty, e))

@@ -26,17 +26,24 @@ class DeliveryAttachmentInline(DefaultInline):
 #####################
 class PurchaseOrderAdmin(DefaultAdmin):
     readonly_fields = ['order_value', 'created_at', 'updated_at', 'id']
-    list_display = ['__unicode__', 'status']
-    list_filter = ['status', 'supplier']
+    list_display = ['__unicode__', 'status', 'est_delivery']
+    list_filter = ['status', 'supplier', 'est_delivery']
     inlines = [PurchaseOrderItemInline, PurchaseOrderConfirmationAttachmentInline]
     actions = [print_purchase_order_report, mark_as_awaiting_for_confirmation, mark_as_awaiting_delivery]
 
+
+class PurchaseOrderItemAdmin(DefaultAdmin):
+    list_display = ['__unicode__', 'purchase_order','material', 'unit_price']
+    search_fields = ['material__sku_supplier']
+    # list_filter = []
+
 class DeliveryAdmin(DefaultAdmin):
-    list_display = ['__unicode__', 'status']
+    list_display = ['__unicode__', 'status', 'delivered']
     inlines = [DeliveryItemInline, DeliveryAttachmentInline]
     readonly_fields = ['_is_confirmed']
     actions = [mark_confirmed]
 
 
 admin.site.register(PurchaseOrder, PurchaseOrderAdmin)
+admin.site.register(PurchaseOrderItem, PurchaseOrderItemAdmin)
 admin.site.register(Delivery, DeliveryAdmin)

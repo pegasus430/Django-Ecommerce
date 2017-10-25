@@ -23,10 +23,12 @@
     <Pieces>{{orderline.qty}}</Pieces>
   </OrderLine>
   {% endfor %}
+  {% if post_data.additional_documents %}
   <AdditionalDocument>
     {% for document in post_data.additional_documents %}
     <BinData>{{document}}</BinData>
     {% endfor %}
   </AdditionalDocument>
+  {% endif %}
 </Order>
 {% endblock %}

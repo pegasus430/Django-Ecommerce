@@ -1,9 +1,11 @@
 from printing_tools.documents import SuzysDocument
 
+from .models import *
+
 def picking_list(sales_order_shipment):
     '''create a picking_list for a sales_order'''
     sales_order = sales_order_shipment.sales_order
-    sales_order_items = sales_order.salesorderproduct_set.all()
+    sales_order_shipment_items = sales_order_shipment.salesorderdeliveryitem_set.all()
 
     document = SuzysDocument()
 
@@ -14,8 +16,10 @@ def picking_list(sales_order_shipment):
         sales_order.ship_to.printing_address_newlines().replace('\n', '<br></br>'))
 
     table_data = [['sku', 'ean_code', 'qty']]
-    [table_data.append([prod.product.product.sku, prod.product.product.ean_code, prod.qty])\
-        for prod in sales_order_items]
+    for prod in sales_order_shipment_items:
+        sold_item = prod.sales_order_delivery.sales_order.salesorderproduct_set.get(product__product=prod.product)
+        table_data.append([prod.product.sku, prod.product.ean_code, sold_item.qty])
+
     document.add_table(table_data, [0.33]*3)
 
     return document.print_document()
@@ -27,7 +31,7 @@ def customs_invoice(sales_order_shipment):
     Loosly based on: http://www.dhl.co.uk/content/dam/downloads/g0/express/customs_regulations_russia/export_import_guidelines_to_russia.pdf
     '''
     sales_order = sales_order_shipment.sales_order
-    sales_order_items = sales_order.salesorderproduct_set.all()
+    sales_order_shipment_items = sales_order_shipment.salesorderdeliveryitem_set.all()
 
     document = SuzysDocument()
 
@@ -54,19 +58,22 @@ def customs_invoice(sales_order_shipment):
         table_data = [['Product', 'Country of Origin', 'Qty (pieces)', 
             'HS Code', 'Unit Price (EUR)', 'Total Price (EUR)']]
         table_columns_width = [0.3, 0.2, 0.1, 0.25, 0.15]
-        for prod in sales_order_items:
-            product_name = u'{}, pet {}, art: {}, {}'.format(prod.product.product.name, 
-                prod.product.product.product_model.umbrella_product_model.get_product_type_display(),
-                prod.product.product.sku,
-                prod.product.product.umbrella_product.export_composition_description)
-            table_data.append([product_name, prod.product.product.umbrella_product.country_of_origin,\
-                prod.qty, prod.product.product.umbrella_product.export_hs_code, prod.unit_price, \
-                prod.qty * prod.unit_price])
+        total_shipment_value = 0.0
+        for prod in sales_order_shipment_items:
+            product_name = u'{}, pet {}, art: {}, {}'.format(prod.product.name, 
+                prod.product.product_model.umbrella_product_model.get_product_type_display(),
+                prod.product.sku,
+                prod.product.umbrella_product.export_composition_description)
+            sold_item = prod.sales_order_delivery.sales_order.salesorderproduct_set.get(product__product=prod.product)
+            table_data.append([product_name, prod.product.umbrella_product.country_of_origin,\
+                sold_item.qty, prod.product.umbrella_product.export_hs_code, sold_item.unit_price, \
+                sold_item.qty * sold_item.unit_price])
+            total_shipment_value += sold_item.qty * sold_item.unit_price
         table_data.append(['', '', '', '', '', ''])    
-        table_data.append(['<b>Total price EUR</b>', sales_order.total_order_value, '', '', '', ''])
+        table_data.append(['<b>Total price EUR</b>', total_shipment_value, '', '', '', ''])
         table_data.append(['<b>Freight cost EUR</b>', sales_order.transport_cost, '', '', '', ''])
         table_data.append(['<b>Total for payment EUR</b>', 
-            sales_order.total_order_value + sales_order.transport_cost,
+            total_shipment_value + sales_order.transport_cost,
             '', '', '', ''])
         # table_data.append(['', '', '', '', '', ''])    
         # table_data.append(['<b>Gross Weight</b>', '', '', '', '', ''])    
