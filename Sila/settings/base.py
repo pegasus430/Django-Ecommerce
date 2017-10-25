@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 from sys import path
 import os
+import logging
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  ## Decend 3 times since config-file is nested.
 
@@ -207,12 +208,12 @@ LOGGING = {
         },
     },
     'loggers': {
-        # This is the "catch all" logger
-        '': {
-            'handlers': ['console', 'mail_admins'],
-            'level': 'ERROR',
-            'propagate': False,
-        },
+        # # This is the "catch all" logger
+        # '': {
+        #     'handlers': ['console', 'mail_admins'],
+        #     'level': 'ERROR',
+        #     'propagate': False,
+        # },
         'contacts': {
             'handlers': ['console', 'file'],
             'level': 'DEBUG',
@@ -291,6 +292,7 @@ HUEY = {
         'url': None,  # Allow Redis config via a DSN.
     },
     'consumer': {
+        'loglevel': logging.INFO,
         'workers': 1,  ### DONT ADD EXTRA WORKERS OR YOUR MAGENTO WILL GO UP IN SMOKE!!!! (tends to generate duplicate skus in magento db)
         'worker_type': 'thread',
         'initial_delay': 0.1,  # Smallest polling interval, same as -d.

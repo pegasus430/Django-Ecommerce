@@ -255,6 +255,33 @@ class MagentoServer:
             self.call('product_media.create', [sku, img_data])
 
         return True
+
+
+    def get_order_list(self, status=False):
+        filters = {}
+        
+        if status:
+            filters['status'] = status
+
+        return self.call('order.list', [filters])
+
+    def get_order_info(self, order_id):
+        return self.call("sales_order.info", [order_id])
+
+
+    def update_order_status(self, order_number, status, message):
+        '''
+        Update a given order number to its new status and leave a message
+
+        :param order_number:  magento order number string, also known as increment_id
+        :param status:  magento order status string defined in magento store
+        :param message:  message to leave in the new transaction update
+        :returns: boolean
+        '''
+        return self.call('order.addComment', [order_number, status, message])
             
+
+    def get_address_info(self, address_id):
+        return self.call('customer_address.info', [address_id])
             
             

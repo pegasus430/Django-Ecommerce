@@ -2,11 +2,10 @@ from __future__ import unicode_literals
 
 from django.db import models
 
-# from .helpers import calc_price
+import datetime
 
 from inventory.models import Product, StockLocation
 from contacts.models import Relation, RelationAddress
-
 from sprintpack.api import SprintClient
 
 from .helpers import get_correct_sales_order_item_price
@@ -69,7 +68,6 @@ class SalesOrder(models.Model):
     client = models.ForeignKey(Relation,  limit_choices_to={'is_client': True})
     client_reference = models.CharField(max_length=15, blank=True, null=True)
     ship_to = models.ForeignKey(RelationAddress, related_name='ship_to')
-    ship_from = models.ForeignKey(StockLocation)
     transport_cost = models.FloatField(default=0)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -110,6 +108,13 @@ class SalesOrder(models.Model):
             return u'Advance Payment'
         else:
             return u'Net {} days'.format(self.client.payment_days)
+
+    def mark_as_paid(self):
+        self.paid_on_date = datetime.date.today()
+        self.is_paid = True
+        self.status = 'WA'
+        return self.save()
+
 
 
 class SalesOrderProduct(models.Model):
@@ -217,7 +222,7 @@ class SalesOrderDelivery(models.Model):
         response = SprintClient().create_order(
             order_number=self.id, ## Provide shipment id instead of order-id for uniqueness reasons.
             order_reference=self._shipment_reference(),  ## used combined reference for uniqueness reasons.
-            company_name=client.businesse_name,
+            company_name=client.business_name,
             contact_name=client.contact_full_name, 
             address1=client.address1, 
             address2=client.address2, 

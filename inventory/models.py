@@ -572,19 +572,15 @@ class Product(models.Model):
              
 
     def create_item_in_sprintpack(self):
-        if not self.ean_code:
-            error_string= u'ean_code missing for {}, cannot create product in inventory'.format(self.sku)
-            logger.error(error_string)
-            raise Exception(error_string)
-
-        response = SprintClient().create_product(ean_code=self.ean_code, sku=self.sku, description=self.name)
-        if response['Status'] == u'OK':
-            logger.info(u'Created {} in sprintpack inventory'.format(self.sku))
-            return True
-        else:
-            error_string = u'Failed to create {} in Sprintpack. Response: \n{}'.format(self.sku, response)
-            logger.error(error_string)
-            raise Exception(error_string)
+        if self.ean_code:
+            response = SprintClient().create_product(ean_code=self.ean_code, sku=self.sku, description=self.name)
+            if response['Status'] == u'OK':
+                logger.info(u'Created {} in sprintpack inventory'.format(self.sku))
+                return True
+            else:
+                error_string = u'Failed to create {} in Sprintpack. Response: \n{}'.format(self.sku, response)
+                logger.error(error_string)
+                raise Exception(error_string)
 
 
 class ProductBillOfMaterial(models.Model):
