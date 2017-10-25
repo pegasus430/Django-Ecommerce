@@ -191,10 +191,16 @@ class Relation(AbstractAddress):
         return self.business_name
 
     def save(self, *args, **kwargs):
-        ## Update/Create Xero               
-        response = xero_api.update_create_relation(self)
-        if response != self._xero_contact_id:
-            self._xero_contact_id = response
+        ## Update/Create Xero
+        try:               
+            response = xero_api.update_create_relation(self)
+            if response != self._xero_contact_id:
+                self._xero_contact_id = response
+        except Exception as e:
+            if 'is already assigned to another contact' in e:
+                self._xero_contact_id = xero_api.find_relation_id(self.business_name)
+            else:
+                logger.error('Failed to save contact {} due to {}'.format(self.id, e))
 
         ## Run your save
         super(Relation, self).save(*args, **kwargs)

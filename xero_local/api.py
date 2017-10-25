@@ -143,3 +143,6 @@ def update_create_relation(relation):
         for k, v in data.items():
             c[k] = v
         return xero_session.contacts.save(c)[0]['ContactID']
+
+def find_relation_id(relation_name):
+    return xero_session.contacts.filter(name=relation_name)[0][u'ContactID']
