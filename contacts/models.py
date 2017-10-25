@@ -197,7 +197,7 @@ class Relation(AbstractAddress):
             if response != self._xero_contact_id:
                 self._xero_contact_id = response
         except Exception as e:
-            if 'is already assigned to another contact' in e:
+            if 'is already assigned to another contact' in unicode(e):
                 self._xero_contact_id = xero_api.find_relation_id(self.business_name)
             else:
                 logger.error('Failed to save contact {} due to {}'.format(self.id, e))
