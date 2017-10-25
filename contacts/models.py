@@ -201,6 +201,7 @@ class Relation(AbstractAddress):
                 self._xero_contact_id = xero_api.find_relation_id(self.business_name)
             else:
                 logger.error('Failed to save contact {} due to {}'.format(self.id, e))
+                raise
 
         ## Run your save
         super(Relation, self).save(*args, **kwargs)
