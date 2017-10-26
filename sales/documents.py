@@ -27,11 +27,12 @@ def picking_list(sales_order_shipment):
     try:
         tracking_ids_raw = sales_order_shipment.request_sprintpack_order_status['TrackIDs']['Package']
         tracking_ids = set()
-        for t_id in tracking_ids_raw:
-            try:
+        try:
+            for t_id in tracking_ids_raw:
                 tracking_ids.add((t_id['TrackAndTraceURL'], t_id['TrackID']))
-            except Exception:
-                raise Exception(t_id)
+        except TypeError:
+            tracking_ids.add((tracking_ids_raw['TrackAndTraceURL'], tracking_ids_raw['TrackID']))
+
 
         if len(tracking_ids) > 0:
             document.add_vertical_space(10)
