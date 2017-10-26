@@ -3,7 +3,7 @@ from printing_tools.documents import SuzysDocument
 from .models import *
 
 def picking_list(sales_order_shipment):
-    '''create a picking_list for a sales_order'''
+    '''create a picking_list for a sales_order, and include tracking-urls of available'''
     sales_order = sales_order_shipment.sales_order
     sales_order_shipment_items = sales_order_shipment.salesorderdeliveryitem_set.all()
 
@@ -21,6 +21,21 @@ def picking_list(sales_order_shipment):
         table_data.append([prod.product.sku, prod.product.ean_code, sold_item.qty])
 
     document.add_table(table_data, [0.33]*3)
+
+    
+    try:
+        tracking_ids_raw = sales_order_shipment.request_sprintpack_order_status['TrackIDs']['Package']
+        tracking_ids = set()
+        for t_id in tracking_ids_raw:
+            tracking_ids.add((t_id[TrackAndTraceURL], t_id[TrackID]))
+
+        if len(tracking_ids) > 0:
+            document.add_header('Tracking information')
+            table_data = [['Tracking ID', 'Tracking URL']]
+            [table_data.append([t_id[0], t_id[1]]) for t_id in tracking_ids]
+    except KeyError:
+        pass  ## No tracking data known
+
 
     return document.print_document()
 
