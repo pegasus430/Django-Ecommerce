@@ -249,6 +249,6 @@ class SalesOrderDelivery(models.Model):
     def request_sprintpack_order_status_label(self):
         try:
             return SprintClient().request_order_status_label(self._sprintpack_order_id)
-        except KeyError:
+        except Exception:
             return False
 
