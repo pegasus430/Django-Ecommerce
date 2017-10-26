@@ -15,6 +15,7 @@ def picking_list(sales_order_shipment):
         sales_order.client.printing_address_newlines().replace('\n', '<br></br>'),
         sales_order.ship_to.printing_address_newlines().replace('\n', '<br></br>'))
 
+    document.add_heading('Items')
     table_data = [['sku', 'ean_code', 'qty']]
     for prod in sales_order_shipment_items:
         sold_item = prod.sales_order_delivery.sales_order.salesorderproduct_set.get(product__product=prod.product)
@@ -30,9 +31,10 @@ def picking_list(sales_order_shipment):
             tracking_ids.add((t_id['TrackAndTraceURL'], t_id['TrackID']))
 
         if len(tracking_ids) > 0:
+            document.add_vertical_space(10)
             document.add_heading('Tracking information')
             table_data = [['Tracking ID', 'Tracking URL']]
-            [table_data.append([t_id[0], t_id[1]]) for t_id in tracking_ids]
+            [table_data.append([t_id[1], t_id[0]]) for t_id in tracking_ids]
             document.add_table(table_data, [0.5]*2)
     except KeyError:
         pass  ## No tracking data known
