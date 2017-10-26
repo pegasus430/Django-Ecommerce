@@ -33,9 +33,9 @@ def picking_list(sales_order_shipment):
         if len(tracking_ids) > 0:
             document.add_vertical_space(10)
             document.add_heading('Tracking information')
-            table_data = [['Tracking ID', 'Tracking URL']]
-            [table_data.append([t_id[1], t_id[0]]) for t_id in tracking_ids]
-            document.add_table(table_data, [0.5]*2)
+            for t_id in tracking_ids:
+                document.add_paragraph('Tracking ID: {}<br></br>{}'.format(t_id[1], t_id[0]))
+            
     except KeyError:
         pass  ## No tracking data known
 
