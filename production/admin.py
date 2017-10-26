@@ -22,7 +22,7 @@ class ProductionOrderDeliveryItemInline(DefaultInline):
 class ProductionOrderAdmin(DefaultAdmin):
     inlines = [ProductionOrderItemInline]
     readonly_fields = ['missing_materials', 'total_items']
-    list_display = ['__unicode__', 'status']
+    list_display = ['__unicode__', 'status', 'total_items']
     actions = [print_production_order_report, mark_awaiting_delivery_admin]
 
 class ProductionOrderItemAdmin(DefaultAdmin):
