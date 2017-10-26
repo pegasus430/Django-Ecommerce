@@ -40,7 +40,7 @@ def picking_list(sales_order_shipment):
             document.add_heading('Tracking information')
             for t_id in tracking_ids:
                 document.add_paragraph('''Tracking ID: {id}
-                    <br></br><link href="{link}">{link}</link>'''.format(id=t_id[1], link=t_id[0]))
+                    <link href="{link}">{link}</link>'''.format(id=t_id[1], link=t_id[0]))
             
     except KeyError:
         pass  ## No tracking data known
