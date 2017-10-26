@@ -18,7 +18,8 @@ def picking_list(sales_order_shipment):
     document.add_heading('Items')
     table_data = [['sku', 'ean_code', 'qty']]
     for prod in sales_order_shipment_items:
-        sold_item = prod.sales_order_delivery.sales_order.salesorderproduct_set.get(product__product=prod.product)
+        sold_item = prod.sales_order_delivery.sales_order.salesorderproduct_set.get(
+            product__product=prod.product)
         table_data.append([prod.product.sku, prod.product.ean_code, sold_item.qty])
 
     document.add_table(table_data, [0.33]*3)
@@ -38,7 +39,8 @@ def picking_list(sales_order_shipment):
             document.add_vertical_space(10)
             document.add_heading('Tracking information')
             for t_id in tracking_ids:
-                document.add_paragraph('Tracking ID: {}<br></br>{}'.format(t_id[1], t_id[0]))
+                document.add_paragraph('''Tracking ID: {}
+                    <br></br><link href="{}">{}</link>'''.format(t_id[1], t_id[0]))
             
     except KeyError:
         pass  ## No tracking data known
@@ -50,7 +52,9 @@ def picking_list(sales_order_shipment):
 def customs_invoice(sales_order_shipment):
     '''
     create a picking_list for a sales_order.
-    Loosly based on: http://www.dhl.co.uk/content/dam/downloads/g0/express/customs_regulations_russia/export_import_guidelines_to_russia.pdf
+    Loosly based on: 
+    http://www.dhl.co.uk/content/dam/downloads/g0/express/
+    customs_regulations_russia/export_import_guidelines_to_russia.pdf
     '''
     sales_order = sales_order_shipment.sales_order
     sales_order_shipment_items = sales_order_shipment.salesorderdeliveryitem_set.all()
@@ -68,8 +72,8 @@ def customs_invoice(sales_order_shipment):
             u'Delivery terms: DAP {}'.format(sales_order.ship_to.city),
             u'Payment terms: {}'.format(sales_order.payment_terms),
             ]]
-        document.add_table(table_data, [1.0/len(table_data[0])]*len(table_data[0]), bold_header_row=False, 
-            line_under_header_row=False, box_line=True)
+        document.add_table(table_data, [1.0/len(table_data[0])]*len(table_data[0]), 
+            bold_header_row=False, line_under_header_row=False, box_line=True)
 
         ## Invoice and delivery addresses
         document.add_invoice_delivery_headers(
@@ -86,7 +90,8 @@ def customs_invoice(sales_order_shipment):
                 prod.product.product_model.umbrella_product_model.get_product_type_display(),
                 prod.product.sku,
                 prod.product.umbrella_product.export_composition_description)
-            sold_item = prod.sales_order_delivery.sales_order.salesorderproduct_set.get(product__product=prod.product)
+            sold_item = prod.sales_order_delivery.sales_order.salesorderproduct_set.get(
+                product__product=prod.product)
             table_data.append([product_name, prod.product.umbrella_product.country_of_origin,\
                 sold_item.qty, prod.product.umbrella_product.export_hs_code, sold_item.unit_price, \
                 sold_item.qty * sold_item.unit_price])
