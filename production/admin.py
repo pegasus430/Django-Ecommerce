@@ -32,6 +32,7 @@ class ProductionOrderDeliveryAdmin(DefaultAdmin):
     inlines = [ProductionOrderDeliveryItemInline]
     actions = [print_picking_lists, pre_advice_sprintpack]
     readonly_fields = ['number_of_items', '_sprintpack_pre_advice_id']
+    list_display = ['__unicode__', 'est_delivery_date']
 
 
 admin.site.register(ProductionOrder, ProductionOrderAdmin)
