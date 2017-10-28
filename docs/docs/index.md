@@ -10,7 +10,6 @@
 - auto gen PO from min-order-qty / or extend an existing draft PO
 - min product-stock qty
 
-- cleanup the mess with stylesheets
 - move tranport document, and perhaps some labels to the new printing lib
 - Cancel/Void/Delete invoices
 - Cancel shipping orders
