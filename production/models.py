@@ -116,7 +116,7 @@ class ProductionOrderDelivery(models.Model):
         verbose_name_plural = "Production order deliveries"
 
     def __unicode__(self):
-        return '{} {}'.format(
+        return '{} Shipment ID: {}'.format(
             self.production_order,
             self.id)
 
