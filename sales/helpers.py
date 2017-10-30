@@ -46,7 +46,7 @@ def get_correct_sales_order_item_price(pricelist_item, qty):
 
 
 def print_picking_list_admin(sales_order_shipments):
-    items = {'Order Shipment {}.pdf'.format(pr.id): pr.picking_list() for pr in sales_order_shipments}
+    items = {'{}.pdf'.format(pr.__unicode__()): pr.picking_list() for pr in sales_order_shipments}
     return dynamic_file_httpresponse(items, 'picking_lists')
 
 
