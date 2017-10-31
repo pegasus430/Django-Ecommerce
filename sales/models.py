@@ -7,12 +7,23 @@ import datetime
 from inventory.models import Product, StockLocation
 from contacts.models import Relation, RelationAddress
 from sprintpack.api import SprintClient
+from contacts.countries import COUNTRY_CHOICES
 
 from .helpers import get_correct_sales_order_item_price
 from .documents import picking_list, customs_invoice
 
 import logging
 logger = logging.getLogger(__name__)
+
+class PriceTransport(models.Model):
+    '''Model to keep track of the transport costs for sales orders'''
+    country = models.CharField(max_length=2, choices=COUNTRY_CHOICES)
+    order_from_price = models.FloatField(default=0)
+    shipping_price = models.FloatField()
+
+    def __unicode__(self):
+        return '{} from {}'.format(self.get_country_display(), self.order_from_price)
+
 
 class PriceList(models.Model):
     STATUS_CHOICES = (
@@ -68,7 +79,7 @@ class SalesOrder(models.Model):
     client = models.ForeignKey(Relation,  limit_choices_to={'is_client': True})
     client_reference = models.CharField(max_length=15, blank=True, null=True)
     ship_to = models.ForeignKey(RelationAddress, related_name='ship_to')
-    transport_cost = models.FloatField(default=0)
+    transport_cost = models.FloatField(blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -87,6 +98,14 @@ class SalesOrder(models.Model):
 
     class Meta:
         ordering = ('-created_at',)
+
+    def save(self, *args, **kwargs):
+        super(SalesOrder, self).save(*args, **kwargs)
+        if self.status == 'DR' and self.transport_cost is None:
+            self.transport_cost = self.get_tranport_price()
+            self.save()
+
+        return super(SalesOrder, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return 'Order #{} for {}'.format(self.id, self.client)
@@ -114,6 +133,15 @@ class SalesOrder(models.Model):
         self.is_paid = True
         self.status = 'WA'
         return self.save()
+
+
+    def get_tranport_price(self):
+        try:
+            return PriceTransport.objects.filter(
+                country=self.ship_to.country,
+                order_from_price__gte=self.total_order_value).order_by('order_from_price')[0].shipping_price
+        except (PriceTransport.DoesNotExist, IndexError):
+            return 0.0
 
 
 
@@ -251,7 +279,6 @@ class SalesOrderDelivery(models.Model):
             return SprintClient().request_order_status_label(self._sprintpack_order_id)
         except Exception:
             return False
-
 
     @property 
     def cancel_sprintpack_shipment(self):

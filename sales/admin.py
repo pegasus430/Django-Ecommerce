@@ -78,8 +78,13 @@ class PriceListItemAdmin(DefaultAdmin):
     get_cost.short_description = 'Cost'
 
 
+class PriceTransportAdmin(DefaultAdmin):
+    list_display = ['country', 'order_from_price']
+
+
 admin.site.register(SalesOrder, SalesOrderAdmin)
 admin.site.register(SalesOrderProduct, SalesOrderProductAdmin)
 admin.site.register(SalesOrderDelivery, SalesOrderDeliveryAdmin)
 admin.site.register(PriceList, PriceListAdmin)
 admin.site.register(PriceListItem, PriceListItemAdmin)
+admin.site.register(PriceTransport, PriceTransportAdmin)
