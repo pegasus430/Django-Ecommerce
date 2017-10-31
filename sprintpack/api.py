@@ -146,6 +146,12 @@ class SprintClient:
         else:
             partial_delivery = 999
 
+        address1 = unidecode(address1)
+        try:
+            address2 = unidecode(address2)
+        except AttributeError:
+            pass
+
         xml_data = {
             u'order_number': order_number,
             u'order_reference': unidecode(order_reference),
@@ -153,8 +159,8 @@ class SprintClient:
             u'customer': {
                 u'company_name': unidecode(company_name),
                 u'contact_name': unidecode(contact_name),
-                u'address1': unidecode(address1),
-                u'address2': unidecode(address2),
+                u'address1': address1,
+                u'address2': address2,
                 u'postcode': unidecode(postcode), 
                 u'city': unidecode(city),
                 u'country': country, ## 2 letter ISO format
