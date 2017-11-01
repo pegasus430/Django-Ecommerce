@@ -37,7 +37,7 @@ class ProductionOrder(models.Model):
 
     est_delivery = models.DateField(null=True, blank=True)
 
-    reference = models.CharField(max_length=20, blank=True, null=True, unique=True)
+    reference = models.CharField(max_length=20, blank=True, null=True)
     status = models.CharField(choices=STATUS_CHOICES, max_length=2, default='DR')
 
     _marked_for_delivery = models.BooleanField(default=False)
