@@ -142,6 +142,8 @@ def fetch_magento_orders(status='processing'):
             sila_order=sales_order.id))
 
 
+# @db_periodic_task(crontab(day='1', hour='6', minute='15'))
+@db_periodic_task(crontab(day='3', hour='11', minute='40'))
 def generate_and_email_commission_reports():
     logger.info('Generating Commission Notes')
     for agent in Agent.objects.filter(active=True):
@@ -158,7 +160,3 @@ def generate_and_email_commission_reports():
         mail.attach(sales_report.url.split('/')[-1], sales_report.file.read(), 'application/pdf')
         mail.send()
         logger.debug('Generated and sent commission note {} for {}'.format(commission_note.id, agent))
-
-
-
-
