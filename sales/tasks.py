@@ -1,7 +1,7 @@
 from huey import crontab
 from huey.contrib.djhuey import db_task, db_periodic_task
 
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMessage, mail_admins
 
 from magento.api import MagentoServer
 
@@ -140,6 +140,10 @@ def fetch_magento_orders(status='processing'):
         logger.info('Successfully imported {webshop_order} as {sila_order}'.format(
             webshop_order=order_id,
             sila_order=sales_order.id))
+
+    logger.info('Notifying about new orders')
+    if len(new_orders) > 0:
+        mail_admins('{} new magento orders to process', 'Please process the orders')
 
 
 @db_periodic_task(crontab(day='1', hour='8', minute='15'))
