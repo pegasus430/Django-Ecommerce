@@ -3,8 +3,6 @@
 ## Todos
 
 - set on_delete behaviour https://stackoverflow.com/questions/38388423/what-does-on-delete-do-on-django-models
-- add transport costs models for sales
-- auto add transport cost to saleorder
 - auto generate pricelist
 - auto-mail stocklist to agents
 - min material qty
