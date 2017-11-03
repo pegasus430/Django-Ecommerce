@@ -102,7 +102,7 @@ class Agent(AbstractAddress):
             if amount >= tier.from_amount:
                 return round(amount / 100 * tier.percentage, 2)
 
-        raise Exception('No known AgentoCommission Structure')
+        raise Exception('No known AgentoCommission Structure for {}'.format(self.name))
 
 
 class AgentCommission(models.Model):
