@@ -1,16 +1,17 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.core.files.base import ContentFile
 
 import datetime
 
 from inventory.models import Product, StockLocation
-from contacts.models import Relation, RelationAddress
+from contacts.models import Relation, RelationAddress, Agent
 from sprintpack.api import SprintClient
 from contacts.countries import COUNTRY_CHOICES
 
 from .helpers import get_correct_sales_order_item_price
-from .documents import picking_list, customs_invoice
+from .documents import picking_list, customs_invoice, commission_report
 
 import logging
 logger = logging.getLogger(__name__)
@@ -283,4 +284,96 @@ class SalesOrderDelivery(models.Model):
     @property 
     def cancel_sprintpack_shipment(self):
         return SprintClient().cancel_order(self._sprintpack_order_id)
+
+
+class CommissionNote(models.Model):
+    agent = models.ForeignKey(Agent, on_delete=models.PROTECT)
+    sales_report = models.FileField(blank=True,
+        null=True,
+        upload_to='media/sales/sales_reports/%Y/%m/%d')
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)        
+
+    def __unicode__(self):
+        return u'Commission Note {} {}'.format(
+            self.agent,
+            self.created_at.strftime('%d-%m-%Y'))
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            super(CommissionNote, self).save(*args, **kwargs)
+            self.create_items()
+            self.create_and_set_sales_report()
+        
+        return super(CommissionNote, self).save(*args, **kwargs)
+
+    def calculate_commission(self):
+        return self.agent.return_commission(self.sales_total())
+
+    def sales_total(self):
+        sales = 0.0
+
+        for s in self.commissionnoteitem_set.all():
+            sales += s.sales_order.total_order_value
+
+        return sales
+
+    def create_items(self):
+        for relation in self.agent.relation_set.all().filter(salesorder__is_paid=True, 
+                salesorder__paid_commission=False):
+            for order in relation.salesorder_set.filter(is_paid=True, paid_commission=False):
+                CommissionNoteItem.objects.create(
+                    commission_note=self,
+                    sales_order=order)
+
+
+    def create_and_set_sales_report(self):
+        commission_jtems = []
+        sales_total = self.sales_total()
+        commission_total = self.calculate_commission()
+
+        orders = []
+        for item in self.commissionnoteitem_set.all():
+            order = item.sales_order
+
+            try:
+                date_paid = order.paid_on_date.strftime('%d/%m/%Y')
+            except AttributeError:
+                date_paid = u'Unkown'            
+
+            commision_item = {u'order #': order.id,
+                u'order data': order.created_at.strftime('%d/%m/%Y'),
+                u'client name': order.client.business_name,
+                u'sale total': order.total_order_value,
+                u'date paid':  date_paid}
+            commission_jtems.append(commision_item)
+
+        report = commission_report(agent=self.agent,
+            commission_items=commission_jtems,
+            sales_total=sales_total, 
+            commission_total=commission_total,
+            report_date=self.created_at)
+
+        filename = '{}.pdf'.format(self.__unicode__())
+        self.sales_report.save(filename, ContentFile(report))
+    
+
+class CommissionNoteItem(models.Model):
+    commission_note = models.ForeignKey(CommissionNote, on_delete=models.PROTECT)
+    sales_order = models.OneToOneField(SalesOrder, on_delete=models.PROTECT)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        return u'Order {} for {}'.format(
+            self.sales_order.id,
+            self.commission_note)
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.sales_order.paid_commission = True
+            self.sales_order.save()
+        return super(CommissionNoteItem, self).save(*args, **kwargs)
 

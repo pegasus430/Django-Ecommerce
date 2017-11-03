@@ -110,3 +110,50 @@ def customs_invoice(sales_order_shipment):
         document.add_page_break()
 
     return document.print_document()    
+
+
+def commission_report(agent, commission_items, sales_total, commission_total, report_date):
+    ''' return pdf with commission report '''
+    report = SuzysDocument()
+
+    agent_name = u'{} {}'.format(agent.contact_first_name, agent.contact_name)
+
+    ## title and instructions
+    report.add_title(u'Commission report {} {}'.format(
+        agent_name,
+        report_date.strftime('%d/%m/%Y')))
+
+    ## Commission details
+    report.add_heading(u'Commission Detail')
+    table_headers = [u'Order #', u'Client Name', u'Date Ordered', u'Date Paid', u'Order Amount']
+    col_widths = [0.12, 0.33, 0.18, 0.18, 0.19]
+    table_data = []
+
+    table_data.append(table_headers)
+    for order in commission_items:
+        table_data.append([
+            order[u'order #'],
+            order[u'client name'],
+            order[u'order data'],
+            order[u'date paid'],
+            order[u'sale total'],
+            ])
+    report.add_table(table_data, col_widths)
+
+    sales_total = 0
+    for s in commission_items:
+        sales_total += s[u'sale total']
+    report.add_paragraph(u'''Sales total payments received: {}
+        Commission owed: {}
+        Please send your commission-note to S-Company ltd with this document attached'''.format(
+            sales_total,
+            commission_total))
+    # report.add_paragraph(u'Commission total: {}'.format(commission_total))
+    # report.add_paragraph(u'Please send your commission-note to S-Company ltd with this document attached')
+
+    report.add_heading(u'Below our agreed percentages for your information:')
+    for tier in agent.agentcommission_set.all():
+        report.add_text(u'{}% for sales greater then {}'.format(tier.percentage, tier.from_amount), 'Bullet')
+
+
+    return report.print_document()

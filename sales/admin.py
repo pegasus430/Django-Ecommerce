@@ -28,6 +28,9 @@ class PriceListItemInline(DefaultInline):
 class SalesOrderDeliveryItemInline(DefaultInline):
     model=SalesOrderDeliveryItem
 
+class CommissionNoteItemInline(DefaultInline):
+    model=CommissionNoteItem
+
 #####################
 ### Custom Admins ###
 #####################
@@ -82,9 +85,15 @@ class PriceTransportAdmin(DefaultAdmin):
     list_display = ['country', 'order_from_price']
 
 
+class CommissionNoteAdmin(DefaultAdmin):
+    list_display = ['__unicode__']
+    inlines = [CommissionNoteItemInline]
+
+
 admin.site.register(SalesOrder, SalesOrderAdmin)
 admin.site.register(SalesOrderProduct, SalesOrderProductAdmin)
 admin.site.register(SalesOrderDelivery, SalesOrderDeliveryAdmin)
 admin.site.register(PriceList, PriceListAdmin)
 admin.site.register(PriceListItem, PriceListItemAdmin)
 admin.site.register(PriceTransport, PriceTransportAdmin)
+admin.site.register(CommissionNote, CommissionNoteAdmin)
