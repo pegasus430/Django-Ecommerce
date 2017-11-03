@@ -86,7 +86,7 @@ class PriceTransportAdmin(DefaultAdmin):
 
 
 class CommissionNoteAdmin(DefaultAdmin):
-    list_display = ['__unicode__']
+    list_display = ['__unicode__', 'calculate_commission', 'commission_paid']
     inlines = [CommissionNoteItemInline]
 
 

@@ -149,7 +149,8 @@ def generate_and_email_commission_reports():
         commission_note.save()
         sales_report = commission_note.sales_report
 
-        message = '''Hi {agent}, \n\n Please find your latest commission note in attachment.'''
+        message = '''Hi {agent}, \n\n Please find your latest commission note in attachment.'''.format(
+            agent=agent)
         mail = EmailMessage(commission_note.__unicode__(), 
             message, 
             'Sila Network <sila@sila.network>',

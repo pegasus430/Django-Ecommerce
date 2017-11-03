@@ -288,6 +288,7 @@ class SalesOrderDelivery(models.Model):
 
 class CommissionNote(models.Model):
     agent = models.ForeignKey(Agent, on_delete=models.PROTECT)
+    commission_paid = models.BooleanField(default=False)
     sales_report = models.FileField(blank=True,
         null=True,
         upload_to='media/sales/sales_reports/%Y/%m/%d')
@@ -308,6 +309,7 @@ class CommissionNote(models.Model):
         
         return super(CommissionNote, self).save(*args, **kwargs)
 
+    @property 
     def calculate_commission(self):
         return self.agent.return_commission(self.sales_total())
 
@@ -331,7 +333,7 @@ class CommissionNote(models.Model):
     def create_and_set_sales_report(self):
         commission_jtems = []
         sales_total = self.sales_total()
-        commission_total = self.calculate_commission()
+        commission_total = self.calculate_commission
 
         orders = []
         for item in self.commissionnoteitem_set.all():
