@@ -143,7 +143,7 @@ def fetch_magento_orders(status='processing'):
 
 
 # @db_periodic_task(crontab(day='1', hour='6', minute='15'))
-@db_periodic_task(crontab(day='3', hour='11', minute='40'))
+@db_periodic_task(crontab(day='3', hour='10', minute='44'))
 def generate_and_email_commission_reports():
     logger.info('Generating Commission Notes')
     for agent in Agent.objects.filter(active=True):
