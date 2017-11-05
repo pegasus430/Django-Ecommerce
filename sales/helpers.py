@@ -66,7 +66,6 @@ def ship_with_sprintpack_admin(shipments):
     for shipment in shipments:
         shipment.ship_with_sprintpack()
 
-
 def cancel_sprintpack_shipment_admin(shipments):
     for shipment in shipments:
         shipment.cancel_sprintpack_shipment()

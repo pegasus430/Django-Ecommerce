@@ -282,7 +282,6 @@ class SalesOrderDelivery(models.Model):
         except Exception:
             return False
 
-    @property 
     def cancel_sprintpack_shipment(self):
         return SprintClient().cancel_order(self._sprintpack_order_id)
 
