@@ -62,6 +62,8 @@ class PriceListItem(models.Model):
     per_12 = models.FloatField(blank=True, null=True)
     per_48 = models.FloatField(blank=True, null=True)
 
+    active = models.BooleanField(default=True)
+
     def __unicode__(self):
         return u'{}'.format(self.product)
 
