@@ -20,7 +20,7 @@ def picking_list(sales_order_shipment):
     for prod in sales_order_shipment_items:
         sold_item = prod.sales_order_delivery.sales_order.salesorderproduct_set.get(
             price_list_item__product=prod.product)
-        table_data.append([prod.product.sku, prod.product.ean_code, sold_item.qty])
+        table_data.append([prod.product.sku, prod.product.ean_code, prod.qty])
 
     document.add_table(table_data, [0.33]*3)
 
