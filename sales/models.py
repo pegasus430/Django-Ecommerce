@@ -211,7 +211,7 @@ class SalesOrderDelivery(models.Model):
 
             for delivery in self.sales_order.salesorderdelivery_set.all():
                 for pr in delivery.salesorderdeliveryitem_set.all():
-                    product = pr.price_list_item
+                    product = pr.product
                     products_to_add[product] -= pr.qty
 
             for product, qty in products_to_add.items():
