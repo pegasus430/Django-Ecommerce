@@ -20,7 +20,7 @@ def picking_list(sales_order_shipment):
     for prod in sales_order_shipment_items:
         sold_item = prod.sales_order_delivery.sales_order.salesorderproduct_set.get(
             price_list_item__product=prod.product)
-        table_data.append([prod.product.sku, prod.product.ean_code, sold_item.qty])
+        table_data.append([prod.product.sku, prod.product.ean_code, prod.qty])
 
     document.add_table(table_data, [0.33]*3)
 
@@ -42,8 +42,7 @@ def picking_list(sales_order_shipment):
                 if t_id[0] is not None:
                     document.add_paragraph('''Tracking ID: {id}
                         <link href="{link}">{link}</link>'''.format(id=t_id[1], link=t_id[0]))
-            
-    except KeyError:
+    except (TypeError, KeyError):
         pass  ## No tracking data known
 
 
@@ -94,9 +93,9 @@ def customs_invoice(sales_order_shipment):
             sold_item = prod.sales_order_delivery.sales_order.salesorderproduct_set.get(
                 price_list_item__product=prod.product)
             table_data.append([product_name, prod.product.umbrella_product.country_of_origin,\
-                sold_item.qty, prod.product.umbrella_product.export_hs_code, sold_item.unit_price, \
-                sold_item.qty * sold_item.unit_price])
-            total_shipment_value += sold_item.qty * sold_item.unit_price
+                prod.qty, prod.product.umbrella_product.export_hs_code, sold_item.unit_price, \
+                prod.qty * sold_item.unit_price])
+            total_shipment_value += prod.qty * sold_item.unit_price
         table_data.append(['', '', '', '', '', ''])    
         table_data.append(['<b>Total price EUR</b>', total_shipment_value, '', '', '', ''])
         table_data.append(['<b>Freight cost EUR</b>', sales_order.transport_cost, '', '', '', ''])
