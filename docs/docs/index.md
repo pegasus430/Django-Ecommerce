@@ -2,12 +2,16 @@
 
 ## Todos
 
-- cleanup the mess with stylesheets
+- set on_delete behaviour https://stackoverflow.com/questions/38388423/what-does-on-delete-do-on-django-models
+- auto generate pricelist
+- auto-mail stocklist to agents
+- min material qty
+- auto gen PO from min-order-qty / or extend an existing draft PO
+- min product-stock qty
+
 - move tranport document, and perhaps some labels to the new printing lib
-- Magento order and client export
-- Centralise and generalise label printing and document printing.
-    * partially done, mode splintered code to default pages
 - Cancel/Void/Delete invoices
+- Cancel shipping orders
 - Download invoices from Xero and email to client. 
     * Conisder using pro-forma invoices
 - Multicurrency pricelist

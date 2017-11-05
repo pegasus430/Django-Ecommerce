@@ -1,17 +1,20 @@
 from huey import crontab
 from huey.contrib.djhuey import db_task, db_periodic_task
 
+from django.core.mail import EmailMessage, mail_admins
+
 from magento.api import MagentoServer
 
-from .models import Product
+from .models import Product, CommissionNote
 
-from contacts.models import Relation, RelationAddress
+from contacts.models import Relation, RelationAddress, Agent
 from sales.models import SalesOrder, SalesOrderProduct, PriceList, PriceListItem
 from inventory.models import StockLocation
 
 
 import logging
 logger = logging.getLogger(__name__)
+
 
 
 @db_periodic_task(crontab(hour='14', minute='0'))
@@ -138,3 +141,25 @@ def fetch_magento_orders(status='processing'):
             webshop_order=order_id,
             sila_order=sales_order.id))
 
+    logger.info('Notifying about new orders')
+    if len(new_orders) > 0:
+        mail_admins('{} new magento orders to process', 'Please process the orders')
+
+
+@db_periodic_task(crontab(day='1', hour='8', minute='15'))
+def generate_and_email_commission_reports():
+    logger.info('Generating Commission Notes')
+    for agent in Agent.objects.filter(active=True):
+        commission_note = CommissionNote(agent=agent)
+        commission_note.save()
+        sales_report = commission_note.sales_report
+
+        message = '''Hi {agent}, \n\n Please find your latest commission note in attachment.'''.format(
+            agent=agent)
+        mail = EmailMessage(commission_note.__unicode__(), 
+            message, 
+            'Sila Network <sila@sila.network>',
+            ['Sascha Dobbelaere <sascha@suzys.eu>'])
+        mail.attach(sales_report.url.split('/')[-1], sales_report.file.read(), 'application/pdf')
+        mail.send()
+        logger.debug('Generated and sent commission note {} for {}'.format(commission_note.id, agent))

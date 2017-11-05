@@ -77,7 +77,7 @@ ROOT_URLCONF = 'Sila.urls'
 
 #Admins see https://docs.djangoproject.com/en/dev/ref/settings/#admins
 ADMINS = [
-    ("Admin", 'sascha@suzys.eu'),
+    ("Sascha Dobbelaere", 'sascha@suzys.eu'),
 ]
 
 MANAGERS = ADMINS
