@@ -92,7 +92,7 @@ def customs_invoice(sales_order_shipment):
                 prod.product.sku,
                 prod.product.umbrella_product.export_composition_description)
             sold_item = prod.sales_order_delivery.sales_order.salesorderproduct_set.get(
-                product__product=prod.product)
+                price_list_item__product=prod.product)
             table_data.append([product_name, prod.product.umbrella_product.country_of_origin,\
                 sold_item.qty, prod.product.umbrella_product.export_hs_code, sold_item.unit_price, \
                 sold_item.qty * sold_item.unit_price])
