@@ -23,6 +23,7 @@ class SalesOrderNoteInline(DefaultExpandedInline):
     model = SalesOrderNote
 
 class PriceListItemInline(DefaultInline):
+    readonly_fields = ['active']
     model=PriceListItem
 
 class SalesOrderDeliveryItemInline(DefaultInline):

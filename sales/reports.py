@@ -28,11 +28,12 @@ def get_pricelist_price_data(pricelist, include_cost=False):
         d = OrderedDict()
         d['sku'] = item.product.sku
         d['name'] = '{}\n{}'.format(item.product.name, item.product.product_model.size_description)
-        d['RRP'] = round(item.rrp, ROUND_DIGITS)
-        d['per 1'] = round(item.per_1, ROUND_DIGITS)
-        d['per 6'] = round(item.per_6, ROUND_DIGITS)
-        d['per 12'] = round(item.per_12, ROUND_DIGITS)
-        d['per 48'] = round(item.per_48, ROUND_DIGITS)
+        d['RRP'] = round(item.rrp, ROUND_DIGITS) or ''
+        d['per 1'] = round(item.per_1, ROUND_DIGITS) or ''
+        d['per 6'] = round(item.per_6, ROUND_DIGITS) or ''
+        d['per 12'] = round(item.per_12, ROUND_DIGITS) or ''
+        d['per 48'] = round(item.per_48, ROUND_DIGITS) or ''
+        # d['stock'] = item.product.available_stock
         if include_cost:
             d['cost'] = round(item.product.cost, ROUND_DIGITS)
         data.append(d)
