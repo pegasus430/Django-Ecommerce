@@ -11,7 +11,8 @@ from .helpers import clear_b2b_prices_admin_action,\
     create_sales_invoice, \
     print_picking_lists, \
     print_customs_invoice, \
-    ship_with_sprintpack
+    ship_with_sprintpack, \
+    cancel_shipment_with_sprintpack
 
 ###############
 ### Inlines ###
@@ -56,7 +57,7 @@ class SalesOrderProductAdmin(DefaultAdmin):
 class SalesOrderDeliveryAdmin(DefaultAdmin):
     list_display = ['__unicode__', 'sales_order', 'request_sprintpack_order_status_label']
     inlines = [SalesOrderDeliveryItemInline]
-    actions = [print_picking_lists, print_customs_invoice, ship_with_sprintpack]
+    actions = [print_picking_lists, print_customs_invoice, ship_with_sprintpack, cancel_shipment_with_sprintpack]
     readonly_fields = ['request_sprintpack_order_status', '_sprintpack_order_id']
 
 class PriceListAdmin(DefaultAdmin):
