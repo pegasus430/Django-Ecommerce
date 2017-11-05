@@ -50,7 +50,7 @@ class SalesOrderAdmin(DefaultAdmin):
     get_agent.short_description = 'Agent'
 
 class SalesOrderProductAdmin(DefaultAdmin):
-    list_display = ['product', 'qty', 'unit_price']
+    list_display = ['price_list_item', 'qty', 'unit_price']
 
 class SalesOrderDeliveryAdmin(DefaultAdmin):
     list_display = ['__unicode__', 'sales_order', 'request_sprintpack_order_status_label']

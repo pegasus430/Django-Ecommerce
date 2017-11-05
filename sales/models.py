@@ -150,12 +150,12 @@ class SalesOrder(models.Model):
 
 class SalesOrderProduct(models.Model):
     sales_order = models.ForeignKey(SalesOrder)
-    product = models.ForeignKey(PriceListItem,  limit_choices_to={'price_list__status': 'AC'})
+    price_list_item = models.ForeignKey(PriceListItem,  limit_choices_to={'price_list__status': 'AC'})
     qty = models.IntegerField()
     unit_price = models.FloatField(blank=True, null=True)
 
     def __unicode__(self):
-        return u'{}x {}, order: {}'.format(self.qty, self.product, self.sales_order)
+        return u'{}x {}, order: {}'.format(self.qty, self.price_list_item, self.sales_order)
 
     @property
     def total_price(self):
@@ -164,7 +164,7 @@ class SalesOrderProduct(models.Model):
     def save(self, *args, **kwargs):
         ## Find the right price.
         if self.unit_price is None or self.unit_price == '':
-            self.unit_price = get_correct_sales_order_item_price(self.product, self.qty)
+            self.unit_price = get_correct_sales_order_item_price(self.price_list_item, self.qty)
         super(SalesOrderProduct, self).save(*args, **kwargs)
 
 
@@ -206,12 +206,12 @@ class SalesOrderDelivery(models.Model):
             super(SalesOrderDelivery, self).save(*args, **kwargs)
             products_to_add = {}
             for pr in self.sales_order.salesorderproduct_set.all():
-                product = pr.product.product
+                product = pr.price_list_item.product
                 products_to_add[product] = pr.qty
 
             for delivery in self.sales_order.salesorderdelivery_set.all():
                 for pr in delivery.salesorderdeliveryitem_set.all():
-                    product = pr.product
+                    product = pr.price_list_item
                     products_to_add[product] -= pr.qty
 
             for product, qty in products_to_add.items():
