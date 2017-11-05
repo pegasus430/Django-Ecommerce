@@ -25,6 +25,7 @@ xero_session = Xero(credentials)
 def create_invoice(salesorder):
     ''' create an invoice for a sales-order
     Retuns tuple with (InvoiceNumber, InvoiceID, Created_Boolean)
+    Xero docs: https://developer.xero.com/documentation/api/invoices
     '''
     logger.info('Creating invoice for salesorder #{}'.format(salesorder.id))
 
@@ -34,6 +35,7 @@ def create_invoice(salesorder):
         u'Status': u'DRAFT',
         u'Contact': contact,
         u'CurrencyCode': contact['DefaultCurrency'],
+        u'LineAmountTypes': u'Inclusive',
         u'LineItems': [],
 
     }
@@ -44,7 +46,7 @@ def create_invoice(salesorder):
 
     ## Add item lines
     for item in salesorder.salesorderproduct_set.all():
-        description = str(item.product).split(' ', 1)
+        description = str(item.price_list_item).split(' ', 1)
         description.reverse()
         description = '\n'.join(description)
 
@@ -53,18 +55,27 @@ def create_invoice(salesorder):
             u'Quantity': item.qty,
             u'UnitAmount': item.unit_price,
             u'TaxType': salesorder.client.vat_regime,
-            u'AccountCode': int(item.product.product.umbrella_product.accounting_code),
+            u'AccountCode': int(item.price_list_item.product.umbrella_product.accounting_code),
         })
+
+    ## Add transport cost
+    data[u'LineItems'].append({
+        u'Description': 'Transport cost',
+        u'Quantity': 1,
+        u'UnitAmount': salesorder.transport_cost,
+        u'TaxType': salesorder.client.vat_regime,
+        u'AccountCode': 213,
+    })    
+
 
     ## Add estimate delivery line
     try:
         date = salesorder.estimated_delivery.strftime('%d %B')
+        data[u'LineItems'].append({
+            u'Description': u'Estimated delivery: {}'.format(date),
+        })        
     except AttributeError:
-        date = u'Unkown'
-
-    data[u'LineItems'].append({
-        u'Description': u'Estimated delivery: {}'.format(date),
-    })
+        pass
 
     logger.debug('Uploading data for invoice {}'.format(data))
 

@@ -19,7 +19,7 @@ def picking_list(sales_order_shipment):
     table_data = [['sku', 'ean_code', 'qty']]
     for prod in sales_order_shipment_items:
         sold_item = prod.sales_order_delivery.sales_order.salesorderproduct_set.get(
-            product__product=prod.product)
+            price_list_item__product=prod.product)
         table_data.append([prod.product.sku, prod.product.ean_code, sold_item.qty])
 
     document.add_table(table_data, [0.33]*3)
@@ -92,7 +92,7 @@ def customs_invoice(sales_order_shipment):
                 prod.product.sku,
                 prod.product.umbrella_product.export_composition_description)
             sold_item = prod.sales_order_delivery.sales_order.salesorderproduct_set.get(
-                product__product=prod.product)
+                price_list_item__product=prod.product)
             table_data.append([product_name, prod.product.umbrella_product.country_of_origin,\
                 sold_item.qty, prod.product.umbrella_product.export_hs_code, sold_item.unit_price, \
                 sold_item.qty * sold_item.unit_price])
