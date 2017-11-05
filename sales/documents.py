@@ -42,8 +42,7 @@ def picking_list(sales_order_shipment):
                 if t_id[0] is not None:
                     document.add_paragraph('''Tracking ID: {id}
                         <link href="{link}">{link}</link>'''.format(id=t_id[1], link=t_id[0]))
-            
-    except KeyError:
+    except (TypeError, KeyError):
         pass  ## No tracking data known
 
 
