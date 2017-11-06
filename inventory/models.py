@@ -362,7 +362,7 @@ class UmbrellaProduct(models.Model):
     export_hs_code = models.CharField(max_length=8, blank=True, null=True, verbose_name='HS Code for export.')
     export_composition_description = models.CharField(max_length=100, blank=True, null=True)
 
-    active = models.BooleanField(default=True)
+    # active = models.BooleanField(default=True)
     complete = models.BooleanField(default=False)
 
     production_remark_en = models.TextField(blank=True, null=True)
@@ -373,6 +373,10 @@ class UmbrellaProduct(models.Model):
 
     class Meta:
         ordering = ('collection', 'umbrella_product_model__number', 'colour')
+
+    @property 
+    def active(self):
+        return len(self.product_set.filter(active=True)) > 0
 
     ## FIXME:  When you change the umbrella product model, change all of the product models
     def __init__(self, *args, **kwargs):

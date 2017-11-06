@@ -118,7 +118,7 @@ class ProductModelPatternAdmin(admin.ModelAdmin):
 
 class UmbrellaProductAdmin(admin.ModelAdmin):    
     list_display = ['__unicode__','base_sku', 'active', 'complete', 'get_umbrella_product_model_number', 'number_of_sizes']
-    list_filter = ['collection', 'colour', 'umbrella_product_model__product_type', 'umbrella_product_model__number', 'complete', 'active']
+    list_filter = ['collection', 'colour', 'umbrella_product_model__product_type', 'umbrella_product_model__number', 'complete']
     inlines = [ProductInline, UmbrellaProductBillOfMaterialInline, UmbrellaProductImageInline]
     actions = [print_production_notes_for_umbrella_product_EN, print_production_notes_for_umbrella_product_CZ]    
 
