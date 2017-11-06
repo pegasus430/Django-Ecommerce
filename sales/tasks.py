@@ -35,10 +35,10 @@ def send_price_and_stock_list(email, name):
 
 
 # @db_periodic_task(crontab(hour='7', minute='15'))
-
 @db_periodic_task(crontab(minute='*/5'))
 def send_price_and_stock_lists_to_all():
     '''send price and stock_lists to all that wish to receive it'''
+    logger.debug('Going to send stocklist to all active ppl')
     for i in PriceListAutoSend.objects.filter(active=True):
         name, email = i.receiver
         logger.debug('Going to send to {}, {}'.format(email,name))
