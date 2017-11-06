@@ -46,7 +46,7 @@ def export_pricelist_pdf(pricelist):
     logger.debug('header looks like {}'.format(table_data))
     [table_data.append(i.values()) for i in table_data_dict]
     logger.debug('full table_data looks like {}'.format(table_data))
-    table_columns_width = [0.2, 0.3, 0.12, 0.12, 0.12, 0.12]
+    table_columns_width = [0.2, 0.37, 0.11, 0.11, 0.11, 0.10]
     document.add_table(table_data, table_columns_width)
 
     document.add_paragraph('''If the item you wish is not on stock, please consult us for
