@@ -39,19 +39,7 @@ def send_price_and_stock_list(email, name):
 def send_price_and_stock_lists_to_all():
     '''send price and stock_lists to all that wish to receive it'''
     for i in PriceListAutoSend.objects.filter(active=True):
-        if i.email_to:
-            email = i.email_to
-        elif i.relation:
-            email = i.relation.contact_email
-        elif i.agent:
-            email = i.agent.contact_email
-
-        if i.email_to_name:
-            name = i.email_to_name
-        elif i.relation:
-            name = i.relation.contact_full_name
-        elif i.agent:
-            name = i.agent.contact_full_name
+        name, email = i.receiver
         logger.debug('Going to send to {}, {}'.format(email,name))
         send_price_and_stock_list(email, name)
 

@@ -24,7 +24,26 @@ class PriceListAutoSend(models.Model):
     email_to_name = models.CharField(blank=True, null=True, max_length=100)
 
     def __unicode__(self):
-        return u'{}'.format(self.pk)
+        name, email = self.receiver
+        return u'{} <{}>'.format(name, email)
+    
+    @property
+    def receiver(self):
+        if self.email_to:
+            email = self.email_to
+        elif self.relation:
+            email = self.relation.contact_email
+        elif self.agent:
+            email = self.agent.contact_email
+
+        if self.email_to_name:
+            name = self.email_to_name
+        elif self.relation:
+            name = self.relation.contact_full_name
+        elif self.agent:
+            name = self.agent.contact_full_name
+
+        return name, email
 
 class PriceTransport(models.Model):
     '''Model to keep track of the transport costs for sales orders'''
