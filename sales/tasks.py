@@ -24,7 +24,7 @@ def send_price_and_stock_list(email, name):
     message = '''Dear {}, \n\nPlease find today's stocklist in attachment. \n\nThank you,\nSascha Dobbelaere'''.format(
         name)
     subject = "Today's stocklist"
-    attachment = export_pricelist_pdf(PriceList.objects.last())
+    attachment = export_pricelist_pdf(PriceList.objects.last(), include_stock=True)
     message = EmailMessage(
         subject,
         message,
@@ -41,7 +41,7 @@ def send_price_and_stock_lists_to_all():
     for i in PriceListAutoSend.objects.filter(active=True):
         name, email = i.receiver
         logger.debug('Going to send to {}, {}'.format(email,name))
-        send_price_and_stock_list(email, name)
+        send_price_and_stock_list(email=email, name=name)
 
 
 @db_periodic_task(crontab(hour='14', minute='0'))
