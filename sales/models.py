@@ -179,7 +179,8 @@ class SalesOrder(models.Model):
 
 class SalesOrderProduct(models.Model):
     sales_order = models.ForeignKey(SalesOrder)
-    price_list_item = models.ForeignKey(PriceListItem,  limit_choices_to={'price_list__status': 'AC'})
+    input_sku = models.CharField(max_length=20, blank=True, null=True)
+    price_list_item = models.ForeignKey(PriceListItem,  limit_choices_to={'price_list__status': 'AC'}, blank=True, null=True)
     qty = models.IntegerField()
     unit_price = models.FloatField(blank=True, null=True)
 
@@ -192,6 +193,12 @@ class SalesOrderProduct(models.Model):
 
     def save(self, *args, **kwargs):
         ## Find the right price.
+        if self.price_list_item is None:
+            try:
+                self.price_list_item = PriceListItem.objects.filter(product__sku=self.input_sku)[0]
+            except Exception:
+                pass
+
         if self.unit_price is None or self.unit_price == '':
             self.unit_price = get_correct_sales_order_item_price(self.price_list_item, self.qty)
         super(SalesOrderProduct, self).save(*args, **kwargs)
