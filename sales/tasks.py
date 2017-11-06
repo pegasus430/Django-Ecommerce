@@ -34,8 +34,7 @@ def send_price_and_stock_list(email, name):
     message.send()
 
 
-# @db_periodic_task(crontab(hour='7', minute='15'))
-@db_periodic_task(crontab(hour='9', minute='53'))
+@db_periodic_task(crontab(hour='7', minute='15'))
 def send_price_and_stock_lists_to_all():
     '''send price and stock_lists to all that wish to receive it'''
     logger.debug('Going to send stocklist to all active ppl')
