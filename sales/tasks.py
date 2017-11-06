@@ -5,16 +5,55 @@ from django.core.mail import EmailMessage, mail_admins
 
 from magento.api import MagentoServer
 
-from .models import Product, CommissionNote
+from .models import Product, CommissionNote, PriceListAutoSend, PriceList
+from .reports import export_pricelist_pdf
 
 from contacts.models import Relation, RelationAddress, Agent
 from sales.models import SalesOrder, SalesOrderProduct, PriceList, PriceListItem
 from inventory.models import StockLocation
 
+from django.core.mail import EmailMessage
 
 import logging
 logger = logging.getLogger(__name__)
 
+
+@db_task()
+def send_price_and_stock_list(email, name):
+    to = u'{} <{}>'.format(name, email)
+    message = '''Dear {}, \n\nPlease find today's stocklist in attachment. \n\nThank you,\nSascha Dobbelaere'''.format(
+        name)
+    subject = "Today's stocklist"
+    attachment = export_pricelist_pdf(PriceList.objects.last())
+    message = EmailMessage(
+        subject,
+        message,
+        "Suzy's Fashion for Dogs <hello@suzys.eu>",
+        [to])
+    message.attach('Price and stock-list Suzys.pdf', attachment, 'application/pdf')
+    message.send()
+
+
+# @db_periodic_task(crontab(hour='7', minute='15'))
+@db_periodic_task(crontab(hour='10', minute='17'))
+def send_price_and_stock_lists_to_all():
+    '''send price and stock_lists to all that wish to receive it'''
+    for i in PriceListAutoSend.objects.filter(active=True):
+        if i.email_to:
+            email = i.email_to
+        elif i.relation:
+            email = i.relation.contact_email
+        elif i.agent:
+            email = i.agent.contact_email
+
+        if i.email_to_name:
+            name = i.email_to_name
+        elif i.relation:
+            name = i.relation.contact_full_name
+        elif i.agent:
+            name = i.agent.contact_full_name
+        logger.debug('Going to send to {}, {}'.format(email,name))
+        send_price_and_stock_list(email, name)
 
 
 @db_periodic_task(crontab(hour='14', minute='0'))

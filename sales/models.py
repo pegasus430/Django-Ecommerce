@@ -16,6 +16,16 @@ from .documents import picking_list, customs_invoice, commission_report
 import logging
 logger = logging.getLogger(__name__)
 
+class PriceListAutoSend(models.Model):
+    relation = models.ForeignKey(Relation, blank=True, null=True)
+    agent = models.ForeignKey(Agent, blank=True, null=True)
+    active = models.BooleanField(default=True)
+    email_to = models.CharField(blank=True, null=True, max_length=100)
+    email_to_name = models.CharField(blank=True, null=True, max_length=100)
+
+    def __unicode__(self):
+        return u'{}'.format(self.pk)
+
 class PriceTransport(models.Model):
     '''Model to keep track of the transport costs for sales orders'''
     country = models.CharField(max_length=2, choices=COUNTRY_CHOICES)
