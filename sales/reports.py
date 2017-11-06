@@ -10,9 +10,6 @@ from io import BytesIO
 import csv
 import datetime
 
-from collections import OrderedDict
-
-from .variables import ROUND_DIGITS
 from .reports_helpers import *
 
 import logging
@@ -42,7 +39,7 @@ def export_pricelist_pdf(pricelist):
         'Pricelist {} {}'.format(pricelist.name, datetime.date.today().strftime('%d/%m/%Y'))
         )
 
-    document.add_heading('Product list')
+    document.add_heading('Available Product list')
     table_data_dict = get_pricelist_price_data(pricelist)
     table_data = []
     table_data.append(table_data_dict[0].keys())
@@ -51,6 +48,9 @@ def export_pricelist_pdf(pricelist):
     logger.debug('full table_data looks like {}'.format(table_data))
     table_columns_width = [0.2, 0.3, 0.12, 0.12, 0.12, 0.12]
     document.add_table(table_data, table_columns_width)
+
+    document.add_paragraph('''If the item you wish is not on stock, please consult us for
+        delivery times.'''.strip().replace('\n',''))
 
     # document.add_heading('Shipping prices')
     # table_data = get_transport_costs()
