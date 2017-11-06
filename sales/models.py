@@ -39,7 +39,8 @@ class PriceList(models.Model):
 
     @property 
     def name(self):
-        return u'Pricelist {}'.format(self.updated_at.strftime('%Y-%m-%d'))
+        # return u'Pricelist {}'.format(self.updated_at.strftime('%Y-%m-%d'))
+        return u'Euro'
 
     def __unicode__(self):
         return self.name
