@@ -29,7 +29,11 @@ def get_pricelist_price_data(pricelist, include_cost=False):
         d['per 6'] = return_round_or_emtpy_string(item.per_6)
         d['per 12'] = return_round_or_emtpy_string(item.per_12)
         # d['per 48'] = return_round_or_emtpy_string(item.per_48)
-        d['stock'] = item.product.available_stock
+
+        try:
+        	d['stock'] = int(item.product.available_stock)
+        except TypeError:
+        	d['stock'] = 0
 
         if include_cost:
             d['cost'] = round(item.product.cost, ROUND_DIGITS)
