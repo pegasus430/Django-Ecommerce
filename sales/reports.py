@@ -39,7 +39,7 @@ def export_pricelist_pdf(pricelist):
         'Pricelist {} {}'.format(pricelist.name, datetime.date.today().strftime('%d/%m/%Y'))
         )
 
-    document.add_heading('Available Product list')
+    document.add_heading('Products available')
     table_data_dict = get_pricelist_price_data(pricelist)
     table_data = []
     table_data.append(table_data_dict[0].keys())
