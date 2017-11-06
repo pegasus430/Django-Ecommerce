@@ -25,14 +25,6 @@ def set_prices(pricelist_item):
     return pricelist_item.save()
 
 
-def get_active_pricelist_items(pricelist):
-    '''return a dict with all active pricelist_items and their:
-    - price per tier
-    - stock available
-    - next known availaiblity availability date '''
-    pass
-
-
 def get_correct_sales_order_item_price(pricelist_item, qty):
     '''Return the price that matches the right qty for the product'''
     ## Filter available price tiers

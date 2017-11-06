@@ -45,7 +45,7 @@ def export_pricelist_pdf(pricelist, include_stock=False):
         )
 
     document.add_heading('Products available')
-    table_data_dict = get_pricelist_price_data(pricelist, include_stock)
+    table_data_dict = get_pricelist_price_data(pricelist, include_stock=include_stock)
     table_data = []
     table_data.append(table_data_dict[0].keys())
     logger.debug('header looks like {}'.format(table_data))
