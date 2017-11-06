@@ -70,6 +70,11 @@ def cancel_sprintpack_shipment_admin(shipments):
     for shipment in shipments:
         shipment.cancel_sprintpack_shipment()
 
+
+def export_pricelist_pdf_admin(pricelists):
+    items = {'Pricelist {}.pdf'.format(pr.name): export_pricelist_pdf(pr) for pr in pricelists}
+    return dynamic_file_httpresponse(items, 'Price Lists')
+
 ## Admin helper ##
 def set_prices_admin_action(modeladmin, request, queryset):
     for q in queryset:
@@ -98,8 +103,7 @@ def clear_b2b_per1plus_prices_admin_action(modeladmin, request, queryset):
 clear_b2b_per1plus_prices_admin_action.short_description = "Remove prices per 6, 12 and 48. - Don't touch per1"
 
 def export_pricelist_pdf_admin_action(modeladmin, request, queryset):
-    for q in queryset:
-        return export_pricelist_pdf(q)
+    return export_pricelist_pdf_admin(queryset)
 export_pricelist_pdf_admin_action.short_description = 'Export pricelist to pdf'
 
 
