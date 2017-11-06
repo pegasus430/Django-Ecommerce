@@ -32,7 +32,7 @@ def get_pricelist_price_data(pricelist, include_cost=False):
 
         try:
         	d['stock'] = int(item.product.available_stock)
-        except TypeError:
+        except ValueError:
         	d['stock'] = 0
 
         if include_cost:
