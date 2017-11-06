@@ -71,8 +71,11 @@ def cancel_sprintpack_shipment_admin(shipments):
         shipment.cancel_sprintpack_shipment()
 
 
-def export_pricelist_pdf_admin(pricelists):
-    items = {'Pricelist {}.pdf'.format(pr.name): export_pricelist_pdf(pr) for pr in pricelists}
+def export_pricelist_pdf_admin(pricelists, include_stock=True):
+    if include_stock:
+        items = {'Price- and stocklist {}.pdf'.format(pr.name): export_pricelist_pdf(pr, include_stock) for pr in pricelists}
+    else:
+        items = {'Pricelist {}.pdf'.format(pr.name): export_pricelist_pdf(pr, include_stock) for pr in pricelists}
     return dynamic_file_httpresponse(items, 'Price Lists')
 
 ## Admin helper ##
@@ -106,6 +109,9 @@ def export_pricelist_pdf_admin_action(modeladmin, request, queryset):
     return export_pricelist_pdf_admin(queryset)
 export_pricelist_pdf_admin_action.short_description = 'Export pricelist to pdf'
 
+def export_price_stocklist_pdf_admin_action(modeladmin, request, queryset):
+    return export_pricelist_pdf_admin(queryset, include_stock=True)
+export_price_stocklist_pdf_admin_action.short_description = 'Export price- and stocklist to pdf'
 
 def export_pricelist_csv_admin_action(modeladmin, request, queryset):
     for q in queryset:

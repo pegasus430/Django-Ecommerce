@@ -9,7 +9,7 @@ def return_round_or_emtpy_string(num, digits=2):
     except TypeError:
         return ''
 
-def get_pricelist_price_data(pricelist, include_cost=False):
+def get_pricelist_price_data(pricelist, include_cost=False, include_stock=False):
     '''return a list of ordered dicts with price-data:
     - sku
     - rrp
@@ -30,10 +30,11 @@ def get_pricelist_price_data(pricelist, include_cost=False):
         d['per 12'] = return_round_or_emtpy_string(item.per_12)
         # d['per 48'] = return_round_or_emtpy_string(item.per_48)
 
-        try:
-        	d['stock'] = int(item.product.available_stock)
-        except ValueError:
-        	d['stock'] = 0
+        if include_stock:
+            try:
+                d['stock'] = int(item.product.available_stock)
+            except ValueError:
+                d['stock'] = 0
 
         if include_cost:
             d['cost'] = round(item.product.cost, ROUND_DIGITS)

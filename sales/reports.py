@@ -30,23 +30,32 @@ def export_pricelist_csv(pricelist, include_cost=False):
     return response
 
 
-def export_pricelist_pdf(pricelist):
+def export_pricelist_pdf(pricelist, include_stock=False):
     ''' export a pricelist to pdf '''
     # Create the HttpResponse object with the appropriate PDF headers.
     document = SuzysDocument()
 
-    document.add_title(
-        'Pricelist {} {}'.format(pricelist.name, datetime.date.today().strftime('%d/%m/%Y'))
+    if include_stock:
+        document.add_title(
+            'Price- and Stocklist {} {}'.format(pricelist.name, datetime.date.today().strftime('%d/%m/%Y'))
+            )
+    else:
+        document.add_title(
+            'Pricelist {} {}'.format(pricelist.name, datetime.date.today().strftime('%d/%m/%Y'))
         )
 
     document.add_heading('Products available')
-    table_data_dict = get_pricelist_price_data(pricelist)
+    table_data_dict = get_pricelist_price_data(pricelist, include_stock)
     table_data = []
     table_data.append(table_data_dict[0].keys())
     logger.debug('header looks like {}'.format(table_data))
     [table_data.append(i.values()) for i in table_data_dict]
     logger.debug('full table_data looks like {}'.format(table_data))
-    table_columns_width = [0.2, 0.37, 0.11, 0.11, 0.11, 0.10]
+    if include_stock:
+        table_columns_width = [0.2, 0.37, 0.11, 0.11, 0.11, 0.10]
+    else:
+        table_columns_width = [0.2, 0.47, 0.11, 0.11, 0.11]
+
     document.add_table(table_data, table_columns_width)
 
     document.add_paragraph('''If the item you wish is not on stock, please consult us for
