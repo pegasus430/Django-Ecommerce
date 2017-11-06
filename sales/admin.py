@@ -12,7 +12,8 @@ from .helpers import clear_b2b_prices_admin_action,\
     print_picking_lists, \
     print_customs_invoice, \
     ship_with_sprintpack, \
-    cancel_shipment_with_sprintpack
+    cancel_shipment_with_sprintpack, \
+    export_price_stocklist_pdf_admin_action
 
 ###############
 ### Inlines ###
