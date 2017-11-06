@@ -521,6 +521,7 @@ class Product(models.Model):
     complete = models.BooleanField(default=False)
 
     sku = models.CharField(max_length=15, blank=True, null=True, unique=True)
+    next_available = models.DateField(blank=True, null=True)
 
     _created_in_sprintpack = models.BooleanField(default=False)
 
