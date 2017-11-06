@@ -39,7 +39,8 @@ class PriceList(models.Model):
 
     @property 
     def name(self):
-        return u'Pricelist {}'.format(self.updated_at.strftime('%Y-%m-%d'))
+        # return u'Pricelist {}'.format(self.updated_at.strftime('%Y-%m-%d'))
+        return u'Euro'
 
     def __unicode__(self):
         return self.name
@@ -62,10 +63,9 @@ class PriceListItem(models.Model):
     per_12 = models.FloatField(blank=True, null=True)
     per_48 = models.FloatField(blank=True, null=True)
 
-    active = models.BooleanField(default=True)
-
     def __unicode__(self):
         return u'{}'.format(self.product)
+        
 
 class SalesOrder(models.Model):
     STATUS_CHOICES = (
@@ -283,7 +283,6 @@ class SalesOrderDelivery(models.Model):
         except Exception:
             return False
 
-    @property 
     def cancel_sprintpack_shipment(self):
         return SprintClient().cancel_order(self._sprintpack_order_id)
 
