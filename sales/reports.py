@@ -52,7 +52,7 @@ def export_pricelist_pdf(pricelist, include_stock=False):
     [table_data.append(i.values()) for i in table_data_dict]
     logger.debug('full table_data looks like {}'.format(table_data))
     if include_stock:
-        table_columns_width = [0.18, 0.35, 0.11, 0.11, 0.11, 0.11, 0.1, 0.1]
+        table_columns_width = [0.18, 0.35, 0.10, 0.10, 0.10, 0.10, 0.10, 0.12]
     else:
         table_columns_width = [0.2, 0.47, 0.11, 0.11, 0.11, 0.11]
 
