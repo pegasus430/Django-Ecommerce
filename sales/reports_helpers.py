@@ -38,7 +38,7 @@ def get_pricelist_price_data(pricelist, include_cost=False, include_stock=False)
                 d['stock'] = 0
 
             try:
-                if int(datetime.date.today().strftime("%V")) < int(item.product.next_available.strftime("%V")):
+                if int(datetime.date.today().strftime("%V")) <= int(item.product.next_available.strftime("%V")):
                     d['More Expected'] = u'w{}'.format(item.product.next_available.strftime("%V"))
                 else:
                     d['More Expected'] = ''
