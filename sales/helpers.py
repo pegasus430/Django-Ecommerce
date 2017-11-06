@@ -63,7 +63,7 @@ def cancel_sprintpack_shipment_admin(shipments):
         shipment.cancel_sprintpack_shipment()
 
 
-def export_pricelist_pdf_admin(pricelists, include_stock=True):
+def export_pricelist_pdf_admin(pricelists, include_stock=False):
     if include_stock:
         items = {'Price- and stocklist {}.pdf'.format(pr.name): export_pricelist_pdf(pr, include_stock) for pr in pricelists}
     else:
@@ -98,7 +98,7 @@ def clear_b2b_per1plus_prices_admin_action(modeladmin, request, queryset):
 clear_b2b_per1plus_prices_admin_action.short_description = "Remove prices per 6, 12 and 48. - Don't touch per1"
 
 def export_pricelist_pdf_admin_action(modeladmin, request, queryset):
-    return export_pricelist_pdf_admin(queryset)
+    return export_pricelist_pdf_admin(queryset, include_stock=False)
 export_pricelist_pdf_admin_action.short_description = 'Export pricelist to pdf'
 
 def export_price_stocklist_pdf_admin_action(modeladmin, request, queryset):
