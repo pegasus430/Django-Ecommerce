@@ -12,7 +12,8 @@ from .helpers import clear_b2b_prices_admin_action,\
     print_picking_lists, \
     print_customs_invoice, \
     ship_with_sprintpack, \
-    cancel_shipment_with_sprintpack
+    cancel_shipment_with_sprintpack, \
+    export_price_stocklist_pdf_admin_action
 
 ###############
 ### Inlines ###
@@ -61,8 +62,8 @@ class SalesOrderDeliveryAdmin(DefaultAdmin):
 
 class PriceListAdmin(DefaultAdmin):
     inlines = [PriceListItemInline]
-    actions = [export_pricelist_pdf_admin_action, export_pricelist_csv_admin_action, 
-        export_costlist_csv_admin_action]
+    actions = [export_pricelist_pdf_admin_action, export_price_stocklist_pdf_admin_action, 
+        export_pricelist_csv_admin_action, export_costlist_csv_admin_action]
 
 class PriceListItemAdmin(DefaultAdmin):
     list_display = ['__unicode__', 'get_sku', 'price_list', 'rrp', 'per_1', 
@@ -98,3 +99,4 @@ admin.site.register(PriceList, PriceListAdmin)
 admin.site.register(PriceListItem, PriceListItemAdmin)
 admin.site.register(PriceTransport, PriceTransportAdmin)
 admin.site.register(CommissionNote, CommissionNoteAdmin)
+admin.site.register(PriceListAutoSend)

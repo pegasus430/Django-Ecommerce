@@ -16,6 +16,35 @@ from .documents import picking_list, customs_invoice, commission_report
 import logging
 logger = logging.getLogger(__name__)
 
+class PriceListAutoSend(models.Model):
+    relation = models.ForeignKey(Relation, blank=True, null=True)
+    agent = models.ForeignKey(Agent, blank=True, null=True)
+    active = models.BooleanField(default=True)
+    email_to = models.CharField(blank=True, null=True, max_length=100)
+    email_to_name = models.CharField(blank=True, null=True, max_length=100)
+
+    def __unicode__(self):
+        name, email = self.receiver
+        return u'{} <{}>'.format(name, email)
+    
+    @property
+    def receiver(self):
+        if self.email_to:
+            email = self.email_to
+        elif self.relation:
+            email = self.relation.contact_email
+        elif self.agent:
+            email = self.agent.contact_email
+
+        if self.email_to_name:
+            name = self.email_to_name
+        elif self.relation:
+            name = self.relation.contact_full_name
+        elif self.agent:
+            name = self.agent.contact_full_name
+
+        return name, email
+
 class PriceTransport(models.Model):
     '''Model to keep track of the transport costs for sales orders'''
     country = models.CharField(max_length=2, choices=COUNTRY_CHOICES)
@@ -150,7 +179,8 @@ class SalesOrder(models.Model):
 
 class SalesOrderProduct(models.Model):
     sales_order = models.ForeignKey(SalesOrder)
-    price_list_item = models.ForeignKey(PriceListItem,  limit_choices_to={'price_list__status': 'AC'})
+    input_sku = models.CharField(max_length=20, blank=True, null=True)
+    price_list_item = models.ForeignKey(PriceListItem,  limit_choices_to={'price_list__status': 'AC'}, blank=True, null=True)
     qty = models.IntegerField()
     unit_price = models.FloatField(blank=True, null=True)
 
@@ -163,6 +193,12 @@ class SalesOrderProduct(models.Model):
 
     def save(self, *args, **kwargs):
         ## Find the right price.
+        if self.price_list_item is None:
+            try:
+                self.price_list_item = PriceListItem.objects.filter(product__sku=self.input_sku)[0]
+            except Exception:
+                pass
+
         if self.unit_price is None or self.unit_price == '':
             self.unit_price = get_correct_sales_order_item_price(self.price_list_item, self.qty)
         super(SalesOrderProduct, self).save(*args, **kwargs)

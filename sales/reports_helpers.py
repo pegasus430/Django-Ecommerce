@@ -2,6 +2,7 @@ from .models import *
 from .variables import ROUND_DIGITS
 
 from collections import OrderedDict
+import datetime
 
 def return_round_or_emtpy_string(num, digits=2):
     try:
@@ -9,7 +10,7 @@ def return_round_or_emtpy_string(num, digits=2):
     except TypeError:
         return ''
 
-def get_pricelist_price_data(pricelist, include_cost=False):
+def get_pricelist_price_data(pricelist, include_cost=False, include_stock=False):
     '''return a list of ordered dicts with price-data:
     - sku
     - rrp
@@ -30,10 +31,19 @@ def get_pricelist_price_data(pricelist, include_cost=False):
         d['per 12'] = return_round_or_emtpy_string(item.per_12)
         # d['per 48'] = return_round_or_emtpy_string(item.per_48)
 
-        try:
-        	d['stock'] = int(item.product.available_stock)
-        except ValueError:
-        	d['stock'] = 0
+        if include_stock:
+            try:
+                d['stock'] = int(item.product.available_stock)
+            except ValueError:
+                d['stock'] = 0
+
+            try:
+                if int(datetime.date.today().strftime("%V")) <= int(item.product.next_available.strftime("%V")):
+                    d['More Expected'] = u'week {}'.format(item.product.next_available.strftime("%V"))
+                else:
+                    d['More Expected'] = ''
+            except (AttributeError, TypeError):
+                d['More Expected'] = ''
 
         if include_cost:
             d['cost'] = round(item.product.cost, ROUND_DIGITS)
