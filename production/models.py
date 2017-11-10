@@ -75,7 +75,7 @@ class ProductionOrder(models.Model):
 
 class ProductionOrderItem(models.Model):
     production_order = models.ForeignKey(ProductionOrder)
-    product = models.ForeignKey(Product, limit_choices_to={'active': True},)
+    product = models.ForeignKey(Product)
     qty = models.IntegerField()
 
     class Meta:
