@@ -3,11 +3,11 @@
 ## Todos
 
 - set on_delete behaviour https://stackoverflow.com/questions/38388423/what-does-on-delete-do-on-django-models
-- auto generate pricelist
-- auto-mail stocklist to agents
+- auto generate pricelist > Need to add transport costs
 - min material qty
 - auto gen PO from min-order-qty / or extend an existing draft PO
 - min product-stock qty
+- add 'is_stock_products' and implement on various to research places.
 
 - move tranport document, and perhaps some labels to the new printing lib
 - Cancel/Void/Delete invoices
