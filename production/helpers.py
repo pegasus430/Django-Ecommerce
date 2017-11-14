@@ -36,7 +36,7 @@ print_picking_lists.short_description = 'Print Picking lists'
 
 def pre_advice_sprintpack(modeladmin, request, queryset):
     for shipment in queryset:   
-        return pre_advice_sprintpack_admin(shipment)
+        pre_advice_sprintpack_admin(shipment)
 pre_advice_sprintpack.short_description = 'Inform Distribution center about new shipment'   
 
 def mark_awaiting_delivery_admin(modeladmin, request, queryset):
