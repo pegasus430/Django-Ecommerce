@@ -171,7 +171,8 @@ class SalesOrder(models.Model):
         try:
             return PriceTransport.objects.filter(
                 country=self.ship_to.country,
-                order_from_price__gte=self.total_order_value).order_by('order_from_price')[0].shipping_price
+                order_from_price__gte=self.total_order_value).order_by(
+                    'order_from_price')[0].shipping_price
         except (PriceTransport.DoesNotExist, IndexError):
             return 0.0
 
@@ -180,7 +181,8 @@ class SalesOrder(models.Model):
 class SalesOrderProduct(models.Model):
     sales_order = models.ForeignKey(SalesOrder)
     input_sku = models.CharField(max_length=20, blank=True, null=True)
-    price_list_item = models.ForeignKey(PriceListItem,  limit_choices_to={'price_list__status': 'AC'}, blank=True, null=True)
+    price_list_item = models.ForeignKey(PriceListItem,  
+        limit_choices_to={'price_list__status': 'AC'}, blank=True, null=True)
     qty = models.IntegerField()
     unit_price = models.FloatField(blank=True, null=True)
 
@@ -287,8 +289,8 @@ class SalesOrderDelivery(models.Model):
             attachment_file_list.append(self.customs_invoice())
 
         response = SprintClient().create_order(
-            order_number=self.id, ## Provide shipment id instead of order-id for uniqueness reasons.
-            order_reference=self._shipment_reference(),  ## used combined reference for uniqueness reasons.
+            order_number=self.id, ## Provide shipment id instead of order-id for uniqueness .
+            order_reference=self._shipment_reference(),  ## used combined reference for uniqueness.
             company_name=client.business_name,
             contact_name=client.contact_full_name, 
             address1=client.address1, 
