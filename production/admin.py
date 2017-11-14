@@ -22,7 +22,7 @@ class ProductionOrderDeliveryItemInline(DefaultInline):
 class ProductionOrderAdmin(DefaultAdmin):
     inlines = [ProductionOrderItemInline]
     readonly_fields = ['missing_materials', 'total_items']
-    list_display = ['__unicode__', 'status', 'total_items', 'distribution_centre_informed']
+    list_display = ['__unicode__', 'status', 'total_items']
     actions = [print_production_order_report, mark_awaiting_delivery_admin]
 
 class ProductionOrderItemAdmin(DefaultAdmin):
@@ -32,7 +32,7 @@ class ProductionOrderDeliveryAdmin(DefaultAdmin):
     inlines = [ProductionOrderDeliveryItemInline]
     actions = [print_picking_lists, pre_advice_sprintpack]
     readonly_fields = ['number_of_items', '_sprintpack_pre_advice_id']
-    list_display = ['__unicode__', 'est_delivery_date']
+    list_display = ['__unicode__', 'est_delivery_date', 'distribution_centre_informed']
 
 
 admin.site.register(ProductionOrder, ProductionOrderAdmin)
