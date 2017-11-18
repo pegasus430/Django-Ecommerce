@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 # @db_task()
 def send_price_and_stock_list(email, name):
     to = u'{} <{}>'.format(name, email)
-    message = '''Dear {}, \n\nPlease find today's stocklist in attachment. \n\nThank you,\nSascha Dobbelaere'''.format(
+    message = '''Dear {}, \n\nPlease find today's stocklist in attachment. \n\nThank you,\Sila.Network - Suzy's backoffice software'''.format(
         name)
     subject = "Today's stocklist"
     attachment = export_pricelist_pdf(PriceList.objects.last(), include_stock=True)
