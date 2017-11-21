@@ -10,6 +10,33 @@ def return_round_or_emtpy_string(num, digits=2):
     except TypeError:
         return ''
 
+
+def get_stock_data(pricelist):
+    '''return a list of ordered dicts with stock-data'''
+    data = []
+    for item in pricelist.pricelistitem_set.filter(product__active=True).order_by('product__sku'):
+        d = OrderedDict()
+        d['sku'] = item.product.sku
+        d['ean'] = item.product.ean_code
+
+        try:
+            d['stock'] = int(item.product.available_stock)
+        except ValueError:
+            d['stock'] = 0
+
+        try:
+            if int(datetime.date.today().strftime("%V")) <= int(item.product.next_available.strftime("%V")):
+                d['More Expected'] = u'week {}'.format(item.product.next_available.strftime("%V"))
+            else:
+                d['More Expected'] = ''
+        except (AttributeError, TypeError):
+            d['More Expected'] = ''            
+
+        data.append(d)
+
+    return data
+
+
 def get_pricelist_price_data(pricelist, include_cost=False, include_stock=False):
     '''return a list of ordered dicts with price-data:
     - sku

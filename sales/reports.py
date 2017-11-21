@@ -6,8 +6,11 @@ from reportlab.platypus.tables import Table
 
 from printing_tools.documents import SuzysDocument
 from django.http import HttpResponse
+
 from io import BytesIO
+from StringIO import StringIO
 import csv
+import json
 import datetime
 
 from .reports_helpers import *
@@ -28,6 +31,20 @@ def export_pricelist_csv(pricelist, include_cost=False):
     [c.writerow(i) for i in data]
 
     return response
+
+
+def export_stocklist_datafile(pricelist, format):
+    ''' export stocklist to given file-format'''
+    data = get_stock_data(pricelist)
+
+    if format == 'json':
+        return json.dumps(data)
+    elif format == 'csv':
+        f = StringIO()
+        c = csv.DictWriter(f, fieldnames=data[0].keys())
+        c.writeheader()
+        [c.writerow(i) for i in data]
+        return f.getvalue()
 
 
 def export_pricelist_pdf(pricelist, include_stock=False):
