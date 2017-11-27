@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='pricelist',
             name='customer_type',
-            field=models.CharField(choices=[(b'DROP', b'Drop-Shipping'), (b'CLAS', b'Classic')], default='CLA', max_length=4),
+            field=models.CharField(choices=[(b'DROP', b'Drop-Shipping'), (b'CLAS', b'Classic')], default='CLAS', max_length=4),
         ),
         migrations.AlterField(
             model_name='pricelist',
