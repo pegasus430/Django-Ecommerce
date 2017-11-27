@@ -114,7 +114,7 @@ class PriceListItem(models.Model):
     per_48 = models.FloatField(blank=True, null=True)
 
     def __unicode__(self):
-        return u'{}'.format(self.product)
+        return u'{} {}'.format(self.product, self.price_list)
         
 
 class SalesOrder(models.Model):
