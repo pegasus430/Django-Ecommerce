@@ -60,9 +60,11 @@ class PriceTransport(models.Model):
     country = models.CharField(max_length=2, choices=COUNTRY_CHOICES)
     order_from_price = models.FloatField(default=0)
     shipping_price = models.FloatField()
+    price_list = models.ForeignKey('PriceList')
 
     def __unicode__(self):
-        return '{} from {}'.format(self.get_country_display(), self.order_from_price)
+        return '{} from {} - {}'.format(self.get_country_display(), self.order_from_price,
+            self.price_list)
 
 
 class PriceList(models.Model):
