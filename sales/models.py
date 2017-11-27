@@ -215,8 +215,7 @@ class SalesOrder(models.Model):
 class SalesOrderProduct(models.Model):
     sales_order = models.ForeignKey(SalesOrder)
     input_sku = models.CharField(max_length=20, blank=True, null=True)
-    price_list_item = models.ForeignKey(PriceListItem,  
-        limit_choices_to={'price_list__status': 'AC'}, blank=True, null=True)
+    price_list_item = models.ForeignKey(PriceListItem, blank=True, null=True)
     qty = models.IntegerField()
     unit_price = models.FloatField(blank=True, null=True)
 
@@ -225,7 +224,10 @@ class SalesOrderProduct(models.Model):
 
     @property
     def total_price(self):
-        return self.qty * self.unit_price
+        try:
+            return self.qty * self.unit_price
+        except TypeError:
+            return 0
 
     def save(self, *args, **kwargs):
         ## Find the right price.
