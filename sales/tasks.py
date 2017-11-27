@@ -5,7 +5,7 @@ from django.core.mail import EmailMessage, mail_admins
 
 from magento.api import MagentoServer
 
-from .models import Product, CommissionNote, PriceListAutoSend, PriceList
+from .models import Product, CommissionNote, PriceListSetting, PriceList
 from .reports import export_pricelist_pdf, export_stocklist_datafile
 
 from contacts.models import Relation, RelationAddress, Agent
@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 # @db_task()
-def send_price_and_stock_list(email, name, format):
+def send_price_and_stock_list(email, name, format, price_list):
     to = u'{} <{}>'.format(name, email)
     message = '''Dear {}, \n\nPlease find today's stocklist in attachment. \n\nThank you,\nSila.Network - Suzy's backoffice software'''.format(
         name)
@@ -31,13 +31,13 @@ def send_price_and_stock_list(email, name, format):
         [to])
     
     if format == 'pdf':
-        attachment = export_pricelist_pdf(PriceList.objects.last(), include_stock=True)
+        attachment = export_pricelist_pdf(price_list, include_stock=True)
         message.attach('Price and stock-list Suzys.pdf', attachment, 'application/pdf')
     elif format == 'csv':
-        attachment = export_stocklist_datafile(PriceList.objects.last(), format)
+        attachment = export_stocklist_datafile(price_list, format)
         message.attach('Stocklist Suzys.csv', attachment, 'text/csv')
     elif format == 'json':
-        attachment = export_stocklist_datafile(PriceList.objects.last(), format)
+        attachment = export_stocklist_datafile(price_list, format)
         message.attach('Stocklist Suzys.json', attachment, 'application/json')
     
     message.send()
@@ -47,10 +47,10 @@ def send_price_and_stock_list(email, name, format):
 def send_price_and_stock_lists_to_all():
     '''send price and stock_lists to all that wish to receive it'''
     logger.debug('Going to send stocklist to all active ppl')
-    for i in PriceListAutoSend.objects.filter(active=True):
+    for i in PriceListSetting.objects.filter(active=True):
         name, email = i.receiver
         logger.debug('Going to send to {}, {}'.format(email,name))
-        send_price_and_stock_list(email=email, name=name, format=i.format)
+        send_price_and_stock_list(email=email, name=name, format=i.format, price_list=i.price_list)
 
 
 @db_periodic_task(crontab(hour='14', minute='0'))
@@ -141,7 +141,7 @@ def fetch_magento_orders(status='processing'):
             transport_cost=order['shipping_amount'])
 
         # Add the items
-        pricelist = PriceList.objects.last()
+        pricelist = PriceList.objects.get(is_default=True)
         for item in order_items:
             try:
                 product = Product.objects.get(sku=item['sku'])

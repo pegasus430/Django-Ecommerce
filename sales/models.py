@@ -8,7 +8,10 @@ import datetime
 from inventory.models import Product, StockLocation
 from contacts.models import Relation, RelationAddress, Agent
 from sprintpack.api import SprintClient
+
 from contacts.countries import COUNTRY_CHOICES
+from contacts.currencies import CURRENCY_CHOICES
+from contacts.customer_types import CUSTOMER_TYPE_CHOICES
 
 from .helpers import get_correct_sales_order_item_price
 from .documents import picking_list, customs_invoice, commission_report
@@ -16,13 +19,14 @@ from .documents import picking_list, customs_invoice, commission_report
 import logging
 logger = logging.getLogger(__name__)
 
-class PriceListAutoSend(models.Model):
+class PriceListSetting(models.Model):
     FORMAT_CHOICES = (
         ('csv', 'csv'),
         ('pdf', 'pdf'),
         ('json', 'json'),
     )
     relation = models.ForeignKey(Relation, blank=True, null=True)
+    price_list = models.ForeignKey('PriceList', blank=True, null=True)
     agent = models.ForeignKey(Agent, blank=True, null=True)
     active = models.BooleanField(default=True)
     email_to = models.CharField(blank=True, null=True, max_length=100)
@@ -56,9 +60,11 @@ class PriceTransport(models.Model):
     country = models.CharField(max_length=2, choices=COUNTRY_CHOICES)
     order_from_price = models.FloatField(default=0)
     shipping_price = models.FloatField()
+    price_list = models.ForeignKey('PriceList')
 
     def __unicode__(self):
-        return '{} from {}'.format(self.get_country_display(), self.order_from_price)
+        return '{} from {} - {}'.format(self.get_country_display(), self.order_from_price,
+            self.price_list)
 
 
 class PriceList(models.Model):
@@ -71,11 +77,21 @@ class PriceList(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     status = models.CharField(choices=STATUS_CHOICES, max_length=2, default='DR')
+    currency = models.CharField(choices=CURRENCY_CHOICES, max_length=3, default='EUR')
+    customer_type = models.CharField(choices=CUSTOMER_TYPE_CHOICES, max_length=4, default='CLAS')
+    country = models.CharField(choices=COUNTRY_CHOICES, max_length=2, blank=True, null=True)
+    is_default = models.BooleanField(default=False, verbose_name='Default pricelist is none is known')
+
+    remarks = models.TextField(blank=True, null=True)
 
     @property 
     def name(self):
         # return u'Pricelist {}'.format(self.updated_at.strftime('%Y-%m-%d'))
-        return u'Euro'
+        if self.country is not None:
+            return u'{} {} {}'.format(self.get_customer_type_display(), self.get_currency_display(),
+                self.country)
+        else:
+            return u'{} {} All Countries'.format(self.get_customer_type_display(), self.get_currency_display())
 
     def __unicode__(self):
         return self.name
@@ -88,6 +104,9 @@ class PriceList(models.Model):
                 PriceListItem.objects.create(price_list=self, product=product)
         super(PriceList, self).save(*args, **kwargs)
 
+    class Meta:
+        unique_together = ('country', 'currency', 'customer_type')
+
 
 class PriceListItem(models.Model):
     price_list = models.ForeignKey(PriceList)
@@ -99,7 +118,7 @@ class PriceListItem(models.Model):
     per_48 = models.FloatField(blank=True, null=True)
 
     def __unicode__(self):
-        return u'{}'.format(self.product)
+        return u'{} {}'.format(self.product, self.price_list)
         
 
 class SalesOrder(models.Model):
@@ -134,6 +153,8 @@ class SalesOrder(models.Model):
     paid_commission = models.BooleanField(default=False)
     paid_on_date = models.DateField(blank=True, null=True)
 
+    price_list = models.ForeignKey(PriceList, blank=True, null=True)
+
     class Meta:
         ordering = ('-created_at',)
 
@@ -142,6 +163,17 @@ class SalesOrder(models.Model):
         if self.status == 'DR' and self.transport_cost is None:
             self.transport_cost = self.get_tranport_price()
             self.save()
+
+        if self.price_list is None:
+            try:
+                self.price_list = PriceList.objects.get(currency=self.client.currency,
+                    customer_type=self.client.customer_type, country=self.client.country)
+            except PriceList.DoesNotExist:
+                try:
+                    self.price_list = PriceList.objects.get(currency=self.client.currency,
+                    customer_type=self.client.customer_type, country=None)
+                except PriceList.DoesNotExist:
+                    self.price_list = PriceList.objects.get(is_default=True)
 
         return super(SalesOrder, self).save(*args, **kwargs)
 
@@ -177,7 +209,8 @@ class SalesOrder(models.Model):
         try:
             return PriceTransport.objects.filter(
                 country=self.ship_to.country,
-                order_from_price__gte=self.total_order_value).order_by('order_from_price')[0].shipping_price
+                order_from_price__gte=self.total_order_value).order_by(
+                    'order_from_price')[0].shipping_price
         except (PriceTransport.DoesNotExist, IndexError):
             return 0.0
 
@@ -186,7 +219,7 @@ class SalesOrder(models.Model):
 class SalesOrderProduct(models.Model):
     sales_order = models.ForeignKey(SalesOrder)
     input_sku = models.CharField(max_length=20, blank=True, null=True)
-    price_list_item = models.ForeignKey(PriceListItem,  limit_choices_to={'price_list__status': 'AC'}, blank=True, null=True)
+    price_list_item = models.ForeignKey(PriceListItem, blank=True, null=True)
     qty = models.IntegerField()
     unit_price = models.FloatField(blank=True, null=True)
 
@@ -195,13 +228,20 @@ class SalesOrderProduct(models.Model):
 
     @property
     def total_price(self):
-        return self.qty * self.unit_price
+        try:
+            return self.qty * self.unit_price
+        except TypeError:
+            return 0
 
     def save(self, *args, **kwargs):
         ## Find the right price.
         if self.price_list_item is None:
             try:
-                self.price_list_item = PriceListItem.objects.filter(product__sku=self.input_sku)[0]
+                if self.sales_order.price_list is not None:
+                    self.price_list_item = PriceListItem.objects.filter(
+                        product__sku=self.input_sku, price_list=self.sales_order.price_list)[0]
+                else:
+                    self.price_list_item = PriceListItem.objects.filter(product__sku=self.input_sku)[0]
             except Exception:
                 pass
 
@@ -293,8 +333,8 @@ class SalesOrderDelivery(models.Model):
             attachment_file_list.append(self.customs_invoice())
 
         response = SprintClient().create_order(
-            order_number=self.id, ## Provide shipment id instead of order-id for uniqueness reasons.
-            order_reference=self._shipment_reference(),  ## used combined reference for uniqueness reasons.
+            order_number=self.id, ## Provide shipment id instead of order-id for uniqueness .
+            order_reference=self._shipment_reference(),  ## used combined reference for uniqueness.
             company_name=client.business_name,
             contact_name=client.contact_full_name, 
             address1=client.address1, 

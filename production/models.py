@@ -48,11 +48,6 @@ class ProductionOrder(models.Model):
         else:
             return u'PR{}'.format(self.id)
 
-    def save(self, *args, **kwargs):
-        if not self.pk and not self.reference:
-            self.reference = 'test'
-        super(ProductionOrder, self).save(*args, **kwargs)
-
     def missing_materials(self):
         return return_stock_status_for_order(self.productionorderitem_set.all())
 
