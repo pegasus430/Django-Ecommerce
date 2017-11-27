@@ -145,6 +145,8 @@ class SalesOrder(models.Model):
     paid_commission = models.BooleanField(default=False)
     paid_on_date = models.DateField(blank=True, null=True)
 
+    price_list = models.ForeignKey(PriceList, blank=True, null=True)
+
     class Meta:
         ordering = ('-created_at',)
 
@@ -153,6 +155,17 @@ class SalesOrder(models.Model):
         if self.status == 'DR' and self.transport_cost is None:
             self.transport_cost = self.get_tranport_price()
             self.save()
+
+        if self.price_list is None:
+            try:
+                self.price_list = Pricelist.objects.get(currency=self.client.currency,
+                    customer_type=self.client.customer_type, country=self.client.country)
+            except Pricelist.DoesNotExist:
+                try:
+                    self.price_list = Pricelist.objects.get(currency=self.client.currency,
+                    customer_type=self.client.customer_type, country=None)
+                except Pricelist.DoesNotExist:
+                    pass
 
         return super(SalesOrder, self).save(*args, **kwargs)
 
