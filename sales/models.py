@@ -8,7 +8,10 @@ import datetime
 from inventory.models import Product, StockLocation
 from contacts.models import Relation, RelationAddress, Agent
 from sprintpack.api import SprintClient
+
 from contacts.countries import COUNTRY_CHOICES
+from contacts.currencies import CURRENCY_CHOICES
+from contacts.customer_types import CUSTOMER_TYPE_CHOICES
 
 from .helpers import get_correct_sales_order_item_price
 from .documents import picking_list, customs_invoice, commission_report
@@ -16,13 +19,14 @@ from .documents import picking_list, customs_invoice, commission_report
 import logging
 logger = logging.getLogger(__name__)
 
-class PriceListAutoSend(models.Model):
+class PriceListSetting(models.Model):
     FORMAT_CHOICES = (
         ('csv', 'csv'),
         ('pdf', 'pdf'),
         ('json', 'json'),
     )
     relation = models.ForeignKey(Relation, blank=True, null=True)
+    price_list = models.ForeignKey('PriceList', blank=True, null=True)
     agent = models.ForeignKey(Agent, blank=True, null=True)
     active = models.BooleanField(default=True)
     email_to = models.CharField(blank=True, null=True, max_length=100)
@@ -71,11 +75,15 @@ class PriceList(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     status = models.CharField(choices=STATUS_CHOICES, max_length=2, default='DR')
+    currency = models.CharField(choices=CURRENCY_CHOICES, max_length=3, default='EUR')
+    customer_type = models.CharField(choices=CUSTOMER_TYPE_CHOICES, max_length=4, default='CLAS')
+    country = models.CharField(choices=COUNTRY_CHOICES, max_length=2, blank=True, null=True)
+    is_default = models.BooleanField(default=False, verbose_name='Default pricelist is none is known')
 
     @property 
     def name(self):
         # return u'Pricelist {}'.format(self.updated_at.strftime('%Y-%m-%d'))
-        return u'Euro'
+        return u'{} {}'.format(self.get_customer_type_display(), self.get_currency_display())
 
     def __unicode__(self):
         return self.name
@@ -87,6 +95,9 @@ class PriceList(models.Model):
             for product in Product.objects.filter(active=True):
                 PriceListItem.objects.create(price_list=self, product=product)
         super(PriceList, self).save(*args, **kwargs)
+
+    class Meta:
+        unique_together = ('country', 'currency', 'customer_type')
 
 
 class PriceListItem(models.Model):
@@ -134,6 +145,8 @@ class SalesOrder(models.Model):
     paid_commission = models.BooleanField(default=False)
     paid_on_date = models.DateField(blank=True, null=True)
 
+    price_list = models.ForeignKey(PriceList, blank=True, null=True)
+
     class Meta:
         ordering = ('-created_at',)
 
@@ -142,6 +155,17 @@ class SalesOrder(models.Model):
         if self.status == 'DR' and self.transport_cost is None:
             self.transport_cost = self.get_tranport_price()
             self.save()
+
+        if self.price_list is None:
+            try:
+                self.price_list = Pricelist.objects.get(currency=self.client.currency,
+                    customer_type=self.client.customer_type, country=self.client.country)
+            except Pricelist.DoesNotExist:
+                try:
+                    self.price_list = Pricelist.objects.get(currency=self.client.currency,
+                    customer_type=self.client.customer_type, country=None)
+                except Pricelist.DoesNotExist:
+                    pass
 
         return super(SalesOrder, self).save(*args, **kwargs)
 

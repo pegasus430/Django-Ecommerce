@@ -68,7 +68,7 @@ class PriceListAdmin(DefaultAdmin):
 class PriceListItemAdmin(DefaultAdmin):
     list_display = ['__unicode__', 'get_sku', 'price_list', 'rrp', 'per_1', 
         'per_6', 'per_12', 'per_48', 'get_cost']
-    list_filter = ['price_list']
+    list_filter = ['price_list__currency', 'price_list__customer_type', 'price_list__country']
     search_fields = ['product__sku']
     actions = [clear_b2b_prices_admin_action, 
         set_prices_admin_action, 
@@ -99,4 +99,4 @@ admin.site.register(PriceList, PriceListAdmin)
 admin.site.register(PriceListItem, PriceListItemAdmin)
 admin.site.register(PriceTransport, PriceTransportAdmin)
 admin.site.register(CommissionNote, CommissionNoteAdmin)
-admin.site.register(PriceListAutoSend)
+admin.site.register(PriceListSetting)
