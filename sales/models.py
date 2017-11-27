@@ -169,7 +169,7 @@ class SalesOrder(models.Model):
                     self.price_list = Pricelist.objects.get(currency=self.client.currency,
                     customer_type=self.client.customer_type, country=None)
                 except Pricelist.DoesNotExist:
-                    pass
+                    self.price_list = PriceList.objects.get(is_default=True)
 
         return super(SalesOrder, self).save(*args, **kwargs)
 
