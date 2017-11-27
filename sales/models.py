@@ -233,7 +233,11 @@ class SalesOrderProduct(models.Model):
         ## Find the right price.
         if self.price_list_item is None:
             try:
-                self.price_list_item = PriceListItem.objects.filter(product__sku=self.input_sku)[0]
+                if self.sales_order.price_list is not None:
+                    self.price_list_item = PriceListItem.objects.filter(
+                        product__sku=self.input_sku, price_list=self.sales_order.price_list)[0]
+                else:
+                    self.price_list_item = PriceListItem.objects.filter(product__sku=self.input_sku)[0]
             except Exception:
                 pass
 
