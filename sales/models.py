@@ -17,11 +17,17 @@ import logging
 logger = logging.getLogger(__name__)
 
 class PriceListAutoSend(models.Model):
+    FORMAT_CHOICES = (
+        ('csv', 'csv'),
+        ('pdf', 'pdf'),
+        ('json', 'json'),
+    )
     relation = models.ForeignKey(Relation, blank=True, null=True)
     agent = models.ForeignKey(Agent, blank=True, null=True)
     active = models.BooleanField(default=True)
     email_to = models.CharField(blank=True, null=True, max_length=100)
     email_to_name = models.CharField(blank=True, null=True, max_length=100)
+    format = models.CharField(choices=FORMAT_CHOICES, max_length=4, default='pdf')
 
     def __unicode__(self):
         name, email = self.receiver

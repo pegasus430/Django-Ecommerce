@@ -6,7 +6,7 @@ from django.core.mail import EmailMessage, mail_admins
 from magento.api import MagentoServer
 
 from .models import Product, CommissionNote, PriceListAutoSend, PriceList
-from .reports import export_pricelist_pdf
+from .reports import export_pricelist_pdf, export_stocklist_datafile
 
 from contacts.models import Relation, RelationAddress, Agent
 from sales.models import SalesOrder, SalesOrderProduct, PriceList, PriceListItem
@@ -19,18 +19,27 @@ logger = logging.getLogger(__name__)
 
 
 # @db_task()
-def send_price_and_stock_list(email, name):
+def send_price_and_stock_list(email, name, format):
     to = u'{} <{}>'.format(name, email)
-    message = '''Dear {}, \n\nPlease find today's stocklist in attachment. \n\nThank you,\nSascha Dobbelaere'''.format(
+    message = '''Dear {}, \n\nPlease find today's stocklist in attachment. \n\nThank you,\nSila.Network - Suzy's backoffice software'''.format(
         name)
     subject = "Today's stocklist"
-    attachment = export_pricelist_pdf(PriceList.objects.last(), include_stock=True)
     message = EmailMessage(
         subject,
         message,
         "Suzy's Fashion for Dogs <hello@suzys.eu>",
         [to])
-    message.attach('Price and stock-list Suzys.pdf', attachment, 'application/pdf')
+    
+    if format == 'pdf':
+        attachment = export_pricelist_pdf(PriceList.objects.last(), include_stock=True)
+        message.attach('Price and stock-list Suzys.pdf', attachment, 'application/pdf')
+    elif format == 'csv':
+        attachment = export_stocklist_datafile(PriceList.objects.last(), format)
+        message.attach('Stocklist Suzys.csv', attachment, 'text/csv')
+    elif format == 'json':
+        attachment = export_stocklist_datafile(PriceList.objects.last(), format)
+        message.attach('Stocklist Suzys.json', attachment, 'application/json')
+    
     message.send()
 
 
@@ -41,7 +50,7 @@ def send_price_and_stock_lists_to_all():
     for i in PriceListAutoSend.objects.filter(active=True):
         name, email = i.receiver
         logger.debug('Going to send to {}, {}'.format(email,name))
-        send_price_and_stock_list(email=email, name=name)
+        send_price_and_stock_list(email=email, name=name, format=i.format)
 
 
 @db_periodic_task(crontab(hour='14', minute='0'))

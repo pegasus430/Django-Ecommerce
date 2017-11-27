@@ -125,6 +125,14 @@ class ProductionOrderDelivery(models.Model):
                    qty=product.qty)
         super(ProductionOrderDelivery, self).save(*args, **kwargs)
 
+
+    @property
+    def distribution_centre_informed(self):
+        if not self._sprintpack_pre_advice_id:
+            return False
+        else:
+            return True
+
     def create_sprintpack_pre_advice(self):
         if not self._sprintpack_pre_advice_id:
             response = SprintClient().create_pre_advice(

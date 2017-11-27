@@ -498,7 +498,7 @@ def production_notes_for_umbrella_product(umbrella_product, language='EN'):
     if language == 'EN':
         document.add_text('In case of questions, doubts or suggestions please contact Sascha (sascha@suzys.eu)', 'BodyTextCenter')
     elif language == 'CZ':
-        document.add_text(u'V případě dotazů, pochybnosti nebo návrhy kontaktujte, prosím, polina@suzys.eu', 'BodyTextCenter')
+        document.add_text(u'V případě dotazů, pochybností nebo návrhů prosím kontaktujte martin@suzys.eu', 'BodyTextCenter')
 
 
     if language == 'CZ':
