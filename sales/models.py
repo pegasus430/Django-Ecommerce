@@ -82,6 +82,8 @@ class PriceList(models.Model):
     country = models.CharField(choices=COUNTRY_CHOICES, max_length=2, blank=True, null=True)
     is_default = models.BooleanField(default=False, verbose_name='Default pricelist is none is known')
 
+    remarks = models.TextField(blank=True, null=True)
+
     @property 
     def name(self):
         # return u'Pricelist {}'.format(self.updated_at.strftime('%Y-%m-%d'))
