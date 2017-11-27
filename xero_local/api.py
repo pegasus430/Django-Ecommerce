@@ -100,7 +100,7 @@ def update_create_relation(relation):
         u'Name': relation.business_name,
         u'IsCustomer': relation.is_client,
         u'TaxNumber': relation.vat_number,
-        u'DefaultCurrency': 'EUR',
+        u'DefaultCurrency': relation.currency,
         u'EmailAddress': relation.contact_email,
         u'PaymentTerms': {
             u'Sales': {u'Day': relation.payment_days, u'Type': u'DAYSAFTERBILLDATE'}
