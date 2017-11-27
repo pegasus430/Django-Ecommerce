@@ -83,7 +83,11 @@ class PriceList(models.Model):
     @property 
     def name(self):
         # return u'Pricelist {}'.format(self.updated_at.strftime('%Y-%m-%d'))
-        return u'{} {}'.format(self.get_customer_type_display(), self.get_currency_display())
+        if self.country is not None:
+            return u'{} {} {}'.format(self.get_customer_type_display(), self.get_currency_display(),
+                self.country)
+        else:
+            return u'{} {} All Countries'.format(self.get_customer_type_display(), self.get_currency_display())
 
     def __unicode__(self):
         return self.name
