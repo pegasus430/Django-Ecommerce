@@ -6,6 +6,8 @@ from defaults.helpers import get_model_fields
 from xero_local import api as xero_api
 
 from .countries import COUNTRY_CHOICES, EU_COUNTRIES
+from .currencies import CURRENCY_CHOICES
+from .customer_types import CUSTOMER_TYPE_CHOICES
 
 import logging
 logger = logging.getLogger(__name__)
@@ -152,6 +154,8 @@ class Relation(AbstractAddress):
     )
     is_supplier = models.BooleanField(default=False)
     is_client = models.BooleanField(default=False)
+    currency = models.CharField(default='EUR', choices=CURRENCY_CHOICES, max_length=3)
+    customer_type = models.CharField(default='CLAS', choices=CUSTOMER_TYPE_CHOICES, max_length=4)
     vat_number = models.CharField(max_length=100, blank=True, null=True)
     vat_regime = models.CharField(max_length=20, default='OUTPUT2', choices=VAT_REGIME_CHOICES)
     payment_days = models.IntegerField(default=0, verbose_name="Days to pay invoice")
