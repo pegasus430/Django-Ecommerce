@@ -55,7 +55,7 @@ class SalesOrderProductAdmin(DefaultAdmin):
     list_display = ['price_list_item', 'qty', 'unit_price']
 
 class SalesOrderDeliveryAdmin(DefaultAdmin):
-    list_display = ['__unicode__', 'sales_order', 'request_sprintpack_order_status_label']
+    list_display = ['__unicode__', 'sales_order', 'request_sprintpack_order_status_label', 'status']
     inlines = [SalesOrderDeliveryItemInline]
     actions = [print_picking_lists, print_customs_invoice, ship_with_sprintpack, cancel_shipment_with_sprintpack]
     readonly_fields = ['request_sprintpack_order_status', '_sprintpack_order_id']
