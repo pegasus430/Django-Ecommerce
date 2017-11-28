@@ -67,7 +67,7 @@ def customs_invoice(sales_order_shipment):
         document.add_title('Commercial Invoice')
 
         ## Invoice info
-        table_data = [[u'Invoice number: {} {}'.format(sales_order.invoice_number, sales_order._shipment_reference()),
+        table_data = [[u'Invoice number: {} {}'.format(sales_order.invoice_number, sales_order_shipment._shipment_reference()),
             u'Invoice date: {}'.format(sales_order.created_at.strftime('%d/%m/%Y')),
             u'Delivery terms: DAP {}'.format(sales_order.ship_to.city),
             u'Payment terms: {}'.format(sales_order.payment_terms),
