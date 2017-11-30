@@ -119,6 +119,10 @@ class PriceListItem(models.Model):
 
     def __unicode__(self):
         return u'{} {}'.format(self.product, self.price_list)
+
+    @property 
+    def active(self):
+        return self.product.active
         
 
 class SalesOrder(models.Model):
