@@ -39,7 +39,7 @@ def export_datafile_for_customer_admin(relations):
             customer_type=relation.customer_type)
         exported_files['{}.csv'.format(relation)] = export_product_datafile(pricelist)
 
-    return exported_files
+    return dynamic_file_httpresponse(exported_files, u'data_files_csv')
 
 
 ### admin helpers ###
@@ -49,4 +49,4 @@ print_address_label.short_description = 'Print address labels'
 
 def export_datafile_for_customer(modeladmin, request, queryset):
     return export_datafile_for_customer_admin(queryset)
-export_datafile_for_customer.short_description = 'Print product data-files'
+export_datafile_for_customer.short_description = 'Export product data-files in csv'
