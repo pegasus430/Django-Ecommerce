@@ -2,7 +2,7 @@ from django.contrib import admin
 from defaults.admin import DefaultInline, DefaultAdmin
 
 from .models import Relation, RelationAddress, OwnAddress, Agent, AgentCommission
-from .helpers import print_address_label #, print_commisson_report
+from .helpers import print_address_label 
 
 ### Inlines ###
 
@@ -13,7 +13,6 @@ class AgentCommissionInline(DefaultInline):
 
 class AgentAdmin(DefaultAdmin):
     inlines = [AgentCommissionInline]
-    # actions = [print_commisson_report]
 
 class AgentCommissionAdmin(DefaultAdmin):
     pass
