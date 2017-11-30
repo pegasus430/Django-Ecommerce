@@ -543,7 +543,7 @@ class Product(models.Model):
 
         ## Create the inventry product in sprintpack
         try:
-            if not self._created_in_sprintpack:
+            if not self._created_in_sprintpack and self.active and self.ean_code is not None:
                 self.create_item_in_sprintpack()
                 self._created_in_sprintpack = True
                 self.save()
