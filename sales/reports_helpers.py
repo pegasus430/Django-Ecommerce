@@ -95,9 +95,10 @@ def get_transport_costs():
     return data
 
 
-def get_delimited_image_list(image_list, delimiter='|'):
-    s = ""
-    for i in image_list:
-        s += i 
-        s += delimiter
+def get_stringified_delimited_list(l, delimiter='|'):
+    s = u""
+    for i in l:
+        s += u'{}'.format(i)
+        if l[-1] != i:
+            s += delimiter
     return s
