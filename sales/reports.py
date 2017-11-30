@@ -6,6 +6,7 @@ from reportlab.platypus.tables import Table
 
 from printing_tools.documents import SuzysDocument
 from django.http import HttpResponse
+from django.conf import settings
 
 from io import BytesIO
 from StringIO import StringIO
@@ -45,6 +46,34 @@ def export_stocklist_datafile(pricelist, format):
         c.writeheader()
         [c.writerow(i) for i in data]
         return f.getvalue()
+
+
+def export_product_datafile(pricelist):
+    '''export a csv with all the data needed to add a product to the store:
+    - sku
+    - name
+    - ean
+    - rrp
+    - description
+    - images'''
+    data = []
+    fields = ['sku', 'name', 'ean_code', 'rrp', 'description', 'images']
+    for item in pricelist.pricelistitem_set.all():
+        d = {}
+        d['sku'] = item.product.sku
+        d['name'] = item.product.name
+        d['ean_code'] = item.product.ean_code
+        d['rrp'] = item.rrp
+        d['description'] = item.product.umbrella_product.description
+        d['images'] = ['https://{}{}'.format(settings.DOMAIN_PRODUCTION[0], img.image.url) \
+            for img in item.product.umbrella_product.umbrellaproductimage_set.all()]
+        data.append(d)
+
+    f = StringIO()
+    c = csv.DictWriter(f, fieldnames=fields)
+    c.writeheader()
+    [c.writerow(i) for i in data]
+    return f.getvalue()
 
 
 def export_pricelist_pdf(pricelist, include_stock=False):
