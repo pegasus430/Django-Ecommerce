@@ -53,16 +53,21 @@ def export_product_datafile(pricelist):
     '''export a csv with all the data needed to add a product to the store:
     - sku
     - name
+    - size
+    - size_info
     - ean
     - rrp
     - description
     - images'''
     data = []
-    fields = ['sku', 'name', 'ean_code', 'rrp', 'currency', 'description', 'images']
+    fields = ['sku', 'name', 'size', 'size_info', 
+        'ean_code', 'rrp', 'currency', 'description', 'images']
     for item in pricelist.pricelistitem_set.all():
         d = {}
         d['sku'] = item.product.sku.encode('utf-8')
         d['name'] = item.product.name.encode('utf-8')
+        d['size'] = item.product.product_model.size.encode('utf-8')
+        d['size_info'] = item.product.product_model.size_description.encode('utf-8')
         d['ean_code'] = item.product.ean_code
         d['rrp'] = item.rrp
         d['currency'] = pricelist.currency
