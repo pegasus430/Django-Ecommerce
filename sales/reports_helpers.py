@@ -93,3 +93,11 @@ def get_transport_costs():
         data.append((free,paying))
 
     return data
+
+
+def get_delimited_image_list(image_list, delimiter='|'):
+    s = ""
+    for i in image_list:
+        s += i 
+        s += delimiter
+    return s

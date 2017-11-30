@@ -68,9 +68,9 @@ def export_product_datafile(pricelist):
         d['currency'] = pricelist.currency
         d['description'] = item.product.umbrella_product.description.encode('utf-8')
 
-        ## images as string
-        d['images'] = ['https://{}{}'.format(settings.DOMAIN_PRODUCTION[0], img.image.url) \
-            for img in item.product.umbrella_product.umbrellaproductimage_set.all()]
+        d['images'] = get_delimited_image_list(
+            ['https://{}{}'.format(settings.DOMAIN_PRODUCTION[0], img.image.url) \
+            for img in item.product.umbrella_product.umbrellaproductimage_set.all()])
         data.append(d)
 
     f = StringIO()
