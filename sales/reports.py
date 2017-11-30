@@ -62,7 +62,7 @@ def export_product_datafile(pricelist):
     data = []
     fields = ['sku', 'name', 'size', 'size_info', 
         'ean_code', 'rrp', 'currency', 'description', 'images']
-    for item in pricelist.pricelistitem_set.filter(product__active=True).order_by('sku'):
+    for item in pricelist.pricelistitem_set.filter(product__active=True).order_by('product__sku'):
         d = {}
         d['sku'] = item.product.sku.encode('utf-8')
         d['name'] = item.product.name.encode('utf-8')
