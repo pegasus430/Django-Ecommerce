@@ -65,23 +65,27 @@ def export_product_datafile(pricelist):
     fields = ['sku', 'brand','product_type' , 'name', 'size', 'size_info', 
         'ean_code', 'rrp', 'currency', 'description', 'images']
     for item in pricelist.pricelistitem_set.filter(product__active=True).order_by('product__sku'):
-        d = {}
-        d['sku'] = item.product.sku.encode('utf-8')
-        d['brand'] = item.product.umbrella_product.collection.get_brand_display().encode('utf-8')
-        d['product_type'] = item.product.umbrella_product.\
-            umbrella_product_model.get_product_type_display().encode('utf-8')
-        d['name'] = item.product.name.encode('utf-8')
-        d['size'] = item.product.product_model.size.__unicode__().encode('utf-8')
-        d['size_info'] = item.product.product_model.size_description.encode('utf-8')
-        d['ean_code'] = item.product.ean_code
-        d['rrp'] = item.rrp
-        d['currency'] = pricelist.currency
-        d['description'] = item.product.umbrella_product.description.encode('utf-8')
+        try:
+            d = {}
+            d['sku'] = item.product.sku
+            d['brand'] = item.product.umbrella_product.collection.get_brand_display().encode('utf-8')
+            d['product_type'] = item.product.umbrella_product.\
+                umbrella_product_model.get_product_type_display().encode('utf-8')
+            d['name'] = item.product.name.encode('utf-8')
+            d['size'] = item.product.product_model.size.__unicode__().encode('utf-8')
+            d['size_info'] = item.product.product_model.size_description.encode('utf-8')
+            d['ean_code'] = item.product.ean_code
+            d['rrp'] = item.rrp
+            d['currency'] = pricelist.currency
+            d['description'] = item.product.umbrella_product.description.encode('utf-8')
 
-        d['images'] = get_stringified_delimited_list(
-            ['https://{}{}'.format(settings.DOMAIN_PRODUCTION[0], img.image.url) \
-            for img in item.product.umbrella_product.umbrellaproductimage_set.all()]).encode('utf-8')
-        data.append(d)
+            d['images'] = get_stringified_delimited_list(
+                ['https://{}{}'.format(settings.DOMAIN_PRODUCTION[0], img.image.url) \
+                for img in item.product.umbrella_product.umbrellaproductimage_set.all()]).encode('utf-8')
+            data.append(d)
+        except Exception as e:
+            logger.debug('{} raised error {}'.format(item, e))
+            raise
 
     f = StringIO()
     c = csv.DictWriter(f, fieldnames=fields)
