@@ -37,7 +37,7 @@ def export_datafile_for_customer_admin(relations):
     for relation in relations:
         pricelist = PriceList.objects.get(currency=relation.currency, 
             customer_type=relation.customer_type)
-        exported_files['{}.csv'.format(relation)] = export_product_datafile(pricelist)
+        exported_files['{} product file.csv'.format(relation)] = export_product_datafile(pricelist)
 
     return dynamic_file_httpresponse(exported_files, u'data_files_csv')
 
