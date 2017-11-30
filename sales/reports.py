@@ -52,6 +52,8 @@ def export_product_datafile(pricelist):
     ##TODO / FIXME : Code needs further testing, impelementation in admin
     '''export a csv with all the data needed to add a product to the store:
     - sku
+    - brand
+    - product_type
     - name
     - size
     - size_info
@@ -60,11 +62,14 @@ def export_product_datafile(pricelist):
     - description
     - images'''
     data = []
-    fields = ['sku', 'name', 'size', 'size_info', 
+    fields = ['sku', 'brand','product_type' , 'name', 'size', 'size_info', 
         'ean_code', 'rrp', 'currency', 'description', 'images']
     for item in pricelist.pricelistitem_set.filter(product__active=True).order_by('product__sku'):
         d = {}
         d['sku'] = item.product.sku.encode('utf-8')
+        d['brand'] = item.product.umbrella_product.collection.get_brand_display().encode('utf-8')
+        d['product_type'] = item.product.umbrella_product.\
+            umbrella_product_model.get_product_type_display().encode('utf-8')
         d['name'] = item.product.name.encode('utf-8')
         d['size'] = item.product.product_model.size.__unicode__().encode('utf-8')
         d['size_info'] = item.product.product_model.size_description.encode('utf-8')
@@ -92,7 +97,8 @@ def export_pricelist_pdf(pricelist, include_stock=False):
 
     if include_stock:
         document.add_title(
-            'Price- and Stocklist {} {}'.format(pricelist.name, datetime.date.today().strftime('%d/%m/%Y'))
+            'Price- and Stocklist {} {}'.format(pricelist.name, 
+                datetime.date.today().strftime('%d/%m/%Y'))
             )
     else:
         document.add_title(
