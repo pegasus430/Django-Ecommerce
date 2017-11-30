@@ -49,7 +49,6 @@ def export_stocklist_datafile(pricelist, format):
 
 
 def export_product_datafile(pricelist):
-    ##TODO / FIXME : Code needs further testing, impelementation in admin
     '''export a csv with all the data needed to add a product to the store:
     - sku
     - brand
