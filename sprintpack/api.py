@@ -215,7 +215,7 @@ class SprintClient:
         if self.connect_to_server:
             return self.post('CreateProducts', xml_data)
         else:
-            return u'OK'  ## Hack to avoid local testing going wrong when connecting to server
+            return {'Status':u'OK'}  ## Hack to avoid local testing going wrong when connecting to server
 
     def request_inventory(self, ean_code=False):
         '''Request the data about the available stock
