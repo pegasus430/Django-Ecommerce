@@ -49,6 +49,7 @@ def export_stocklist_datafile(pricelist, format):
 
 
 def export_product_datafile(pricelist):
+    ##TODO / FIXME : Code needs further testing, impelementation in admin
     '''export a csv with all the data needed to add a product to the store:
     - sku
     - name
@@ -57,14 +58,17 @@ def export_product_datafile(pricelist):
     - description
     - images'''
     data = []
-    fields = ['sku', 'name', 'ean_code', 'rrp', 'description', 'images']
+    fields = ['sku', 'name', 'ean_code', 'rrp', 'currency', 'description', 'images']
     for item in pricelist.pricelistitem_set.all():
         d = {}
-        d['sku'] = item.product.sku
-        d['name'] = item.product.name
+        d['sku'] = item.product.sku.encode('utf-8')
+        d['name'] = item.product.name.encode('utf-8')
         d['ean_code'] = item.product.ean_code
         d['rrp'] = item.rrp
-        d['description'] = item.product.umbrella_product.description
+        d['currency'] = pricelist.currency
+        d['description'] = item.product.umbrella_product.description.encode('utf-8')
+
+        ## images as string
         d['images'] = ['https://{}{}'.format(settings.DOMAIN_PRODUCTION[0], img.image.url) \
             for img in item.product.umbrella_product.umbrellaproductimage_set.all()]
         data.append(d)
