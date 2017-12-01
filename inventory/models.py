@@ -490,6 +490,7 @@ class UmbrellaProductBillOfMaterial(models.Model):
 
     ## Create/update the same bom for all products in product_set
     ##  FIXME:  Add to testingcode, testing for scenario's: - create, - update if not use_default_qty
+    ## FIXME: Clean code 
     def save(self, *args, **kwargs):
         ## Update material is it was changed
         if self.material != self.__original_material:
