@@ -27,7 +27,7 @@ MEDIA_ROOT = 'media/'
 DEBUG = True
 COMPRESS_OFFLINE = False
 
-SPRINTPACK['connect_to_server'] = True
+SPRINTPACK['connect_to_server'] = False
 
 MAGENTO_SERVER = {
     'xmlrpc_url': 'https://api:ajdaj8372@dev.suzys.eu/index.php/api/xmlrpc',

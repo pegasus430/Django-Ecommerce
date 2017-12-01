@@ -212,7 +212,10 @@ class SprintClient:
         xml_data = {
             'products': product_list
         }
-        return self.post('CreateProducts', xml_data)
+        if self.connect_to_server:
+            return self.post('CreateProducts', xml_data)
+        else:
+            return {'Status':u'OK'}  ## Hack to avoid local testing going wrong when connecting to server
 
     def request_inventory(self, ean_code=False):
         '''Request the data about the available stock

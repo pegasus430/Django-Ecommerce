@@ -119,6 +119,10 @@ class PriceListItem(models.Model):
 
     def __unicode__(self):
         return u'{} {}'.format(self.product, self.price_list)
+
+    @property 
+    def active(self):
+        return self.product.active
         
 
 class SalesOrder(models.Model):
@@ -273,8 +277,13 @@ class SalesOrderDeliveryItem(models.Model):
 
 
 class SalesOrderDelivery(models.Model):
+    STATUS_CHOICES = (
+        ('AUTO', 'Automatic Shipment'),
+        ('MANU', 'Manual Change'),
+    )
     sales_order = models.ForeignKey(SalesOrder)
     _sprintpack_order_id = models.CharField(max_length=100, blank=True, null=True)
+    status = models.CharField(choices=STATUS_CHOICES, default='AUTO', max_length=4)
 
     class Meta:
         verbose_name_plural = "Sales order deliveries"

@@ -50,6 +50,7 @@ class UmbrellaProductInline(DefaultInline):
 class UmbrellaProductBillOfMaterialInline(admin.TabularInline):
     model = UmbrellaProductBillOfMaterial
     extra = 0
+    readonly_fields = ['cost']
 
 class UmbrellaProductImageInline(DefaultInline):
     model = UmbrellaProductImage 
@@ -65,6 +66,7 @@ class ProductInline(DefaultInline):
 class ProductBillOfMaterialInline(admin.TabularInline):
     model = ProductBillOfMaterial
     extra = 0    
+    readonly_fields = ['cost']
 
 #####################
 ### Custom Admins ###

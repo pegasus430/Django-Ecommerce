@@ -93,3 +93,12 @@ def get_transport_costs():
         data.append((free,paying))
 
     return data
+
+
+def get_stringified_delimited_list(l, delimiter='|'):
+    s = u""
+    for i in l:
+        s += u'{}'.format(i)
+        if l[-1] != i:
+            s += delimiter
+    return s

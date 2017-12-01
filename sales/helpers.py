@@ -1,4 +1,4 @@
-from .reports import export_pricelist_pdf, export_pricelist_csv
+from .reports import export_pricelist_pdf, export_pricelist_csv#, export_product_datafile
 
 from defaults.helpers import dynamic_file_httpresponse
 
@@ -69,6 +69,15 @@ def export_pricelist_pdf_admin(pricelists, include_stock=False):
     else:
         items = {'Pricelist {}.pdf'.format(pr.name): export_pricelist_pdf(pr, include_stock) for pr in pricelists}
     return dynamic_file_httpresponse(items, 'Price Lists')
+
+
+# def export_datafile_for_pricelist_admin(pricelists):
+#     exported_files = {}
+#     for pricelist in pricelists:
+#         exported_files['{}.csv'.format(pricelist)] = export_product_datafile(pricelist)
+
+#     return exported_files
+
 
 ## Admin helper ##
 def set_prices_admin_action(modeladmin, request, queryset):
@@ -144,3 +153,8 @@ ship_with_sprintpack.short_description = 'Ship with sprintpack'
 def cancel_shipment_with_sprintpack(modeladmin, request, queryset):
     return cancel_sprintpack_shipment_admin(queryset)
 cancel_shipment_with_sprintpack.short_description = 'Cancel sprintpack shipment'
+
+
+# def export_datafile_for_pricelist(modeladmin, request, queryset):
+#     return export_datafile_for_pricelist_admin(queryset)
+# export_datafile_for_pricelist.short_description = 'Print product data-files'

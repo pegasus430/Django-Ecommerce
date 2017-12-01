@@ -43,6 +43,7 @@ def single_file_httpresponse(filedata, filename):
 
     content_types = {
         'pdf': 'application/pdf',
+        'csv': 'text/csv',
     }
     try:
         content_type = content_types[extension]

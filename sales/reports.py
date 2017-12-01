@@ -6,6 +6,7 @@ from reportlab.platypus.tables import Table
 
 from printing_tools.documents import SuzysDocument
 from django.http import HttpResponse
+from django.conf import settings
 
 from io import BytesIO
 from StringIO import StringIO
@@ -47,6 +48,51 @@ def export_stocklist_datafile(pricelist, format):
         return f.getvalue()
 
 
+def export_product_datafile(pricelist):
+    '''export a csv with all the data needed to add a product to the store:
+    - sku
+    - brand
+    - product_type
+    - name
+    - size
+    - size_info
+    - ean
+    - rrp
+    - description
+    - images'''
+    data = []
+    fields = ['sku', 'brand','product_type' , 'name', 'size', 'size_info', 
+        'ean_code', 'rrp', 'currency', 'description', 'images']
+    for item in pricelist.pricelistitem_set.filter(product__active=True).order_by('product__sku'):
+        try:
+            d = {}
+            d['sku'] = item.product.sku
+            d['brand'] = item.product.umbrella_product.collection.get_brand_display().encode('utf-8')
+            d['product_type'] = item.product.umbrella_product.\
+                umbrella_product_model.get_product_type_display().encode('utf-8')
+            d['name'] = item.product.name.encode('utf-8')
+            d['size'] = item.product.product_model.size.__unicode__().encode('utf-8')
+            d['size_info'] = item.product.product_model.size_description.encode('utf-8')
+            d['ean_code'] = item.product.ean_code
+            d['rrp'] = item.rrp
+            d['currency'] = pricelist.currency
+            d['description'] = item.product.umbrella_product.description.encode('utf-8')
+
+            d['images'] = get_stringified_delimited_list(
+                ['https://{}{}'.format(settings.DOMAIN_PRODUCTION[0], img.image.url) \
+                for img in item.product.umbrella_product.umbrellaproductimage_set.all()]).encode('utf-8')
+            data.append(d)
+        except Exception as e:
+            logger.debug('{} raised error {}'.format(item, e))
+            raise
+
+    f = StringIO()
+    c = csv.DictWriter(f, fieldnames=fields)
+    c.writeheader()
+    [c.writerow(i) for i in data]
+    return f.getvalue()
+
+
 def export_pricelist_pdf(pricelist, include_stock=False):
     ''' export a pricelist to pdf '''
     # Create the HttpResponse object with the appropriate PDF headers.
@@ -54,7 +100,8 @@ def export_pricelist_pdf(pricelist, include_stock=False):
 
     if include_stock:
         document.add_title(
-            'Price- and Stocklist {} {}'.format(pricelist.name, datetime.date.today().strftime('%d/%m/%Y'))
+            'Price- and Stocklist {} {}'.format(pricelist.name, 
+                datetime.date.today().strftime('%d/%m/%Y'))
             )
     else:
         document.add_title(
