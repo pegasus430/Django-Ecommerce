@@ -496,12 +496,15 @@ class UmbrellaProductBillOfMaterial(models.Model):
             logger.debug('found changed UmbrellaBOM - was {} now {}'.format(self.__original_material,
                 self.material))
             for product in self.umbrella_product.product_set.all():
-                product_bom = ProductBillOfMaterial.objects.get(
-                    material=self.__original_material,
-                    product=product)
-                product_bom.material = self.material
-                logger.info('Update ProductBillOfMaterial material {}'.format(product_bom.id))
-                product_bom.save()
+                try:
+                    product_bom = ProductBillOfMaterial.objects.get(
+                        material=self.__original_material,
+                        product=product)
+                    product_bom.material = self.material
+                    logger.info('Update ProductBillOfMaterial material {}'.format(product_bom.id))
+                    product_bom.save()
+                except ProductBillOfMaterial.DoesNotExist:
+                    pass
 
         for product in self.umbrella_product.product_set.all():
             product_bom, created = ProductBillOfMaterial.objects.get_or_create(
