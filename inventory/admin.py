@@ -122,6 +122,7 @@ class UmbrellaProductAdmin(admin.ModelAdmin):
     list_display = ['__unicode__','base_sku', 'active', 'complete', 'get_umbrella_product_model_number', 'number_of_sizes']
     list_filter = ['collection', 'colour', 'umbrella_product_model__product_type', 'umbrella_product_model__number', 'complete']
     inlines = [ProductInline, UmbrellaProductBillOfMaterialInline, UmbrellaProductImageInline]
+    readonly_fields = ['cost']
     actions = [print_production_notes_for_umbrella_product_EN, print_production_notes_for_umbrella_product_CZ]    
 
     def get_umbrella_product_model_number(self, obj):
