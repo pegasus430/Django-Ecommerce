@@ -453,6 +453,14 @@ class UmbrellaProduct(models.Model):
     def country_of_origin(self):
         return self.collection.production_location.own_address.get_country_display()
 
+    @property 
+    def cost(self):
+        '''calculate the total cost of this product'''
+        total_cost = 0
+        for bom in self.umbrellaproductbillofmaterial_set.all():
+            total_cost += bom.cost
+        return total_cost
+
 
 class UmbrellaProductImage(models.Model):
     ''' product image'''
