@@ -567,7 +567,7 @@ class Product(models.Model):
     product_model = models.ForeignKey(ProductModel)
     ean_code = models.CharField(max_length=13, blank=True, null=True)
 
-    active = models.BooleanField(default=True)
+    active = models.BooleanField(default=False)
     complete = models.BooleanField(default=False)
 
     sku = models.CharField(max_length=15, blank=True, null=True, unique=True)
