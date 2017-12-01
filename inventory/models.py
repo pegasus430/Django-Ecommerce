@@ -91,14 +91,19 @@ class Material(models.Model):
     name = models.CharField(max_length=50)
     name_cz = models.CharField(max_length=50, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
-    mat_type = models.CharField(max_length=3, choices=MAT_TYPE_SELECTIONS, verbose_name="Material type")
+    mat_type = models.CharField(max_length=3, choices=MAT_TYPE_SELECTIONS, 
+        verbose_name="Material type")
 
-    roll_width = models.CharField(max_length=3, verbose_name='Roll width in cm', blank=True, null=True)
-    fabric_width = models.CharField(max_length=3, verbose_name='Fabric width in cm', blank=True, null=True)
+    roll_width = models.CharField(max_length=3, verbose_name='Roll width in cm', 
+        blank=True, null=True)
+    fabric_width = models.CharField(max_length=3, verbose_name='Fabric width in cm', 
+        blank=True, null=True)
     
     cost_per_usage_unit = models.FloatField()
-    unit_usage = models.CharField(max_length=2, choices=UNIT_USAGE_SELECTIONS, verbose_name="Usage unit")
-    unit_purchase = models.CharField(max_length=2, choices=UNIT_PURCHASE_SELECTIONS, verbose_name="Purchase unit")
+    unit_usage = models.CharField(max_length=2, choices=UNIT_USAGE_SELECTIONS, 
+        verbose_name="Usage unit")
+    unit_purchase = models.CharField(max_length=2, choices=UNIT_PURCHASE_SELECTIONS, 
+        verbose_name="Purchase unit")
     unit_usage_in_purchase = models.FloatField(verbose_name="Number of usage units in purchase unit")
 
     est_delivery_time = models.CharField(max_length=100, blank=True, null=True)
@@ -266,9 +271,10 @@ class UmbrellaProductModelProductionDescription(models.Model):
     umbrella_product_model = models.ForeignKey(UmbrellaProductModel)
     name = models.CharField(max_length=100, verbose_name='Step name')
     description = models.TextField(verbose_name='What to do and how to do it')
-    image = models.ImageField(upload_to='media/umbrella_product_models/production_description/images/%Y/%m/%d',
-                blank=True,
-                null=True)
+    image = models.ImageField(
+        upload_to='media/umbrella_product_models/production_description/images/%Y/%m/%d',
+        blank=True,
+        null=True)
 
     def __unicode__(self):
         return u'{} for {}'.format(self.name, self.umbrella_product_model)
@@ -295,7 +301,8 @@ class UmbrellaProductModelImage(models.Model):
 class ProductModel(models.Model):
     umbrella_product_model = models.ForeignKey(UmbrellaProductModel)
     size = models.ForeignKey(Size, blank=True, null=True)
-    size_description = models.TextField(blank=True, null=True, verbose_name="Commercial size description")
+    size_description = models.TextField(blank=True, null=True, 
+        verbose_name="Commercial size description")
     size_detail = models.TextField(blank=True, null=True, verbose_name="Internal size description")
     all_patterns_present = models.BooleanField(default=False)
 
@@ -366,7 +373,8 @@ class UmbrellaProduct(models.Model):
     umbrella_product_model = models.ForeignKey(UmbrellaProductModel)
     colour = models.ForeignKey(Colour)
     accounting_code = models.CharField(max_length=20, default='212', choices=ACCOUNT_CODE_CHOICES)
-    export_hs_code = models.CharField(max_length=8, blank=True, null=True, verbose_name='HS Code for export.')
+    export_hs_code = models.CharField(max_length=8, blank=True, null=True, 
+        verbose_name='HS Code for export.')
     export_composition_description = models.CharField(max_length=100, blank=True, null=True)
 
     # active = models.BooleanField(default=True)
@@ -467,13 +475,38 @@ class UmbrellaProductBillOfMaterial(models.Model):
     quantity_needed = models.FloatField()
     umbrella_product = models.ForeignKey(UmbrellaProduct)
 
+    __original_material = None
+
     class Meta:
         unique_together = ('material', 'umbrella_product')
         ordering = ('material__supplier', 'material', 'umbrella_product')
 
+    def __init__(self, *args, **kwargs):
+        super(UmbrellaProductBillOfMaterial, self).__init__(*args, **kwargs)
+        try:
+            self.__original_material = self.material
+        except:
+            pass
+
     ## Create/update the same bom for all products in product_set
     ##  FIXME:  Add to testingcode, testing for scenario's: - create, - update if not use_default_qty
+    ## FIXME: Clean code 
     def save(self, *args, **kwargs):
+        ## Update material is it was changed
+        if self.material != self.__original_material:
+            logger.debug('found changed UmbrellaBOM - was {} now {}'.format(self.__original_material,
+                self.material))
+            for product in self.umbrella_product.product_set.all():
+                try:
+                    product_bom = ProductBillOfMaterial.objects.get(
+                        material=self.__original_material,
+                        product=product)
+                    product_bom.material = self.material
+                    logger.info('Update ProductBillOfMaterial material {}'.format(product_bom.id))
+                    product_bom.save()
+                except ProductBillOfMaterial.DoesNotExist:
+                    pass
+
         for product in self.umbrella_product.product_set.all():
             product_bom, created = ProductBillOfMaterial.objects.get_or_create(
                 material=self.material,
@@ -485,9 +518,10 @@ class UmbrellaProductBillOfMaterial(models.Model):
             elif not created and product_bom.use_default_qty:
                 product_bom.quantity_needed=self.quantity_needed
                 product_bom.save()
-                logger.info(u'Auto-Updated ProductBillOfMaterial {}'.format(product_bom.id))
+                logger.info(u'Auto-Updated ProductBillOfMaterial quantity {}'.format(product_bom.id))
             else:
-                logger.info(u'SKIPPED Auto-Updated or Create ProductBillOfMaterial {}'.format(product_bom.id))
+                logger.info(u'SKIPPED Auto-Updated or Create ProductBillOfMaterial {}'.format(
+                    product_bom.id))
         super(UmbrellaProductBillOfMaterial, self).save(*args, **kwargs)
 
     ## Delete the same bom for all products in product_set
@@ -503,7 +537,8 @@ class UmbrellaProductBillOfMaterial(models.Model):
                 product_bom.delete()
                 logger.info(u'Auto-Deleted ProductBillOfMaterial {}'.format(product_bom_id))
             except ProductBillOfMaterial.DoesNotExist:
-                logger.info(u'FAILED Auto-Delete ProductBillOfMaterial in product {} object missing'.format(product.id))
+                logger.info(u'FAILED Auto-Delete ProductBillOfMaterial in product {} object missing'\
+                    .format(product.id))
         super(UmbrellaProductBillOfMaterial, self).delete(*args, **kwargs)
 
     def __unicode__(self):
@@ -548,7 +583,8 @@ class Product(models.Model):
                 self._created_in_sprintpack = True
                 self.save()
         except Exception as e:
-            logger.error(u'Failed to created poduct {} in Sprintpack inventory due to: {}'.format(self.sku, e))
+            logger.error(u'Failed to created poduct {} in Sprintpack inventory due to: {}'\
+                .format(self.sku, e))
             raise
 
 
@@ -574,7 +610,8 @@ class Product(models.Model):
         try:
             return client.request_inventory(ean_code=self.ean_code)[u'Claimable']
         except Exception as e:
-            logger.error(u'{} failed to fetch available product stock from Sprintpack. Reason: \n{}'.format(self.sku, e))
+            logger.error(u'{} failed to fetch available product stock from Sprintpack. Reason: \n{}'\
+                .format(self.sku, e))
             return u'Unknown - {}'.format(e)
 
     @property
@@ -585,12 +622,14 @@ class Product(models.Model):
 
     def create_item_in_sprintpack(self):
         if self.ean_code:
-            response = SprintClient().create_product(ean_code=self.ean_code, sku=self.sku, description=self.name)
+            response = SprintClient().create_product(ean_code=self.ean_code, sku=self.sku, 
+                description=self.name)
             if response['Status'] == u'OK':
                 logger.info(u'Created {} in sprintpack inventory'.format(self.sku))
                 return True
             else:
-                error_string = u'Failed to create {} in Sprintpack. Response: \n{}'.format(self.sku, response)
+                error_string = u'Failed to create {} in Sprintpack. Response: \n{}'.format(
+                    self.sku, response)
                 logger.error(error_string)
                 raise Exception(error_string)
 
@@ -619,7 +658,8 @@ class ProductBillOfMaterial(models.Model):
         ''' availability in production location '''
         location = self.product.umbrella_product.collection.production_location
         try:
-            quantity_in_stock = StockLocationItem.objects.get(location=location, material=self.material).quantity_in_stock
+            quantity_in_stock = StockLocationItem.objects.get(location=location, 
+                material=self.material).quantity_in_stock
             return quantity_in_stock
         except StockLocationItem.DoesNotExist:
             return 0
@@ -707,7 +747,8 @@ def on_creation_generate_boms_from_umbrella_product(sender, instance, created, *
                     material=umbrella_bom.material,
                     quantity_needed=umbrella_bom.quantity_needed,
                     product=instance)
-            logger.info(u'Auto-Created ProductBillOfMaterial on Product.Create {}'.format(product_bom.id))
+            logger.info(u'Auto-Created ProductBillOfMaterial on Product.Create {}'\
+                .format(product_bom.id))
 
         
 
