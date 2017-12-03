@@ -172,14 +172,17 @@ class SalesOrder(models.Model):
             try:
                 self.price_list = PriceList.objects.get(currency=self.client.currency,
                     customer_type=self.client.customer_type, country=self.client.country)
+                self.save()
             except PriceList.DoesNotExist:
                 try:
                     self.price_list = PriceList.objects.get(currency=self.client.currency,
                     customer_type=self.client.customer_type, country=None)
+                    self.save()
                 except PriceList.DoesNotExist:
                     self.price_list = PriceList.objects.get(is_default=True)
+                    self.save()
 
-        super(SalesOrder, self).save(*args, **kwargs)
+        # super(SalesOrder, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return 'Order #{} for {}'.format(self.id, self.client)
