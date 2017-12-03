@@ -53,7 +53,7 @@ def send_price_and_stock_lists_to_all():
         send_price_and_stock_list(email=email, name=name, format=i.format, price_list=i.price_list)
 
 
-@db_periodic_task(crontab(hour='14', minute='0'))
+@db_periodic_task(crontab(hour='*', minute='0'))
 def fetch_magento_orders(status='processing'):
     logger.debug('Connecting to magento')
     magento = MagentoServer()
