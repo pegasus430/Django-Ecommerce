@@ -81,14 +81,15 @@ class PriceList(models.Model):
     customer_type = models.CharField(choices=CUSTOMER_TYPE_CHOICES, max_length=4, default='CLAS')
     country = models.CharField(choices=COUNTRY_CHOICES, max_length=2, blank=True, null=True)
     is_default = models.BooleanField(default=False, verbose_name='Default pricelist is none is known')
-    client = models.ForeignKey(Relation, blank=True, null=True, 
-        verbose_name="Client if priclist is for private label products")
 
     remarks = models.TextField(blank=True, null=True)
 
     @property 
     def name(self):
         # return u'Pricelist {}'.format(self.updated_at.strftime('%Y-%m-%d'))
+        if self.client:
+            return u'{}'.format(self.client)
+
         if self.country is not None:
             return u'{} {} {}'.format(self.get_customer_type_display(), self.get_currency_display(),
                 self.country)
@@ -97,6 +98,13 @@ class PriceList(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    @property 
+    def is_private_pricelist(self):
+        if self.client:
+            return True
+        else:
+            return False
 
     def save(self, *args, **kwargs):
         ## Add all products to pricelist upon initialising
