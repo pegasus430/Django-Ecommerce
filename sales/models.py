@@ -179,7 +179,7 @@ class SalesOrder(models.Model):
                 except PriceList.DoesNotExist:
                     self.price_list = PriceList.objects.get(is_default=True)
 
-        return super(SalesOrder, self).save(*args, **kwargs)
+        super(SalesOrder, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return 'Order #{} for {}'.format(self.id, self.client)

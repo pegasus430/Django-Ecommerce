@@ -160,7 +160,7 @@ def fetch_magento_orders(status='processing'):
             except PriceListItem.DoesNotExist:
                 logger.error('No known pricelist item for sku {sku} in pricelist {pricelist} - FAILED TO IMPORT'.format(
                     sku=item['sku'],
-                    pricelist=pricelist,))
+                    pricelist=pricelist))
                 sales_order.delete()
                 raise
 
