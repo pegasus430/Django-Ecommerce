@@ -109,6 +109,7 @@ class Material(models.Model):
     est_delivery_time = models.CharField(max_length=100, blank=True, null=True)
 
     supplier = models.ForeignKey(Relation, limit_choices_to={'is_supplier': True})
+    sample_box_number = models.IntegerField(blank=True, null=True)
 
     tags = TaggableManager(blank=True)
 
