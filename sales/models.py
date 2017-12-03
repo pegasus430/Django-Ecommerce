@@ -81,6 +81,8 @@ class PriceList(models.Model):
     customer_type = models.CharField(choices=CUSTOMER_TYPE_CHOICES, max_length=4, default='CLAS')
     country = models.CharField(choices=COUNTRY_CHOICES, max_length=2, blank=True, null=True)
     is_default = models.BooleanField(default=False, verbose_name='Default pricelist is none is known')
+    client = models.ForeignKey(Relation, blank=True, null=True, 
+        verbose_name="Client if priclist is for private label products")
 
     remarks = models.TextField(blank=True, null=True)
 
