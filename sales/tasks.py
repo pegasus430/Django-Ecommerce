@@ -148,7 +148,7 @@ def fetch_magento_orders(status='processing'):
                 pricelist_item = PriceListItem.objects.get(product=product, price_list=pricelist)
                 sales_item = SalesOrderProduct.objects.create(
                     sales_order=sales_order,
-                    product=pricelist_item,
+                    price_list_item=pricelist_item,
                     qty=int(float(item['qty_ordered'])),
                     unit_price=item['original_price'])
             except Product.DoesNotExist:
