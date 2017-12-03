@@ -181,7 +181,7 @@ class Collection(models.Model):
         ('LUX', 'Luxury'),
         ('CLA', 'Classic'),
         ('PRI', 'Price'),
-        ('PRV', 'Private'),
+        ('PRV', 'Private Label'),
     )
 
     BRAND_CHOICES = (
