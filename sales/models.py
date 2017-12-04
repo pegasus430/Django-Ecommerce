@@ -99,13 +99,6 @@ class PriceList(models.Model):
     def __unicode__(self):
         return self.name
 
-    @property 
-    def is_private_pricelist(self):
-        if self.client:
-            return True
-        else:
-            return False
-
     def save(self, *args, **kwargs):
         ## Add all products to pricelist upon initialising
         if not self.pk:

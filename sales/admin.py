@@ -26,7 +26,7 @@ class SalesOrderNoteInline(DefaultExpandedInline):
 
 class PriceListItemInline(DefaultInline):
     model=PriceListItem
-    readonly_fields = ['product__cost']
+    # readonly_fields = ['product__cost']
 
 class SalesOrderDeliveryItemInline(DefaultInline):
     model=SalesOrderDeliveryItem
