@@ -60,7 +60,7 @@ class ProductInline(DefaultInline):
     extra=0
     # fields = ('name', 'umbrella_product_model',)  
     # exclude = ('description', 'complete', 'active')
-    # readonly_fields = ('sku',)
+    readonly_fields = ['cost']
     # can_delete = False 
 
 class ProductBillOfMaterialInline(admin.TabularInline):
