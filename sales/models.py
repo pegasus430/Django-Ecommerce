@@ -19,7 +19,7 @@ from .documents import picking_list, customs_invoice, commission_report
 import logging
 logger = logging.getLogger(__name__)
 
-class PriceListSetting(models.Model):
+class PriceListAssignment(models.Model):
     FORMAT_CHOICES = (
         ('csv', 'csv'),
         ('pdf', 'pdf'),
