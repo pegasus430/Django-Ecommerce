@@ -11,6 +11,7 @@ from .reports import production_notes_for_umbrella_product
 
 ROUND_DIGITS = 2
 
+
 def calc_price(product, lux_markup, classic_markup, price_markup, rrp=False):
     range_type = product.umbrella_product.collection.range_type
 
