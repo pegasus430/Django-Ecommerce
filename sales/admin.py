@@ -26,6 +26,7 @@ class SalesOrderNoteInline(DefaultExpandedInline):
 
 class PriceListItemInline(DefaultInline):
     model=PriceListItem
+    # readonly_fields = ['product__cost']
 
 class SalesOrderDeliveryItemInline(DefaultInline):
     model=SalesOrderDeliveryItem
@@ -99,4 +100,4 @@ admin.site.register(PriceList, PriceListAdmin)
 admin.site.register(PriceListItem, PriceListItemAdmin)
 admin.site.register(PriceTransport, PriceTransportAdmin)
 admin.site.register(CommissionNote, CommissionNoteAdmin)
-admin.site.register(PriceListSetting)
+admin.site.register(PriceListAssignment)

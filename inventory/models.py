@@ -109,6 +109,7 @@ class Material(models.Model):
     est_delivery_time = models.CharField(max_length=100, blank=True, null=True)
 
     supplier = models.ForeignKey(Relation, limit_choices_to={'is_supplier': True})
+    sample_box_number = models.IntegerField()
 
     tags = TaggableManager(blank=True)
 
@@ -181,6 +182,7 @@ class Collection(models.Model):
         ('LUX', 'Luxury'),
         ('CLA', 'Classic'),
         ('PRI', 'Price'),
+        ('PRV', 'Private Label'),
     )
 
     BRAND_CHOICES = (
@@ -453,6 +455,14 @@ class UmbrellaProduct(models.Model):
     def country_of_origin(self):
         return self.collection.production_location.own_address.get_country_display()
 
+    @property 
+    def cost(self):
+        '''calculate the total cost of this product'''
+        total_cost = 0
+        for bom in self.umbrellaproductbillofmaterial_set.all():
+            total_cost += bom.cost
+        return total_cost
+
 
 class UmbrellaProductImage(models.Model):
     ''' product image'''
@@ -559,7 +569,7 @@ class Product(models.Model):
     product_model = models.ForeignKey(ProductModel)
     ean_code = models.CharField(max_length=13, blank=True, null=True)
 
-    active = models.BooleanField(default=True)
+    active = models.BooleanField(default=False)
     complete = models.BooleanField(default=False)
 
     sku = models.CharField(max_length=15, blank=True, null=True, unique=True)
@@ -608,7 +618,10 @@ class Product(models.Model):
         '''show the available stock in SprintPack'''
         client = SprintClient()
         try:
-            return client.request_inventory(ean_code=self.ean_code)[u'Claimable']
+            if self._created_in_sprintpack:
+                return client.request_inventory(ean_code=self.ean_code)[u'Claimable']
+            else:
+                return 0
         except Exception as e:
             logger.error(u'{} failed to fetch available product stock from Sprintpack. Reason: \n{}'\
                 .format(self.sku, e))
