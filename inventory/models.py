@@ -588,7 +588,9 @@ class Product(models.Model):
 
         ## Create the inventry product in sprintpack
         try:
-            if not self._created_in_sprintpack and self.active:
+            if not self._created_in_sprintpack and self.active and \
+                    self.umbrella_product.collection.brand is not 'PRIV' and \
+                    self.ean_code:
                 self.create_item_in_sprintpack()
                 self._created_in_sprintpack = True
                 self.save()
@@ -634,7 +636,7 @@ class Product(models.Model):
              
 
     def create_item_in_sprintpack(self):
-        if self.ean_code and self.umbrella_product.collection.brand is not 'PRIV':
+        if self.ean_code:
             response = SprintClient().create_product(ean_code=self.ean_code, sku=self.sku, 
                 description=self.name)
             if response['Status'] == u'OK':
