@@ -107,7 +107,7 @@ class OldPriceList(models.Model):
             super(OldPriceList, self).save(*args, **kwargs)
             for product in Product.objects.filter(active=True):
                 OldPriceListItem.objects.create(price_list=self, product=product)
-        super(PriceList, self).save(*args, **kwargs)
+        super(OldPriceList, self).save(*args, **kwargs)
 
     class Meta:
         unique_together = ('country', 'currency', 'customer_type')
