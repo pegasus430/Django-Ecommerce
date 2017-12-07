@@ -634,7 +634,7 @@ class Product(models.Model):
              
 
     def create_item_in_sprintpack(self):
-        if self.ean_code:
+        if self.ean_code and self.umbrella_product.collection.brand is not 'PRIV':
             response = SprintClient().create_product(ean_code=self.ean_code, sku=self.sku, 
                 description=self.name)
             if response['Status'] == u'OK':
