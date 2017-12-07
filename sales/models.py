@@ -13,6 +13,8 @@ from contacts.countries import COUNTRY_CHOICES
 from contacts.currencies import CURRENCY_CHOICES
 from contacts.customer_types import CUSTOMER_TYPE_CHOICES
 
+from pricelists.models import PriceList, PriceListItem, PriceTransport
+
 from .helpers import get_correct_sales_order_item_price
 from .documents import picking_list, customs_invoice, commission_report
 
@@ -26,7 +28,7 @@ class PriceListAssignment(models.Model):
         ('json', 'json'),
     )
     relation = models.ForeignKey(Relation, blank=True, null=True)
-    price_list = models.ForeignKey('PriceList', blank=True, null=True)
+    price_list = models.ForeignKey(PriceList, blank=True, null=True)
     agent = models.ForeignKey(Agent, blank=True, null=True)
     active = models.BooleanField(default=True)
     email_to = models.CharField(blank=True, null=True, max_length=100)
@@ -55,19 +57,19 @@ class PriceListAssignment(models.Model):
 
         return name, email
 
-class PriceTransport(models.Model):
+class OldPriceTransport(models.Model):
     '''Model to keep track of the transport costs for sales orders'''
     country = models.CharField(max_length=2, choices=COUNTRY_CHOICES)
     order_from_price = models.FloatField(default=0)
     shipping_price = models.FloatField()
-    price_list = models.ForeignKey('PriceList')
+    price_list = models.ForeignKey('OldPriceList')
 
     def __unicode__(self):
         return '{} from {} - {}'.format(self.get_country_display(), self.order_from_price,
             self.price_list)
 
 
-class PriceList(models.Model):
+class OldPriceList(models.Model):
     STATUS_CHOICES = (
         ('DR', 'Draft'),
         ('AC', 'Active'),
@@ -102,17 +104,17 @@ class PriceList(models.Model):
     def save(self, *args, **kwargs):
         ## Add all products to pricelist upon initialising
         if not self.pk:
-            super(PriceList, self).save(*args, **kwargs)
+            super(OldPriceList, self).save(*args, **kwargs)
             for product in Product.objects.filter(active=True):
-                PriceListItem.objects.create(price_list=self, product=product)
+                OldPriceListItem.objects.create(price_list=self, product=product)
         super(PriceList, self).save(*args, **kwargs)
 
     class Meta:
         unique_together = ('country', 'currency', 'customer_type')
 
 
-class PriceListItem(models.Model):
-    price_list = models.ForeignKey(PriceList)
+class OldPriceListItem(models.Model):
+    price_list = models.ForeignKey(OldPriceList)
     product = models.ForeignKey(Product)
     rrp = models.FloatField(blank=True, null=True)
     per_1 = models.FloatField(blank=True, null=True)

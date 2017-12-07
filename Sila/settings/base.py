@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'contacts',
     'purchase',
     'sales',
+    'pricelists',
     'transport',
     'production',
     'printing_tools',
