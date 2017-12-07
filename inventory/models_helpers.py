@@ -9,6 +9,7 @@ def copy_umbrella_product_to_another_collection(umbrella_product, to_collection_
     new_umbrella_product = deepcopy(umbrella_product)
     new_umbrella_product.pk = None
     new_umbrella_product.collection = to_collection
+    new_umbrella_product.name = '{} - Copy'.format(umbrella_product.name)
     new_umbrella_product.save()
 
     ## Assign new products
