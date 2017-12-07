@@ -1,8 +1,9 @@
 from copy import deepcopy
-from inventory.models import Collection, Product, ProductBillOfMaterial
+from inventory.models import Collection, Product, ProductBillOfMaterial, Colour
 
 
-def copy_umbrella_product_to_another_collection(umbrella_product, to_collection_number):
+def copy_umbrella_product_to_another_collection(umbrella_product, to_collection_number,
+        to_colour=False):
     '''copy umbrella product to another collection'''
     to_collection = Collection.objects.get(number=to_collection_number)
 
@@ -10,6 +11,8 @@ def copy_umbrella_product_to_another_collection(umbrella_product, to_collection_
     new_umbrella_product.pk = None
     new_umbrella_product.collection = to_collection
     new_umbrella_product.name = '{} - Copy'.format(umbrella_product.name)
+    if to_colour:
+        new_umbrella_product.colour = Colour.objects.get(name=to_colour)
     new_umbrella_product.save()
 
     ## Assign new products
