@@ -5,7 +5,7 @@ from django.core.mail import EmailMessage, mail_admins
 
 from magento.api import MagentoServer
 
-from .models import Product, CommissionNote, PriceListSetting, PriceList
+from .models import Product, CommissionNote, PriceListAssignment, PriceList
 from .reports import export_pricelist_pdf, export_stocklist_datafile
 
 from contacts.models import Relation, RelationAddress, Agent
@@ -47,7 +47,7 @@ def send_price_and_stock_list(email, name, format, price_list):
 def send_price_and_stock_lists_to_all():
     '''send price and stock_lists to all that wish to receive it'''
     logger.debug('Going to send stocklist to all active ppl')
-    for i in PriceListSetting.objects.filter(active=True):
+    for i in PriceListAssignment.objects.filter(active=True):
         name, email = i.receiver
         logger.debug('Going to send to {}, {}'.format(email,name))
         send_price_and_stock_list(email=email, name=name, format=i.format, price_list=i.price_list)
