@@ -19,6 +19,7 @@ def copy_umbrella_product_to_another_collection(umbrella_product, to_collection_
         new_prod.sku = None
         new_prod.active = False
         new_prod.next_available = None
+        new_prod._created_in_sprintpack = False
         new_prod.umbrella_product = new_umbrella_product
         new_prod.save()
 
