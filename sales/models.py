@@ -81,12 +81,15 @@ class PriceList(models.Model):
     customer_type = models.CharField(choices=CUSTOMER_TYPE_CHOICES, max_length=4, default='CLAS')
     country = models.CharField(choices=COUNTRY_CHOICES, max_length=2, blank=True, null=True)
     is_default = models.BooleanField(default=False, verbose_name='Default pricelist is none is known')
-
+    reference = models.TextField(max_length=50, blank=True, null=True)
     remarks = models.TextField(blank=True, null=True)
 
     @property 
     def name(self):
         # return u'Pricelist {}'.format(self.updated_at.strftime('%Y-%m-%d'))
+        if self.reference is not None:
+            return u'{} {}'.format(self.reference, self.get_currency_display())
+            
         if self.country is not None:
             return u'{} {} {}'.format(self.get_customer_type_display(), self.get_currency_display(),
                 self.country)
