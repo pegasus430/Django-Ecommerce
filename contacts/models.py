@@ -158,6 +158,7 @@ class Relation(AbstractAddress):
     customer_type = models.CharField(default='CLAS', choices=CUSTOMER_TYPE_CHOICES, max_length=4)
     vat_number = models.CharField(max_length=100, blank=True, null=True)
     vat_regime = models.CharField(max_length=20, default='OUTPUT2', choices=VAT_REGIME_CHOICES)
+    price_list = models.ForeignKey('pricelists.PriceList', blank=True, null=True)
     payment_days = models.IntegerField(default=0, verbose_name="Days to pay invoice")
     agent = models.ForeignKey(Agent, blank=True, null=True)
     _xero_contact_id = models.CharField(max_length=100, blank=True, null=True)
