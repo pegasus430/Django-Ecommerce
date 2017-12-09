@@ -9,7 +9,8 @@ from .models import Product, CommissionNote, PriceListAssignment, PriceList
 from .reports import export_pricelist_pdf, export_stocklist_datafile
 
 from contacts.models import Relation, RelationAddress, Agent
-from sales.models import SalesOrder, SalesOrderProduct, PriceList, PriceListItem
+from sales.models import SalesOrder, SalesOrderProduct
+from pricelists.models import PriceList, PriceListItem
 from inventory.models import StockLocation
 
 from django.core.mail import EmailMessage
