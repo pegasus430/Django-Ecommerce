@@ -18,6 +18,9 @@ class PriceTransport(models.Model):
         return '{} from {} - {}'.format(self.get_country_display(), self.order_from_price,
             self.price_list)
 
+    class Meta:
+        db_table = 'sales_pricetransport'
+
 
 class PriceList(models.Model):
     STATUS_CHOICES = (
@@ -35,6 +38,9 @@ class PriceList(models.Model):
     is_default = models.BooleanField(default=False, verbose_name='Default pricelist is none is known')
     reference = models.TextField(max_length=50, blank=True, null=True)
     remarks = models.TextField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'sales_pricelist'    
 
     @property 
     def name(self):
@@ -71,6 +77,9 @@ class PriceListItem(models.Model):
     per_6 = models.FloatField(blank=True, null=True)
     per_12 = models.FloatField(blank=True, null=True)
     per_48 = models.FloatField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'sales_pricelistitem'    
 
     def __unicode__(self):
         return u'{} {}'.format(self.product, self.price_list)
