@@ -13,13 +13,15 @@ class PriceTransport(models.Model):
     order_from_price = models.FloatField(default=0)
     shipping_price = models.FloatField()
     price_list = models.ForeignKey('PriceList')
+    
+    class Meta:
+        db_table = 'sales_pricetransport'
+        managed = False
+
 
     def __unicode__(self):
         return '{} from {} - {}'.format(self.get_country_display(), self.order_from_price,
             self.price_list)
-
-    class Meta:
-        db_table = 'sales_pricetransport'
 
 
 class PriceList(models.Model):
@@ -36,17 +38,19 @@ class PriceList(models.Model):
     customer_type = models.CharField(choices=CUSTOMER_TYPE_CHOICES, max_length=4, default='CLAS')
     country = models.CharField(choices=COUNTRY_CHOICES, max_length=2, blank=True, null=True)
     is_default = models.BooleanField(default=False, verbose_name='Default pricelist is none is known')
-    reference = models.TextField(max_length=50, blank=True, null=True)
+    # reference = models.TextField(max_length=50, blank=True, null=True)
     remarks = models.TextField(blank=True, null=True)
 
     class Meta:
         db_table = 'sales_pricelist'    
+        managed = False
+        unique_together = ('country', 'currency', 'customer_type')
 
     @property 
     def name(self):
         # return u'Pricelist {}'.format(self.updated_at.strftime('%Y-%m-%d'))
-        if self.reference is not None:
-            return u'{} {}'.format(self.reference, self.get_currency_display())
+        # if self.reference is not None:
+        #     return u'{} {}'.format(self.reference, self.get_currency_display())
             
         if self.country is not None:
             return u'{} {} {}'.format(self.get_customer_type_display(), self.get_currency_display(),
@@ -57,16 +61,13 @@ class PriceList(models.Model):
     def __unicode__(self):
         return self.name
 
-    def save(self, *args, **kwargs):
-        ## Add all products to pricelist upon initialising
-        # if not self.pk:
-        #     super(PriceList, self).save(*args, **kwargs)
-        #     for product in Product.objects.filter(active=True):
-        #         PriceListItem.objects.create(price_list=self, product=product)
-        super(PriceList, self).save(*args, **kwargs)
-
-    class Meta:
-        unique_together = ('country', 'currency', 'customer_type')
+    # def save(self, *args, **kwargs):
+    #     ## Add all products to pricelist upon initialising
+    #     if not self.pk:
+    #         super(PriceList, self).save(*args, **kwargs)
+    #         for product in Product.objects.filter(active=True):
+    #             PriceListItem.objects.create(price_list=self, product=product)
+    #     super(PriceList, self).save(*args, **kwargs)
 
 
 class PriceListItem(models.Model):
@@ -80,6 +81,7 @@ class PriceListItem(models.Model):
 
     class Meta:
         db_table = 'sales_pricelistitem'    
+        managed = False
 
     def __unicode__(self):
         return u'{} {}'.format(self.product, self.price_list)
