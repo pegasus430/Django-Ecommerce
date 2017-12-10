@@ -160,7 +160,7 @@ class Relation(AbstractAddress):
     customer_type = models.CharField(default='CLAS', choices=CUSTOMER_TYPE_CHOICES, max_length=4)
     vat_number = models.CharField(max_length=100, blank=True, null=True)
     vat_regime = models.CharField(max_length=20, default='OUTPUT2', choices=VAT_REGIME_CHOICES)
-    price_list = models.ForeignKey(PriceList, blank=True, null=True)
+    custom_price_list = models.ForeignKey(PriceList, blank=True, null=True)
     payment_days = models.IntegerField(default=0, verbose_name="Days to pay invoice")
     agent = models.ForeignKey(Agent, blank=True, null=True)
     _xero_contact_id = models.CharField(max_length=100, blank=True, null=True)
@@ -172,20 +172,6 @@ class Relation(AbstractAddress):
         return self.business_name
 
     def save(self, *args, **kwargs):
-        # if self.price_list is None:
-        #     try:
-        #         self.price_list = PriceList.objects.get(currency=self.currency,
-        #             customer_type=self.customer_type, country=self.country)
-        #         self.save()
-        #     except PriceList.DoesNotExist:
-        #         try:
-        #             self.price_list = PriceList.objects.get(currency=self.currency,
-        #             customer_type=self.customer_type, country=None)
-        #             self.save()
-        #         except PriceList.DoesNotExist:
-        #             self.price_list = PriceList.objects.get(is_default=True)
-        #             self.save()
-
         ## Update/Create Xero
         try:               
             response = xero_api.update_create_relation(self)
@@ -212,6 +198,22 @@ class Relation(AbstractAddress):
             set_value = getattr(self, field)
             setattr(address, field, set_value)
         address.save()
+
+    @property 
+    def price_list(self):
+        if self.custom_price_list is None:
+            try:
+                return PriceList.objects.get(currency=self.currency,
+                    customer_type=self.customer_type, country=self.country)
+            except PriceList.DoesNotExist:
+                try:
+                    return PriceList.objects.get(currency=self.currency,
+                    customer_type=self.customer_type, country=None)
+                except PriceList.DoesNotExist:
+                    return PriceList.objects.get(is_default=True)
+        else:
+            return self.custom_price_list
+
 
     
 class OwnAddress(AbstractAddress):
