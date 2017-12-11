@@ -168,16 +168,13 @@ class SalesOrder(models.Model):
         ordering = ('-created_at',)
 
     def save(self, *args, **kwargs):
-        super(SalesOrder, self).save(*args, **kwargs)
         if self.status == 'DR' and self.transport_cost is None:
             self.transport_cost = self.get_tranport_price()
-            self.save()
 
         if self.price_list is None:
             self.price_list = self.client.price_list
-            self.save()
 
-        # super(SalesOrder, self).save(*args, **kwargs)
+        super(SalesOrder, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return 'Order #{} for {}'.format(self.id, self.client)
