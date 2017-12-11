@@ -174,18 +174,8 @@ class SalesOrder(models.Model):
             self.save()
 
         if self.price_list is None:
-            try:
-                self.price_list = PriceList.objects.get(currency=self.client.currency,
-                    customer_type=self.client.customer_type, country=self.client.country)
-                self.save()
-            except PriceList.DoesNotExist:
-                try:
-                    self.price_list = PriceList.objects.get(currency=self.client.currency,
-                    customer_type=self.client.customer_type, country=None)
-                    self.save()
-                except PriceList.DoesNotExist:
-                    self.price_list = PriceList.objects.get(is_default=True)
-                    self.save()
+            self.price_list = self.client.price_list
+            self.save()
 
         # super(SalesOrder, self).save(*args, **kwargs)
 
