@@ -2,18 +2,11 @@ from django.contrib import admin
 from defaults.admin import DefaultAdmin, DefaultInline, DefaultExpandedInline
 
 from .models import *
-from .helpers import clear_b2b_prices_admin_action,\
-    clear_b2b_per1plus_prices_admin_action,\
-    set_prices_admin_action,\
-    export_pricelist_pdf_admin_action,\
-    export_pricelist_csv_admin_action,\
-    export_costlist_csv_admin_action,\
-    create_sales_invoice, \
+from .helpers import create_sales_invoice, \
     print_picking_lists, \
     print_customs_invoice, \
     ship_with_sprintpack, \
-    cancel_shipment_with_sprintpack, \
-    export_price_stocklist_pdf_admin_action
+    cancel_shipment_with_sprintpack
 
 ###############
 ### Inlines ###
@@ -23,10 +16,6 @@ class SalesOrderProductInline(DefaultInline):
 
 class SalesOrderNoteInline(DefaultExpandedInline):
     model = SalesOrderNote
-
-class PriceListItemInline(DefaultInline):
-    model=PriceListItem
-    # readonly_fields = ['product__cost']
 
 class SalesOrderDeliveryItemInline(DefaultInline):
     model=SalesOrderDeliveryItem
@@ -61,33 +50,6 @@ class SalesOrderDeliveryAdmin(DefaultAdmin):
     actions = [print_picking_lists, print_customs_invoice, ship_with_sprintpack, cancel_shipment_with_sprintpack]
     readonly_fields = ['request_sprintpack_order_status', '_sprintpack_order_id']
 
-class PriceListAdmin(DefaultAdmin):
-    inlines = [PriceListItemInline]
-    actions = [export_pricelist_pdf_admin_action, export_price_stocklist_pdf_admin_action, 
-        export_pricelist_csv_admin_action, export_costlist_csv_admin_action]
-
-class PriceListItemAdmin(DefaultAdmin):
-    list_display = ['__unicode__', 'get_sku', 'price_list', 'rrp', 'per_1', 
-        'per_6', 'per_12', 'per_48', 'get_cost']
-    list_filter = ['price_list__currency', 'price_list__customer_type', 'price_list__country']
-    search_fields = ['product__sku']
-    actions = [clear_b2b_prices_admin_action, 
-        set_prices_admin_action, 
-        clear_b2b_per1plus_prices_admin_action,]
-
-    def get_sku(self, obj):
-        return obj.product.sku
-    get_sku.short_description = 'SKU'  #Renames column head
-
-    def get_cost(self, obj):
-        return obj.product.cost 
-    get_cost.short_description = 'Cost'
-
-
-class PriceTransportAdmin(DefaultAdmin):
-    list_display = ['country', 'order_from_price']
-
-
 class CommissionNoteAdmin(DefaultAdmin):
     list_display = ['__unicode__', 'calculate_commission', 'commission_paid']
     inlines = [CommissionNoteItemInline]
@@ -96,8 +58,5 @@ class CommissionNoteAdmin(DefaultAdmin):
 admin.site.register(SalesOrder, SalesOrderAdmin)
 admin.site.register(SalesOrderProduct, SalesOrderProductAdmin)
 admin.site.register(SalesOrderDelivery, SalesOrderDeliveryAdmin)
-admin.site.register(PriceList, PriceListAdmin)
-admin.site.register(PriceListItem, PriceListItemAdmin)
-admin.site.register(PriceTransport, PriceTransportAdmin)
 admin.site.register(CommissionNote, CommissionNoteAdmin)
 admin.site.register(PriceListAssignment)

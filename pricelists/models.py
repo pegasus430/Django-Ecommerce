@@ -24,6 +24,8 @@ class PriceTransport(models.Model):
             self.price_list)
 
 
+
+
 class PriceList(models.Model):
     STATUS_CHOICES = (
         ('DR', 'Draft'),
