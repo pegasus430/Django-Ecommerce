@@ -54,13 +54,13 @@ class AbstractAddress(models.Model):
         address_lines = []
         address_lines.append(self.business_name)
 
-        if self.contact_full_name:
+        if self.contact_full_name and self.contact_full_name != self.business_name:
             address_lines.append(self.contact_full_name)
         
         if self.address1:
             address_lines.append(self.address1)
 
-        if self.address2:
+        if self.address2 and self.address2 != self.address1:
             address_lines.append(self.address2)
 
         if self.city:
