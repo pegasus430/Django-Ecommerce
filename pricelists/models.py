@@ -63,14 +63,6 @@ class PriceList(models.Model):
     def __unicode__(self):
         return self.name
 
-    # def save(self, *args, **kwargs):
-    #     ## Add all products to pricelist upon initialising
-    #     if not self.pk:
-    #         super(PriceList, self).save(*args, **kwargs)
-    #         for product in Product.objects.filter(active=True):
-    #             PriceListItem.objects.create(price_list=self, product=product)
-    #     super(PriceList, self).save(*args, **kwargs)
-
 
 class PriceListItem(models.Model):
     price_list = models.ForeignKey('PriceList')
