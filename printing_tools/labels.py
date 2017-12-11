@@ -34,10 +34,10 @@ def simple_label_38x90(text, center=False):
     styles = stylesheet_labels()
 
     if center:
-        elements.append(Paragraph(text, styles['BodyTextSmall']))
-    else:
         elements.append(Paragraph(text, styles['BodyTextSmallCenter']))
-
+    else:
+        elements.append(Paragraph(text, styles['BodyTextSmall']))
+    
     doc.build(elements)
     pdf = buffer.getvalue()
     buffer.close()
