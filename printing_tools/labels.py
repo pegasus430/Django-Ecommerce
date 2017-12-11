@@ -16,7 +16,7 @@ from io import BytesIO
 import textwrap
 import datetime
 
-def simple_label_38x90(text):
+def simple_label_38x90(text, center=False, margin_top=0):
     '''
     return a simple label, filled with the given text in a default font
     '''
@@ -26,15 +26,18 @@ def simple_label_38x90(text):
     doc = SimpleDocTemplate(buffer,
             rightMargin=margin,
             leftMargin=margin,
-            topMargin=margin,
+            topMargin=margin_top*mm,
             bottomMargin=margin,
             pagesize=(90*mm, 38*mm))
 
     elements = []
     styles = stylesheet_labels()
 
-    elements.append(Paragraph(text, styles['BodyTextSmall']))
-
+    if center:
+        elements.append(Paragraph(text, styles['BodyTextSmallCenter']))
+    else:
+        elements.append(Paragraph(text, styles['BodyTextSmall']))
+    
     doc.build(elements)
     pdf = buffer.getvalue()
     buffer.close()

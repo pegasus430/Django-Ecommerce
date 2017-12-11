@@ -36,6 +36,8 @@ def stylesheet_labels():
     ''' Override the getSampleStyleSheet, and add own styles'''
     styles = getSampleStyleSheet()
     styles.add(ParagraphStyle(name='BodyTextSmall', parent=styles['BodyText'], fontSize=8))
+    styles.add(ParagraphStyle(name='BodyTextSmallCenter', parent=styles['BodyText'], fontSize=8, 
+        alignment=TA_CENTER))
     return styles
 
 
