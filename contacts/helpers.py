@@ -12,7 +12,8 @@ def print_address_label_admin(relations):
     label_data = {}
     for relation in relations:
         filename = u'{}.pdf'.format(relation.business_name)
-        label_data[filename] = simple_label_38x90(relation.printing_address_newlines())
+        address = relation.printing_address_newlines().replace('\n', '<br></br>'
+        label_data[filename] = simple_label_38x90(address)
     
     return dynamic_file_httpresponse(label_data, u'address_labels')        
 
