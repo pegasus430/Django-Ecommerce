@@ -144,7 +144,7 @@ def fetch_magento_orders(status='processing'):
             transport_cost=order['shipping_amount'])
 
         # Add the items
-        pricelist = PriceList.objects.get(is_default=True)
+        pricelist = PriceList.objects.filter(is_default=True)[0]
         for item in order_items:
             try:
                 product = Product.objects.get(sku=item['sku'])
