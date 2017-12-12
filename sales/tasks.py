@@ -5,7 +5,8 @@ from django.core.mail import EmailMessage, mail_admins
 
 from magento.api import MagentoServer
 
-from .models import Product, CommissionNote, PriceListAssignment, PriceList
+from .models import Product, CommissionNote, PriceListAssignment
+from pricelists.models import PriceList
 ## HACK FIXME:  move the correct code to the correct place instead of creating circular dependencies
 from pricelists.reports import export_pricelist_pdf
 from .reports import export_stocklist_datafile
