@@ -15,6 +15,8 @@ import json
 import datetime
 
 from .reports_helpers import *
+## HACK FIXME, all data should be in right place
+from pricelists.reports_helpers import *
 
 import logging
 logger = logging.getLogger(__name__)
