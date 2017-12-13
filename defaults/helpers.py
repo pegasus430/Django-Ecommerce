@@ -70,3 +70,7 @@ def dynamic_file_httpresponse(files, zip_filename):
         return single_file_httpresponse(filedata, filename)
     else:
         return multiple_files_to_zip_httpresponse(files, zip_filename)
+
+
+def get_aspect_ratio_from_image_object(image):
+    return image.height / float(image.width)
