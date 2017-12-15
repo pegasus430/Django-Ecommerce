@@ -43,9 +43,9 @@ def print_address_label_admin(relations):
 def export_datafile_for_customer_admin(relations):
     exported_files = {}
     for relation in relations:
-        pricelist = PriceList.objects.get(currency=relation.currency, 
-            customer_type=relation.customer_type)
-        exported_files['{} product file.csv'.format(relation)] = export_product_datafile(pricelist)
+        # pricelist = PriceList.objects.get(currency=relation.currency, 
+        #     customer_type=relation.customer_type)
+        exported_files['{} product file.csv'.format(relation)] = export_product_datafile(relation.price_list)
 
     return dynamic_file_httpresponse(exported_files, u'data_files_csv')
 
