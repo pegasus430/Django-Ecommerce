@@ -37,7 +37,7 @@ def get_stock_data(pricelist):
     return data
 
 
-def get_pricelist_price_data(pricelist, include_cost=False, include_stock=False):
+def get_pricelist_price_data(pricelist, include_cost=False, include_stock=False, active_only=True):
     '''return a list of ordered dicts with price-data:
     - sku
     - rrp
@@ -47,7 +47,7 @@ def get_pricelist_price_data(pricelist, include_cost=False, include_stock=False)
     - per 48
     '''
     data = []
-    for item in pricelist.pricelistitem_set.filter(product__active=True).order_by('product__sku'):
+    for item in pricelist.pricelistitem_set.filter(product__active=active_only).order_by('product__sku'):
         d = OrderedDict()
         d['sku'] = item.product.sku
         d['name'] = '{}\n{}'.format(item.product.name, item.product.product_model.size_description)
