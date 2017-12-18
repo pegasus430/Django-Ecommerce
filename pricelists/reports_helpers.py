@@ -57,8 +57,8 @@ def get_pricelist_price_data(pricelist, include_cost=False, include_stock=False,
         d['name'] = '{}\n{}'.format(item.product.name, item.product.product_model.size_description)
 
         d['RRP'] = return_round_or_emtpy_string(item.rrp)
-        d['per 1'] = return_round_or_emtpy_string(item.per_1)
-        d['per 6'] = return_round_or_emtpy_string(item.per_6)
+        # d['per 1'] = return_round_or_emtpy_string(item.per_1)
+        # d['per 6'] = return_round_or_emtpy_string(item.per_6)
         d['per 12'] = return_round_or_emtpy_string(item.per_12)
         # d['per 48'] = return_round_or_emtpy_string(item.per_48)
 

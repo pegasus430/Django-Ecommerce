@@ -60,7 +60,8 @@ def export_pricelist_pdf(pricelist, include_stock=False, active_only=True):
     if include_stock:
         table_columns_width = [0.2, 0.35, 0.10, 0.10, 0.10, 0.10, 0.10]
     else:
-        table_columns_width = [0.2, 0.47, 0.11, 0.11, 0.11, 0.11]
+        # table_columns_width = [0.2, 0.47, 0.11, 0.11, 0.11, 0.11]
+        table_columns_width = [0.35, 0.47, 0.11, 0.11]
 
     document.add_table(table_data, table_columns_width)
 
