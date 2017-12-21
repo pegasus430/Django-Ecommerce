@@ -78,6 +78,11 @@ def export_pricelist_csv_admin_action(modeladmin, request, queryset):
         return export_pricelist_csv(q)
 export_pricelist_csv_admin_action.short_description = 'Export pricelist to csv'
 
+def export_pricelist_csv_all_admin_action(modeladmin, request, queryset):
+    for q in queryset:
+        return export_pricelist_csv(q, active_only=False)
+export_pricelist_csv_all_admin_action.short_description = 'Export pricelist to csv including non-active'
+
 def export_costlist_csv_admin_action(modeladmin, request, queryset):
     for q in queryset:
         return export_pricelist_csv(q, include_cost=True)

@@ -21,12 +21,12 @@ logger = logging.getLogger(__name__)
 
 
 
-def export_pricelist_csv(pricelist, include_cost=False):
+def export_pricelist_csv(pricelist, include_cost=False, active_only=True):
     ''' export a pricelist to csv'''
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="pricelist_suzys.csv"'
 
-    data = get_pricelist_price_data(pricelist, include_cost=include_cost)
+    data = get_pricelist_price_data(pricelist, include_cost=include_cost, active_only=active_only)
 
     c = csv.DictWriter(response, fieldnames=data[0].keys(), delimiter=';')
     c.writeheader()
