@@ -2,7 +2,8 @@ from django.contrib import admin
 from defaults.admin import DefaultInline, DefaultAdmin
 
 from .models import Relation, RelationAddress, OwnAddress, Agent, AgentCommission
-from .helpers import print_address_label, export_datafile_for_customer
+from .helpers import print_address_label, export_datafile_for_customer, \
+	export_datafile_for_customer_inactive_only
 
 ### Inlines ###
 
