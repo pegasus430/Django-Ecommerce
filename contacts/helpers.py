@@ -61,4 +61,4 @@ export_datafile_for_customer.short_description = 'Export product data-files in c
 
 def export_datafile_for_customer_inactive_only(modeladmin, request, queryset):
     return export_datafile_for_customer_admin(queryset, active_only=False)
-export_datafile_for_customer.short_description = 'Export product data-files in csv including inactive'
+export_datafile_for_customer_inactive_only.short_description = 'Export product data-files in csv including inactive'
