@@ -40,12 +40,12 @@ def print_address_label_admin(relations):
 
 
 
-def export_datafile_for_customer_admin(relations):
+def export_datafile_for_customer_admin(relations, active_only):
     exported_files = {}
     for relation in relations:
         # pricelist = PriceList.objects.get(currency=relation.currency, 
         #     customer_type=relation.customer_type)
-        exported_files['{} product file.csv'.format(relation)] = export_product_datafile(relation.price_list)
+        exported_files['{} product file.csv'.format(relation)] = export_product_datafile(relation.price_list, active_only=active_only)
 
     return dynamic_file_httpresponse(exported_files, u'data_files_csv')
 
@@ -56,5 +56,9 @@ def print_address_label(modeladmin, request, queryset):
 print_address_label.short_description = 'Print address labels'
 
 def export_datafile_for_customer(modeladmin, request, queryset):
-    return export_datafile_for_customer_admin(queryset)
+    return export_datafile_for_customer_admin(queryset, active_only=True)
 export_datafile_for_customer.short_description = 'Export product data-files in csv'
+
+def export_datafile_for_customer_inactive_only(modeladmin, request, queryset):
+    return export_datafile_for_customer_admin(queryset, active_only=False)
+export_datafile_for_customer.short_description = 'Export product data-files in csv including inactive'
