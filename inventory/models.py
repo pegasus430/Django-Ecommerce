@@ -238,6 +238,7 @@ class UmbrellaProductModel(models.Model):
         ('SW', 'Sweater'),
         ('CU', 'Cushion'),
         ('HA', 'Handbag'),
+        ('TW', 'Table Ware'),
     )
     name = models.CharField(max_length=100)
     number = models.CharField(max_length=10, unique=True)
