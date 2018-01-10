@@ -153,7 +153,7 @@ def washinglabel(product):
         logo = product.umbrella_product.custom_label_logo.custom_label_logo_optimised
         logo_path = logo.path
         aspect = get_aspect_ratio_from_image_object(logo)
-        elements.append(Image(logo_path, 30*mm, 30*mm * aspect))
+        elements.append(Image(logo_path, 25*mm, 25*mm * aspect))
         elements.append(Paragraph(product_title, styles['Bold']))
 
     elements.append(Paragraph(product_size, styles['NormalSmall']))
