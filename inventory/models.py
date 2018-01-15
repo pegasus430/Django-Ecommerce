@@ -237,6 +237,7 @@ class UmbrellaProductModel(models.Model):
         ('JA', 'Jacket'),
         ('SW', 'Sweater'),
         ('CU', 'Cushion'),
+        ('PB', 'Poop Bag'),
         ('HA', 'Handbag'),
         ('TW', 'Table Ware'),
     )
