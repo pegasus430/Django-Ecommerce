@@ -205,7 +205,8 @@ class Size(models.Model):
     '''Product sizes'''
     full_size = models.CharField(max_length=20)
     short_size = models.CharField(max_length=3)
-    measurements = models.TextField(verbose_name='Describe target group measurements')
+    measurements = models.TextField(verbose_name='Describe target group measurements', blank=True,
+        null=True)
 
     def __unicode__(self):
         return self.full_size
