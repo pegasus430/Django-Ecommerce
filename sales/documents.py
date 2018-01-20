@@ -108,9 +108,15 @@ def customs_invoice(sales_order_shipment):
         table_data.append(['', '', '', '', '', ''])    
         table_data.append(['<b>Total price EUR</b>', total_shipment_value, '', '', '', ''])
         table_data.append(['<b>Freight cost EUR</b>', sales_order.transport_cost, '', '', '', ''])
-        table_data.append(['<b>Total for payment EUR</b>', 
-            total_shipment_value + sales_order.transport_cost,
-            '', '', '', ''])
+        if not sample_shipment:
+            table_data.append(['<b>Total for payment EUR</b>', 
+                total_shipment_value + sales_order.transport_cost,
+                '', '', '', ''])
+        else:
+            table_data.append(['<b>Total for payment EUR</b>', 
+                0.0,
+                '', '', '', ''])
+
         # table_data.append(['', '', '', '', '', ''])    
         # table_data.append(['<b>Gross Weight</b>', '', '', '', '', ''])    
         document.add_table(table_data, table_columns_width)
