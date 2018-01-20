@@ -74,6 +74,7 @@ class SalesOrder(models.Model):
     client_reference = models.CharField(max_length=15, blank=True, null=True)
     ship_to = models.ForeignKey(RelationAddress, related_name='ship_to')
     transport_cost = models.FloatField(blank=True, null=True)
+    sample_order = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
