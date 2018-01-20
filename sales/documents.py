@@ -57,7 +57,7 @@ def customs_invoice(sales_order_shipment):
     customs_regulations_russia/export_import_guidelines_to_russia.pdf
     '''
     sales_order = sales_order_shipment.sales_order
-    sample_shipment= sales_order.sample_shipment
+    sample_shipment= sales_order.sample_order
     sales_order_shipment_items = sales_order_shipment.salesorderdeliveryitem_set.all()
 
     document = SuzysDocument()

@@ -338,7 +338,7 @@ class CommissionNote(models.Model):
 
     def create_items(self):
         for relation in self.agent.relation_set.all().filter(salesorder__is_paid=True, 
-                salesorder__paid_commission=False):
+                salesorder__paid_commission=False, salesorder__sample_order=False):
             for order in relation.salesorder_set.filter(is_paid=True, paid_commission=False):
                 CommissionNoteItem.objects.create(
                     commission_note=self,
