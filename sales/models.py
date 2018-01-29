@@ -68,6 +68,8 @@ class SalesOrder(models.Model):
         ('PS', 'Pending Shipping'),
         ('PD', 'Partially Shipped'),
         ('SH', 'Shipped'),
+        ('CA', 'Cancelled'),
+        ('RF', 'Refunded'),
     )
 
     client = models.ForeignKey(Relation,  limit_choices_to={'is_client': True})
