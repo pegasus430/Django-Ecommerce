@@ -4,6 +4,8 @@ from defaults.helpers import dynamic_file_httpresponse
 from sales.reports import export_product_datafile
 from sales.models import PriceList 
 
+from pricelists.helpers import export_pricelist_csv
+
 import logging
 logger = logging.getLogger(__name__)
 
@@ -49,6 +51,13 @@ def export_datafile_for_customer_admin(relations, active_only):
 
     return dynamic_file_httpresponse(exported_files, u'data_files_csv')
 
+def export_pricelist_for_customer_admin(relations):
+    exported_files = {}
+    for relation in relations:
+        exported_files['{} price list.csv'.format(relation)] = export_pricelist_csv(relation.price_list)
+
+    return dynamic_file_httpresponse(exported_files, u'price_lists_csv')
+
 
 ### admin helpers ###
 def print_address_label(modeladmin, request, queryset):
@@ -62,3 +71,7 @@ export_datafile_for_customer.short_description = 'Export product data-files in c
 def export_datafile_for_customer_inactive_only(modeladmin, request, queryset):
     return export_datafile_for_customer_admin(queryset, active_only=False)
 export_datafile_for_customer_inactive_only.short_description = 'Export product data-files in csv including inactive'
+
+def export_pricelist_for_customer(modeladmin, request, queryset):
+    return export_pricelist_for_customer_admin(queryset)
+export_pricelist_for_customer.short_description = 'Export pricelist in csv'
