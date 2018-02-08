@@ -35,7 +35,7 @@ class PriceListItemAdmin(DefaultAdmin):
     list_display = ['__unicode__', 'get_sku', 'price_list', 'rrp', 'per_1', 
         'per_6', 'per_12', 'per_48', 'get_cost']
     list_filter = ['price_list__currency', 'price_list__remarks','price_list__customer_type',\
-     'price_list__country']
+     'price_list__is_default','price_list__country']
     search_fields = ['product__sku', 'price_list__remarks']
     actions = [clear_b2b_prices_admin_action, 
         set_prices_admin_action, 
