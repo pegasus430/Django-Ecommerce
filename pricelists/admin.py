@@ -16,8 +16,8 @@ from .helpers import clear_b2b_prices_admin_action,\
 ## Inlines ##
 #############
 
-class PriceListItemInline(DefaultInline):
-    model=PriceListItem
+# class PriceListItemInline(DefaultInline):
+    # model=PriceListItem
     # readonly_fields = ['product__cost']
 
 
@@ -26,7 +26,7 @@ class PriceListItemInline(DefaultInline):
 #####################
 
 class PriceListAdmin(DefaultAdmin):
-    inlines = [PriceListItemInline]
+    # inlines = [PriceListItemInline]
     actions = [export_pricelist_pdf_admin_action, export_price_stocklist_pdf_admin_action, 
         export_pricelist_csv_admin_action, export_pricelist_csv_all_admin_action,
         export_costlist_csv_admin_action, export_pricelist_pdf_all_admin_action]
