@@ -37,6 +37,7 @@ class PriceListItemAdmin(DefaultAdmin):
     list_filter = ['price_list__currency', 'price_list__remarks','price_list__customer_type',\
      'price_list__is_default', 'product__active','price_list__country']
     search_fields = ['product__sku', 'price_list__remarks']
+    readonly_fields = ['product__cost', 'product__sku']
     actions = [clear_b2b_prices_admin_action, 
         set_prices_admin_action, 
         clear_b2b_per1plus_prices_admin_action,]
