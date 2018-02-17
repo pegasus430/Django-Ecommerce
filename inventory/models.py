@@ -241,6 +241,7 @@ class UmbrellaProductModel(models.Model):
         ('PB', 'Poop Bag'),
         ('HA', 'Handbag'),
         ('TW', 'Table Ware'),
+        ('BE', 'Beach Items'),
     )
     name = models.CharField(max_length=100)
     number = models.CharField(max_length=10, unique=True)
