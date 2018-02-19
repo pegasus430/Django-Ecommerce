@@ -59,13 +59,14 @@ def create_invoice(salesorder):
         })
 
     ## Add transport cost
-    data[u'LineItems'].append({
-        u'Description': 'Transport cost',
-        u'Quantity': 1,
-        u'UnitAmount': salesorder.transport_cost,
-        u'TaxType': salesorder.client.vat_regime,
-        u'AccountCode': 213,
-    })    
+    if salesorder.transport_cost is not None:
+        data[u'LineItems'].append({
+            u'Description': 'Transport cost',
+            u'Quantity': 1,
+            u'UnitAmount': salesorder.transport_cost,
+            u'TaxType': salesorder.client.vat_regime,
+            u'AccountCode': 213,
+        })    
 
 
     ## Add estimate delivery line
