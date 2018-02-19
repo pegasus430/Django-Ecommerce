@@ -82,9 +82,15 @@ def create_invoice(salesorder):
     ## Save new invoice, or return old ids
     if salesorder._xero_invoice_id is None or\
             salesorder._xero_invoice_id == '':
-        logger.debug('Creating new invoice')
-        inv = xero_session.invoices.put(data)[0]
-        return (inv['InvoiceNumber'], inv['InvoiceID'], True)
+        try:
+            logger.debug('Creating new invoice')
+            inv = xero_session.invoices.put(data)[0]
+            return (inv['InvoiceNumber'], inv['InvoiceID'], True)
+        except Exception as e:
+            logger.debug('Failed to create new invoice for order {} with data-dump {}'.format(
+                salesorder.id,
+                data
+                ))
     else:
         logger.debug('Skipped Creating new invoice, already known')
         return (salesorder.invoice_number, salesorder._xero_invoice_id, False)
