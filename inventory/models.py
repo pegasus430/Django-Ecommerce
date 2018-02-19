@@ -371,6 +371,7 @@ class UmbrellaProduct(models.Model):
     ACCOUNT_CODE_CHOICES = (
         ('212', 'Suzy\'s range'),
         ('211', 'Suzy\'s custom range'),
+        ('214', 'Beach Products'),
     )
 
     name = models.CharField(max_length=50)
