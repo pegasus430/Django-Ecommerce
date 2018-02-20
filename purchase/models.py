@@ -19,6 +19,7 @@ class PurchaseOrder(models.Model):
         ('PL', 'Partially Delivered'),
         ('DL', 'Delivered'),
         ('IN', 'Invoice added'),
+        ('CA', 'Cancelled'),
     )
 
     supplier = models.ForeignKey(Relation)
