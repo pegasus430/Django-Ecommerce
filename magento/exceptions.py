@@ -1,0 +1,2 @@
+class ProductExists(Exception):
+	pass
