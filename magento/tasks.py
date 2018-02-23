@@ -66,7 +66,7 @@ def update_or_create_product(magento, price_list_item):
 
     try:
         magento.get_product_info(sku)
-        magento_image_name_list = [extract_filename(i['url']) for \
+        magento_image_name_list = [extract_filename(i) for \
             i in magento.product_image_list(sku)]
         
         sila_image_object_list = compiler.umbrella_product.umbrellaproductimage_set.all()
