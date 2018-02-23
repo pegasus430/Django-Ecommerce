@@ -28,7 +28,7 @@ class StockLocationItemInline(DefaultInline):
 
 class ProductModelPatternInline(DefaultInline):
     model=ProductModelPattern
-    exclude = ['description', 'surface_area', 'name']
+    exclude = ['description', 'name']
 
 class UmbrellaProductModelImageInline(DefaultInline):
     model=UmbrellaProductModelImage
@@ -90,7 +90,7 @@ class StockLocationItemAdmin(admin.ModelAdmin):
     ordering = ('material', 'location')
 
 class MaterialAdmin(DefaultAdmin):
-    list_display = ['name', 'sku_supplier', 'supplier', 'cost_per_usage_unit', 'usage_units_on_stock']
+    list_display = ['name', 'sku', 'supplier', 'cost_per_usage_unit', 'usage_units_on_stock']
     list_filter = ['supplier', 'mat_type']
     search_fields = ['name', 'supplier__business_name', 'sku_supplier', 'sku']
     actions = [print_stock_label_38x90]
@@ -120,7 +120,7 @@ class ProductModelPatternAdmin(admin.ModelAdmin):
 
 class UmbrellaProductAdmin(admin.ModelAdmin):    
     list_display = ['__unicode__','base_sku', 'active', 'complete', 'get_umbrella_product_model_number', 'number_of_sizes']
-    list_filter = ['collection', 'colour', 'umbrella_product_model__product_type', 'umbrella_product_model__number', 'complete']
+    list_filter = ['collection', 'collection__number','colour', 'umbrella_product_model__product_type', 'umbrella_product_model__number', 'complete']
     inlines = [ProductInline, UmbrellaProductBillOfMaterialInline, UmbrellaProductImageInline]
     readonly_fields = ['cost']
     actions = [print_production_notes_for_umbrella_product_EN, print_production_notes_for_umbrella_product_CZ]    

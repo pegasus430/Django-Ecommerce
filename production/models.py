@@ -100,7 +100,7 @@ class ProductionOrderDeliveryItem(models.Model):
 
 class ProductionOrderDelivery(models.Model):
     production_order = models.ForeignKey(ProductionOrder)
-    carrier = models.CharField(max_length=3)
+    carrier = models.CharField(max_length=20)
     cost_of_transport = models.FloatField(default=0)
     number_of_pallets = models.IntegerField(default=0)
     est_delivery_date = models.DateField()

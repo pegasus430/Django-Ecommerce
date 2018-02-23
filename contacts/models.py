@@ -204,11 +204,11 @@ class Relation(AbstractAddress):
         if self.custom_price_list is None:
             try:
                 return PriceList.objects.get(currency=self.currency,
-                    customer_type=self.customer_type, country=self.country)
+                    customer_type=self.customer_type, country=self.country, is_default=True)
             except PriceList.DoesNotExist:
                 try:
                     return PriceList.objects.get(currency=self.currency,
-                    customer_type=self.customer_type, country=None)
+                    customer_type=self.customer_type, country=None, is_default=True)
                 except PriceList.DoesNotExist:
                     return PriceList.objects.get(is_default=True)
         else:

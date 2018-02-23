@@ -4,12 +4,15 @@ from reportlab.lib.units import mm
 from reportlab.graphics.barcode import eanbc
 from reportlab.graphics.shapes import Drawing, Line
 from reportlab.graphics import renderPDF
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle, PageBreak, Spacer
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle, PageBreak,\
+    Spacer, Image
 from reportlab.lib import colors
 from reportlab.graphics.barcode.eanbc import Ean13BarcodeWidget
 from reportlab.platypus import Flowable
 
 from .stylesheets import stylesheet, stylesheet_washinglabels, stylesheet_labels
+
+from defaults.helpers import get_aspect_ratio_from_image_object
 
 from io import BytesIO
 
@@ -136,11 +139,23 @@ def washinglabel(product):
     table.setStyle(style)
     elements.append(table)    
 
-    elements.append(Spacer(30*mm, 15*mm))
+    if product.umbrella_product.custom_label_logo is None:
+        elements.append(Spacer(30*mm, 15*mm))
+    else:
+        elements.append(Spacer(30*mm, 12*mm))
     elements.append(BarCode(value=product_ean, ratio=0.9))
     elements.append(Spacer(30*mm, 10*mm))
-    elements.append(Paragraph(product_title, styles['Bold']))
-    elements.append(Paragraph(product_colour, styles['NormalSmall']))
+
+    if product.umbrella_product.custom_label_logo is None:
+        elements.append(Paragraph(product_title, styles['Bold']))
+        elements.append(Paragraph(product_colour, styles['NormalSmall']))
+    else:
+        logo = product.umbrella_product.custom_label_logo.custom_label_logo_optimised
+        logo_path = logo.path
+        aspect = get_aspect_ratio_from_image_object(logo)
+        elements.append(Image(logo_path, 25*mm, 25*mm * aspect))
+        elements.append(Paragraph(product_title, styles['Bold']))
+
     elements.append(Paragraph(product_size, styles['NormalSmall']))
     elements.append(Paragraph(product_sku, styles['NormalSmall']))
 

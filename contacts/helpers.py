@@ -4,6 +4,8 @@ from defaults.helpers import dynamic_file_httpresponse
 from sales.reports import export_product_datafile
 from sales.models import PriceList 
 
+from pricelists.helpers import export_pricelist_csv
+
 import logging
 logger = logging.getLogger(__name__)
 
@@ -40,14 +42,21 @@ def print_address_label_admin(relations):
 
 
 
-def export_datafile_for_customer_admin(relations):
+def export_datafile_for_customer_admin(relations, active_only):
     exported_files = {}
     for relation in relations:
-        pricelist = PriceList.objects.get(currency=relation.currency, 
-            customer_type=relation.customer_type)
-        exported_files['{} product file.csv'.format(relation)] = export_product_datafile(pricelist)
+        # pricelist = PriceList.objects.get(currency=relation.currency, 
+        #     customer_type=relation.customer_type)
+        exported_files['{} product file.csv'.format(relation)] = export_product_datafile(relation.price_list, active_only=active_only)
 
     return dynamic_file_httpresponse(exported_files, u'data_files_csv')
+
+def export_pricelist_for_customer_admin(relations):
+    exported_files = {}
+    for relation in relations:
+        exported_files['{} price list.csv'.format(relation)] = export_pricelist_csv(relation.price_list)
+
+    return dynamic_file_httpresponse(exported_files, u'price_lists_csv')
 
 
 ### admin helpers ###
@@ -56,5 +65,13 @@ def print_address_label(modeladmin, request, queryset):
 print_address_label.short_description = 'Print address labels'
 
 def export_datafile_for_customer(modeladmin, request, queryset):
-    return export_datafile_for_customer_admin(queryset)
+    return export_datafile_for_customer_admin(queryset, active_only=True)
 export_datafile_for_customer.short_description = 'Export product data-files in csv'
+
+def export_datafile_for_customer_inactive_only(modeladmin, request, queryset):
+    return export_datafile_for_customer_admin(queryset, active_only=False)
+export_datafile_for_customer_inactive_only.short_description = 'Export product data-files in csv including inactive'
+
+def export_pricelist_for_customer(modeladmin, request, queryset):
+    return export_pricelist_for_customer_admin(queryset)
+export_pricelist_for_customer.short_description = 'Export pricelist in csv'

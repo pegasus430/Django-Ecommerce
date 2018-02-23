@@ -21,12 +21,12 @@ logger = logging.getLogger(__name__)
 
 
 
-def export_pricelist_csv(pricelist, include_cost=False):
+def export_pricelist_csv(pricelist, include_cost=False, active_only=True):
     ''' export a pricelist to csv'''
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="pricelist_suzys.csv"'
 
-    data = get_pricelist_price_data(pricelist, include_cost=include_cost)
+    data = get_pricelist_price_data(pricelist, include_cost=include_cost, active_only=active_only)
 
     c = csv.DictWriter(response, fieldnames=data[0].keys(), delimiter=';')
     c.writeheader()
@@ -35,7 +35,7 @@ def export_pricelist_csv(pricelist, include_cost=False):
     return response
 
 
-def export_pricelist_pdf(pricelist, include_stock=False):
+def export_pricelist_pdf(pricelist, include_stock=False, active_only=True):
     ''' export a pricelist to pdf '''
     # Create the HttpResponse object with the appropriate PDF headers.
     document = SuzysDocument()
@@ -51,7 +51,7 @@ def export_pricelist_pdf(pricelist, include_stock=False):
         )
 
     document.add_heading('Products available')
-    table_data_dict = get_pricelist_price_data(pricelist, include_stock=include_stock)
+    table_data_dict = get_pricelist_price_data(pricelist, include_stock=include_stock, active_only=active_only)
     table_data = []
     table_data.append(table_data_dict[0].keys())
     logger.debug('header looks like {}'.format(table_data))

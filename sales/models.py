@@ -68,12 +68,15 @@ class SalesOrder(models.Model):
         ('PS', 'Pending Shipping'),
         ('PD', 'Partially Shipped'),
         ('SH', 'Shipped'),
+        ('CA', 'Cancelled'),
+        ('RF', 'Refunded'),
     )
 
     client = models.ForeignKey(Relation,  limit_choices_to={'is_client': True})
     client_reference = models.CharField(max_length=15, blank=True, null=True)
     ship_to = models.ForeignKey(RelationAddress, related_name='ship_to')
     transport_cost = models.FloatField(blank=True, null=True)
+    sample_order = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -337,7 +340,7 @@ class CommissionNote(models.Model):
 
     def create_items(self):
         for relation in self.agent.relation_set.all().filter(salesorder__is_paid=True, 
-                salesorder__paid_commission=False):
+                salesorder__paid_commission=False, salesorder__sample_order=False):
             for order in relation.salesorder_set.filter(is_paid=True, paid_commission=False):
                 CommissionNoteItem.objects.create(
                     commission_note=self,

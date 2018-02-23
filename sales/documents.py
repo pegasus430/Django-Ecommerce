@@ -57,6 +57,7 @@ def customs_invoice(sales_order_shipment):
     customs_regulations_russia/export_import_guidelines_to_russia.pdf
     '''
     sales_order = sales_order_shipment.sales_order
+    sample_shipment= sales_order.sample_order
     sales_order_shipment_items = sales_order_shipment.salesorderdeliveryitem_set.all()
 
     document = SuzysDocument()
@@ -64,13 +65,21 @@ def customs_invoice(sales_order_shipment):
     # 3 copies needed
     for i in range(0,3):
         ## Title
-        document.add_title('Commercial Invoice')
+        if not sample_shipment:
+            document.add_title('Commercial Invoice')
+        else:
+            document.add_title('Proforma Invoice')
 
         ## Invoice info
+        if not sample_shipment:
+            payment_terms = sales_order.payment_terms
+        else:
+            payment_terms = 'Samples Free of charge'
+
         table_data = [[u'Invoice number: {} {}'.format(sales_order.invoice_number, sales_order_shipment._shipment_reference()),
             u'Invoice date: {}'.format(sales_order.created_at.strftime('%d/%m/%Y')),
             u'Delivery terms: DAP {}'.format(sales_order.ship_to.city),
-            u'Payment terms: {}'.format(sales_order.payment_terms),
+            u'Payment terms: {}'.format(payment_terms),
             ]]
         document.add_table(table_data, [1.0/len(table_data[0])]*len(table_data[0]), 
             bold_header_row=False, line_under_header_row=False, box_line=True)
@@ -99,12 +108,21 @@ def customs_invoice(sales_order_shipment):
         table_data.append(['', '', '', '', '', ''])    
         table_data.append(['<b>Total price EUR</b>', total_shipment_value, '', '', '', ''])
         table_data.append(['<b>Freight cost EUR</b>', sales_order.transport_cost, '', '', '', ''])
-        table_data.append(['<b>Total for payment EUR</b>', 
-            total_shipment_value + sales_order.transport_cost,
-            '', '', '', ''])
+        if not sample_shipment:
+            table_data.append(['<b>Total for payment EUR</b>', 
+                total_shipment_value + sales_order.transport_cost,
+                '', '', '', ''])
+        else:
+            table_data.append(['<b>Total for payment EUR</b>', 
+                0.0,
+                '', '', '', ''])
+
         # table_data.append(['', '', '', '', '', ''])    
         # table_data.append(['<b>Gross Weight</b>', '', '', '', '', ''])    
         document.add_table(table_data, table_columns_width)
+
+        if sample_shipment:
+            document.add_heading('FREE OF CHARGE DELIVERY - SAMPLES FOR MARKETING')
 
         document.add_page_break()
 

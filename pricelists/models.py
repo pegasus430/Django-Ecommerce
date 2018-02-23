@@ -51,8 +51,8 @@ class PriceList(models.Model):
     @property 
     def name(self):
         # return u'Pricelist {}'.format(self.updated_at.strftime('%Y-%m-%d'))
-        # if self.reference is not None:
-        #     return u'{} {}'.format(self.reference, self.get_currency_display())
+        if self.remarks is not None:
+            return u'{} {}'.format(self.remarks, self.get_currency_display())
             
         if self.country is not None:
             return u'{} {} {}'.format(self.get_customer_type_display(), self.get_currency_display(),
@@ -62,14 +62,6 @@ class PriceList(models.Model):
 
     def __unicode__(self):
         return self.name
-
-    # def save(self, *args, **kwargs):
-    #     ## Add all products to pricelist upon initialising
-    #     if not self.pk:
-    #         super(PriceList, self).save(*args, **kwargs)
-    #         for product in Product.objects.filter(active=True):
-    #             PriceListItem.objects.create(price_list=self, product=product)
-    #     super(PriceList, self).save(*args, **kwargs)
 
 
 class PriceListItem(models.Model):

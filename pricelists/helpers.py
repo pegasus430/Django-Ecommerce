@@ -25,11 +25,11 @@ def set_prices(pricelist_item):
     return pricelist_item.save()
 
 
-def export_pricelist_pdf_admin(pricelists, include_stock=False):
+def export_pricelist_pdf_admin(pricelists, include_stock=False, active_only=True):
     if include_stock:
-        items = {'Price- and stocklist {}.pdf'.format(pr.name): export_pricelist_pdf(pr, include_stock) for pr in pricelists}
+        items = {'Price- and stocklist {}.pdf'.format(pr.name): export_pricelist_pdf(pr, include_stock, active_only) for pr in pricelists}
     else:
-        items = {'Pricelist {}.pdf'.format(pr.name): export_pricelist_pdf(pr, include_stock) for pr in pricelists}
+        items = {'Pricelist {}.pdf'.format(pr.name): export_pricelist_pdf(pr, include_stock, active_only) for pr in pricelists}
     return dynamic_file_httpresponse(items, 'Price Lists')
 
 #####################
@@ -65,6 +65,10 @@ def export_pricelist_pdf_admin_action(modeladmin, request, queryset):
     return export_pricelist_pdf_admin(queryset, include_stock=False)
 export_pricelist_pdf_admin_action.short_description = 'Export pricelist to pdf'
 
+def export_pricelist_pdf_all_admin_action(modeladmin, request, queryset):
+    return export_pricelist_pdf_admin(queryset, include_stock=False, active_only=False)
+export_pricelist_pdf_all_admin_action.short_description = 'Export pricelist to pdf including inactive'
+
 def export_price_stocklist_pdf_admin_action(modeladmin, request, queryset):
     return export_pricelist_pdf_admin(queryset, include_stock=True)
 export_price_stocklist_pdf_admin_action.short_description = 'Export price- and stocklist to pdf'
@@ -73,6 +77,11 @@ def export_pricelist_csv_admin_action(modeladmin, request, queryset):
     for q in queryset:
         return export_pricelist_csv(q)
 export_pricelist_csv_admin_action.short_description = 'Export pricelist to csv'
+
+def export_pricelist_csv_all_admin_action(modeladmin, request, queryset):
+    for q in queryset:
+        return export_pricelist_csv(q, active_only=False)
+export_pricelist_csv_all_admin_action.short_description = 'Export pricelist to csv including non-active'
 
 def export_costlist_csv_admin_action(modeladmin, request, queryset):
     for q in queryset:

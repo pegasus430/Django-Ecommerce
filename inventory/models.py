@@ -205,7 +205,8 @@ class Size(models.Model):
     '''Product sizes'''
     full_size = models.CharField(max_length=20)
     short_size = models.CharField(max_length=3)
-    measurements = models.TextField(verbose_name='Describe target group measurements')
+    measurements = models.TextField(verbose_name='Describe target group measurements', blank=True,
+        null=True)
 
     def __unicode__(self):
         return self.full_size
@@ -237,7 +238,10 @@ class UmbrellaProductModel(models.Model):
         ('JA', 'Jacket'),
         ('SW', 'Sweater'),
         ('CU', 'Cushion'),
+        ('PB', 'Poop Bag'),
         ('HA', 'Handbag'),
+        ('TW', 'Table Ware'),
+        ('BE', 'Beach Items'),
     )
     name = models.CharField(max_length=100)
     number = models.CharField(max_length=10, unique=True)
@@ -367,6 +371,7 @@ class UmbrellaProduct(models.Model):
     ACCOUNT_CODE_CHOICES = (
         ('212', 'Suzy\'s range'),
         ('211', 'Suzy\'s custom range'),
+        ('214', 'Beach Products'),
     )
 
     name = models.CharField(max_length=50)
@@ -374,6 +379,7 @@ class UmbrellaProduct(models.Model):
     collection = models.ForeignKey(Collection)
     umbrella_product_model = models.ForeignKey(UmbrellaProductModel)
     colour = models.ForeignKey(Colour)
+    custom_label_logo = models.ForeignKey('logos.LabelLogo', blank=True, null=True)
     accounting_code = models.CharField(max_length=20, default='212', choices=ACCOUNT_CODE_CHOICES)
     export_hs_code = models.CharField(max_length=8, blank=True, null=True, 
         verbose_name='HS Code for export.')

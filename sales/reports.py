@@ -15,6 +15,8 @@ import json
 import datetime
 
 from .reports_helpers import *
+## HACK FIXME, all data should be in right place
+from pricelists.reports_helpers import *
 
 import logging
 logger = logging.getLogger(__name__)
@@ -34,7 +36,7 @@ def export_stocklist_datafile(pricelist, format):
         return f.getvalue()
 
 
-def export_product_datafile(pricelist):
+def export_product_datafile(pricelist, active_only=True):
     '''export a csv with all the data needed to add a product to the store:
     - sku
     - brand
@@ -49,7 +51,12 @@ def export_product_datafile(pricelist):
     data = []
     fields = ['sku', 'brand','product_type' , 'name', 'size', 'size_info', 
         'ean_code', 'rrp', 'currency', 'description', 'images']
-    for item in pricelist.pricelistitem_set.filter(product__active=True).order_by('product__sku'):
+    if active_only:
+        items = pricelist.pricelistitem_set.filter(product__active=True).order_by('product__sku')
+    else:
+        items = pricelist.pricelistitem_set.all().order_by('product__sku')
+        
+    for item in items:
         try:
             d = {}
             d['sku'] = item.product.sku

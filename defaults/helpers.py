@@ -28,7 +28,7 @@ def multiple_files_to_zip_httpresponse(files, zip_filename):
             zf.writestr(k, v)
     
     response = HttpResponse(outfile.getvalue(), content_type="application/octet-stream")
-    response['Content-Disposition'] = 'attachment; filename={}.zip'.format(zip_filename)
+    response['Content-Disposition'] = u'attachment; filename={}.zip'.format(zip_filename)
     return response
 
 
@@ -51,7 +51,7 @@ def single_file_httpresponse(filedata, filename):
         raise Exception('Content-Type for extension {} unkown'.format(extension))
 
     response = HttpResponse(content_type=content_type)
-    response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
+    response['Content-Disposition'] = u'attachment; filename="{}"'.format(filename)
 
     response.write(filedata)
     return response
@@ -70,3 +70,7 @@ def dynamic_file_httpresponse(files, zip_filename):
         return single_file_httpresponse(filedata, filename)
     else:
         return multiple_files_to_zip_httpresponse(files, zip_filename)
+
+
+def get_aspect_ratio_from_image_object(image):
+    return image.height / float(image.width)
