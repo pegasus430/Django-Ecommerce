@@ -70,7 +70,7 @@ def update_or_create_product(magento, price_list_item):
     sila_images_to_upload = [i.image.path for i in sila_image_object_list\
         if extract_filename(i.image.url) not in magento_image_name_list]
     
-    logger.debug('Uploading new images for {} ({})'.format(sku), sila_images_to_upload)
+    logger.debug('Uploading new images for {} ({})'.format(sku,sila_images_to_upload))
     magento.product_image_create(sku, sila_images_to_upload)
     # for i in sila_image_object_list:
     #     if extract_filename(i.image.url) not in magento_image_name_list:
