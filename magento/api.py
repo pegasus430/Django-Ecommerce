@@ -10,7 +10,7 @@ import sys
 import logging
 
 from django.conf import settings
-from .exceptions import ProductExists
+from .exceptions import ProductExists, ProductDoesNotExist
 
 reload(sys)
 sys.setdefaultencoding('UTF8')
@@ -66,6 +66,8 @@ class MagentoServer:
             elif error <= max_error:
                 error += 1
                 return self.call(c, f, error)
+            elif 'Product not exists' in e.faultString:
+                raise ProductDoesNotExist
             else:
                 raise (e, c, f)
 

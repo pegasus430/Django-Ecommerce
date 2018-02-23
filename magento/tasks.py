@@ -3,7 +3,7 @@ from huey.contrib.djhuey import db_task, db_periodic_task
 
 from .api import MagentoServer
 from .helpers import CompileMagentoProduct, comparable_dict, extract_filename
-from .exceptions import ProductExists
+from .exceptions import ProductExists, ProductDoesNotExist
 
 from inventory.models import Product
 from pricelists.models import PriceList
@@ -63,19 +63,26 @@ def update_or_create_product(magento, price_list_item):
 
     # Step 3, upload new pictures if needed
     logger.debug('Comparing known images for {}'.format(sku))
-    magento_image_name_list = [extract_filename(i['url']) for \
-        i in magento.product_image_list(sku)]
-    
-    sila_image_object_list = compiler.umbrella_product.umbrellaproductimage_set.all()
-    sila_images_to_upload = [i.image.path for i in sila_image_object_list\
-        if extract_filename(i.image.url) not in magento_image_name_list]
-    
-    logger.debug('Uploading new images for {} ({})'.format(sku,sila_images_to_upload))
-    magento.product_image_create(sku, sila_images_to_upload)
-    # for i in sila_image_object_list:
-    #     if extract_filename(i.image.url) not in magento_image_name_list:
-    #         sila_images_to_upload.append(i.image.path)
 
+    try:
+        magento.get_product_info(sku)
+        magento_image_name_list = [extract_filename(i['url']) for \
+            i in magento.product_image_list(sku)]
+        
+        sila_image_object_list = compiler.umbrella_product.umbrellaproductimage_set.all()
+        sila_images_to_upload = [i.image.path for i in sila_image_object_list\
+            if extract_filename(i.image.url) not in magento_image_name_list]
+        
+        logger.debug('Uploading new images for {} ({})'.format(sku,sila_images_to_upload))
+        magento.product_image_create(sku, sila_images_to_upload)
+        # for i in sila_image_object_list:
+        #     if extract_filename(i.image.url) not in magento_image_name_list:
+        #         sila_images_to_upload.append(i.image.path)
+
+    except ProductDoesNotExist:
+        logger.info('Unknown product {}, skipping images'.format(sku))
+        pass
+    
 
 
 def update_or_create_products():
