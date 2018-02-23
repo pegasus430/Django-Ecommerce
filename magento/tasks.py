@@ -63,7 +63,7 @@ def update_or_create_product(magento, price_list_item):
         # Step 3, upload new pictures if needed
         logger.debug('Comparing known images for {}'.format(sku))
         magento_image_name_list = [extract_filename(i['url']) for \
-            i in magento.product_image_list(self.umbrella_product.base_sku)]
+            i in magento.product_image_list(sku)]
         
         sila_image_object_list = compiler.umbrella_product.umbrellaproductimage_set.all()
         sila_images_to_upload = [i.image.path for i in sila_image_object_list\
