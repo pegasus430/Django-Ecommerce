@@ -241,7 +241,7 @@ class MagentoServer:
         return [i['url'] for i in self.call('catalog_product_attribute_media.list', [product_id])]
 
 
-    def product_image_create(self, sku, image_url_list):
+    def product_image_create(self, sku, image_url_list, force_main_image=False):
         '''
         Upload an image to magento, from a list of urls.
         http://devdocs.magento.com/guides/m1x/api/soap/catalog/catalogProductAttributeMedia/productImages.html
@@ -276,8 +276,11 @@ class MagentoServer:
                     'mime': mime,
                 },
                 'exclude': 0,  ## Always show the image.
-                'types': ['thumbnail', 'small_image', 'image']
+                'types': [],
             }
+
+            if force_main_image:
+                img_data['types'] = ['thumbnail', 'small_image', 'image']
 
             self.call('product_media.create', [sku, img_data])
 
