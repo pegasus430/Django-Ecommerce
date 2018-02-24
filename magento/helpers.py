@@ -131,6 +131,12 @@ class CompileMagentoProduct:
 
         }]
 
+    def config_item_update(self):
+        ptype, set_id, sku, data = self.config_item()
+        del data['name']
+
+        return [sku, data]
+
     def config_item_image_url_list(self):
         compiler.umbrella_product.umbrellaproductimage_set.all()
         return 

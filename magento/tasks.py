@@ -58,6 +58,7 @@ def update_or_create_product(magento, price_list_item):
             logger.info('Created Config Product {} with magento id {}'.format(sku, sku_id))
         except ProductExists:
             logger.debug('Failed to create {}, already exists. Trying update'.format(sku))
+            sku, data = compiler.config_item_update()
             response = magento.product_update(sku, data)
             logger.info('Update config product {}, and got status {}'.format(sku, response))
         except Exception as e:
