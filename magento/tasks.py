@@ -85,12 +85,13 @@ def update_or_create_product(magento, price_list_item):
                             sila_img.image.path, mag_image_link))
                         if urllib2.urlopen(mag_image_link).read() == sila_img_data:
                             match = True
-                            logger.debug('Match found.')
 
                 if not match:
                     if sila_img.is_main_image:
+                        logger.debug('Found main img {}'.format(sila_img.image.path))
                         sila_main_images_to_upload.append(sila_img.image.path)
                     else:
+                        logger.debug('Found normal img {}'.format(sila_img.image.path))
                         sila_images_to_upload.append(sila_img.image.path)
 
             # Set a default main img if none is assigned:
@@ -103,8 +104,8 @@ def update_or_create_product(magento, price_list_item):
 
             logger.debug('Uploading new images for {} ({})'.format(sku,sila_images_to_upload))
             magento.product_image_create(sku, sila_images_to_upload)
-            logger.debug('Uploading new main images for {} ({})'.format(sku,sila_images_to_upload))
-            magento.product_image_create(sku, sila_images_to_upload, force_main_image=True)
+            logger.debug('Uploading new main images for {} ({})'.format(sku,sila_main_images_to_upload))
+            magento.product_image_create(sku, sila_main_images_to_upload, force_main_image=True)
             # for i in sila_image_object_list:
             #     if extract_filename(i.image.url) not in magento_image_name_list:
             #         sila_images_to_upload.append(i.image.path)
