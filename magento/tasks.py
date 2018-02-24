@@ -66,6 +66,7 @@ def update_or_create_product(magento, price_list_item):
         logger.debug('Comparing known images for {}'.format(sku))
         try:
             magento.get_product_info(sku)
+            logger.debug('Img links:{}'.format(magento.product_image_list(sku)))
             magento_images = [urllib2.urlopen(i).read() for \
                 i in magento.product_image_list(sku)]
             
