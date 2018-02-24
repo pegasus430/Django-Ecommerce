@@ -10,6 +10,7 @@ import sys
 import logging
 
 from django.conf import settings
+from .exceptions import ProductExists, ProductDoesNotExist
 
 reload(sys)
 sys.setdefaultencoding('UTF8')
@@ -60,11 +61,13 @@ class MagentoServer:
             if 'Session expired' in str(e) and error <= max_error:
                 error += 1
                 # self.__init__(self.environment)
-                self.__init__(self.config)
+                self.__init__()
                 return self.call(c, f, error)
             elif error <= max_error:
                 error += 1
                 return self.call(c, f, error)
+            elif 'Product not exists' in e.faultString:
+                raise ProductDoesNotExist
             else:
                 raise (e, c, f)
 
@@ -106,6 +109,7 @@ class MagentoServer:
 
     def update(self, product):
         ''' update the product with the given dict '''
+        ''' should be replaced by product_update'''
         try:
             stock = product['stock']
             stock['sku'] = product['sku']
@@ -210,11 +214,34 @@ class MagentoServer:
         http://devdocs.magento.com/guides/m1x/api/soap/catalog/catalogProduct/catalog_product.create.html
         http://www.bubblecode.net/en/2012/04/20/magento-api-associate-simple-products-to-configurable-or-grouped-product/
         '''
-        result = self.call('catalog_product.create', [product_type, attribute_set, sku, data])
-        return result
+        try:
+            result = self.call('catalog_product.create', [product_type, attribute_set, sku, data])
+            return result
+        except Exception as e:
+            if '''The value of attribute "SKU" must be unique''' in e.faultString:
+                raise ProductExists
+            else:
+                raise
 
 
-    def product_image_create(self, sku, image_url_list):
+    def product_update(self, sku, data):
+        ''' update the product with the given dict '''
+        ''' should be replaced by product_update'''
+        try:
+            stock = data['stock']
+            self.update_stock(sku, stock)
+        except KeyError:
+            pass
+
+        return self.call('catalog_product.update', [sku, data])        
+
+
+    def product_image_list(self, sku):
+        product_id = self.get_product_info(sku)['product_id']
+        return [i['url'] for i in self.call('catalog_product_attribute_media.list', [product_id])]
+
+
+    def product_image_create(self, sku, image_url_list, force_main_image=False):
         '''
         Upload an image to magento, from a list of urls.
         http://devdocs.magento.com/guides/m1x/api/soap/catalog/catalogProductAttributeMedia/productImages.html
@@ -249,8 +276,11 @@ class MagentoServer:
                     'mime': mime,
                 },
                 'exclude': 0,  ## Always show the image.
-                'types': ['thumbnail', 'small_image', 'image']
+                'types': [],
             }
+
+            if force_main_image:
+                img_data['types'] = ['thumbnail', 'small_image', 'image']
 
             self.call('product_media.create', [sku, img_data])
 
