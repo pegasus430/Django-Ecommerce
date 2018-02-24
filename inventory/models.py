@@ -472,13 +472,13 @@ class UmbrellaProduct(models.Model):
 
 class UmbrellaProductImage(models.Model):
     ''' product image'''
-    description = models.CharField(max_length=100)
+    description = models.CharField(max_length=100, blank=True, null=True)
     image = models.ImageField(upload_to='media/products/%Y/%m/%d')
     is_main_image = models.BooleanField(default=False)
     product = models.ForeignKey(UmbrellaProduct)
 
     def __unicode__(self):
-        return self.description
+        return self.image.url
 
 
 class UmbrellaProductBillOfMaterial(models.Model):
