@@ -286,6 +286,25 @@ class MagentoServer:
 
         return True
 
+    def category_children(self, parent_category_id=False):
+        if not parent_category_id:
+            tree = self.call('catalog_category.tree')
+        else:
+            tree = self.call('catalog_category.tree', [parent_category_id])
+
+        return tree['children']
+
+    def category_create(self, parent_category_id, category_name):
+        post_data = {
+            'name': category_name,
+            'is_active': 1,
+            'include_in_menu': 1,
+            'available_sort_by': 'position',
+            'default_sort_by': 'position',
+            'custom_use_parent_settings': 1,
+        }
+        return self.call('catalog_category.create', [parent_category_id, post_data])
+
 
     def get_order_list(self, status=False):
         filters = {}
