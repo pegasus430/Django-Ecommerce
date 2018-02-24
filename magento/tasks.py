@@ -95,7 +95,7 @@ def update_or_create_product(magento, price_list_item):
                         sila_images_to_upload.append(sila_img.image.path)
 
             # Set a default main img if none is assigned:
-            if len(sila_main_images_to_upload):
+            if len(sila_main_images_to_upload) == 0:
                 try:
                     sila_main_images_to_upload.append(sila_images_to_upload.pop())
                 except IndexError:
