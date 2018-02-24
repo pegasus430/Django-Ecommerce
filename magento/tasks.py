@@ -74,9 +74,10 @@ def update_or_create_product(magento, price_list_item):
             sila_images_to_upload = []
 
             for sila_img in sila_image_object_list:
+                logger.debug('Trying img: {}'.format(sila_img.image.path))
                 with open(sila_img.image.path) as sila_img_data:
+                    match = False
                     for mag_image_data in magento_images:
-                        match = False
                         if mag_image_data == sila_img_data:
                             match = True
 
