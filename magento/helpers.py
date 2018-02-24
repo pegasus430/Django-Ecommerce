@@ -125,6 +125,8 @@ class CompileMagentoProduct:
             'price': self._compile_config_price(),
             'categories': self._compile_categories(),
             'associated_skus': self._compile_associated_skus(),
+            'options_container': 'container1',
+
         }]
 
     def config_item_image_url_list(self):
