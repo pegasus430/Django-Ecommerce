@@ -87,7 +87,8 @@ class CompileMagentoProduct:
         product_type_category_found = None
         
         for child in self.magento.category_children(product_type_parent_category_id):
-            if child['name'].lower() == product_type.lower():
+            if child['name'].lower() == product_type.lower() or\
+                    child['name'][0:-1].lower() == product_type.lower():
                 product_type_category_found = child['category_id']
                 logger.debug('Found product type category {}'.format(product_type_category_found))
 
