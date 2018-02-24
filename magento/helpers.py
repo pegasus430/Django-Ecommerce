@@ -34,8 +34,11 @@ class CompileMagentoProduct:
         for a in self.magento.attribute_set_list():
             if product_type.lower() == a['name'].lower():
                 attribute_set_id = a['set_id']
-            else:
-                attribute_set_id = 4 #Default
+                logger.debug('Matched set {}'.format(attribute_set_id))
+            
+        if attribute_set_id is None:
+            attribute_set_id = 4 #Default
+            logger.debug('Setting fallback'.format(attribute_set_id))
 
         logger.debug('Detected attribute_set_id {} for product_type: {}.'.format(
             attribute_set_id, product_type))
