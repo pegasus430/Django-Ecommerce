@@ -26,9 +26,11 @@ class CompileMagentoProduct:
         self.product = price_list_item.product
         self.price_list_item = price_list_item
         self.magento = MagentoServer()
+        self.product_type = self.product.umbrella_product.\
+            umbrella_product_model.get_product_type_display()
 
     def _get_attribute_set_id(self):
-        product_type = self.product.umbrella_product.umbrella_product_model.get_product_type_display()
+        product_type = self.product_type
         attribute_set_id = None
 
         for a in self.magento.attribute_set_list():
@@ -75,6 +77,43 @@ class CompileMagentoProduct:
     def _compile_associated_skus(self):
         return [i.sku for i in self.umbrella_product.product_set.all()]
 
+
+    def _compile_categories(self):
+        ''' return categories to assign and create them if needed'''
+
+        # Check for product_type info:
+        product_type = self.product_type
+        product_type_parent_category_id = '99' # limit the search for cats
+        product_type_category_found = None
+        
+        for child in self.magento.category_children(product_type_parent_category_id):
+            if child['name'].lower() == product_type.lower() or\
+                    child['name'][0:-1].lower() == product_type.lower():
+                product_type_category_found = child['category_id']
+                logger.debug('Found product type category {}'.format(product_type_category_found))
+
+        if product_type_category_found == None:
+            product_type_category_found = self.magento.category_create(
+                product_type_parent_category_id, product_type.capitalize())
+            logger.debug('Created product type category {}'.format(product_type_category_found))
+
+        # Check for collection info:
+        collection = self.umbrella_product.collection.name
+        collection_parent_category_id = '105'
+        collection_category_found = None
+
+        for child in self.magento.category_children(collection_parent_category_id):
+            if child['name'].lower() == collection.lower():
+                collection_category_found = child['category_id']
+                logger.debug('Found collection type category {}'.format(collection_category_found))
+
+        if collection_category_found == None:
+            collection_category_found = self.magento.category_create(
+                collection_parent_category_id, collection.capitalize())
+            logger.debug('Created collection type category {}'.format(collection_category_found))
+
+        return [product_type_category_found, collection_category_found]
+
     def config_item(self):
         return ['configurable', self._get_attribute_set_id(), self.umbrella_product.base_sku, {
             'name': self.umbrella_product.name,
@@ -84,6 +123,7 @@ class CompileMagentoProduct:
             'websites': self._compile_website_ids(),
             'visibility': self._compile_visibility(search=True, catalog=True),
             'price': self._compile_config_price(),
+            'categories': self._compile_categories(),
             'associated_skus': self._compile_associated_skus(),
         }]
 
