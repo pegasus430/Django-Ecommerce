@@ -51,6 +51,7 @@ def update_or_create_product(magento, price_list_item):
     # Step 2, do config item if previous simple item is the last one.
     p_type, attribute_set, sku, data = compiler.config_item()
     if compiler.simple_item_last():    
+        logger.debug('Post data for {}: {}'.format(sku, data))
         try:
             logger.debug('Trying to create config item {}'.format(sku))
             sku_id = magento.product_create(sku, attribute_set, p_type, data)
