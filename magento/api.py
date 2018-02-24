@@ -66,7 +66,7 @@ class MagentoServer:
             elif error <= max_error:
                 error += 1
                 return self.call(c, f, error)
-            elif 'Product not exists' in e.faultString:
+            elif 'Product not exists' in str(e):
                 raise ProductDoesNotExist
             else:
                 raise (e, c, f)

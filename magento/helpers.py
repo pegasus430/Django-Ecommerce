@@ -77,7 +77,6 @@ class CompileMagentoProduct:
     def _compile_associated_skus(self):
         return [i.sku for i in self.umbrella_product.product_set.all()]
 
-
     def _compile_categories(self):
         ''' return categories to assign and create them if needed'''
 
