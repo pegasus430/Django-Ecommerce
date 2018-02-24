@@ -87,9 +87,17 @@ def update_or_create_product(magento, price_list_item):
 
                 if not match:
                     if sila_img.is_main_image:
-                        sila_main_images_to_upload(sila_img.image.path)
+                        sila_main_images_to_upload.append(sila_img.image.path)
                     else:
                         sila_images_to_upload.append(sila_img.image.path)
+
+            # Set a default main img if none is assigned:
+            if len(sila_main_images_to_upload):
+                try:
+                    sila_main_images_to_upload.append(sila_images_to_upload.pop())
+                except IndexError:
+                    pass # no images for this product
+
 
             logger.debug('Uploading new images for {} ({})'.format(sku,sila_images_to_upload))
             magento.product_image_create(sku, sila_images_to_upload)
