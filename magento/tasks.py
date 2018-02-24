@@ -34,6 +34,7 @@ def update_or_create_product(magento, price_list_item):
 
     # Step 1, do simple item.
     p_type, attribute_set, sku, data = compiler.simple_item()
+    logger.debug('Post data for {}: {}'.format(sku, data))
     try:
         logger.debug('Trying to create item {}'.format(sku))
         sku_id = magento.product_create(sku, attribute_set, p_type, data)
