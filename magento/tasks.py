@@ -68,22 +68,23 @@ def update_or_create_product(magento, price_list_item):
         logger.debug('Comparing known images for {}'.format(sku))
         try:
             magento.get_product_info(sku)
-            logger.debug('Img links:{}'.format(magento.product_image_list(sku)))
-            magento_images = [urllib2.urlopen(i).read() for \
-                i in magento.product_image_list(sku)]
+            logger.debug('Known magento img links:{}'.format(magento.product_image_list(sku)))
+            magento_images = magento.product_image_list(sku)
             
             sila_image_object_list = compiler.umbrella_product.umbrellaproductimage_set.all()
             sila_images_to_upload = []
             sila_main_images_to_upload = []
 
             for sila_img in sila_image_object_list:
-                logger.debug('Trying img: {}'.format(sila_img.image.path))
                 with open(sila_img.image.path) as sila_img_f:
                     sila_img_data = sila_img_f.read()
                     match = False
-                    for mag_image_data in magento_images:
-                        if mag_image_data == sila_img_data:
+                    for mag_image_link in magento_images:
+                        logger.debug('Trying to match sila img {} with magento img {}'.format(
+                            sila_img.image.path, mag_image_link))
+                        if urllib2.urlopen(mag_image_link).read() == sila_img_data:
                             match = True
+                            logger.debug('Match found.')
 
                 if not match:
                     if sila_img.is_main_image:
