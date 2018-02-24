@@ -117,6 +117,7 @@ def update_or_create_product(magento, price_list_item):
         
 
 
+@db_periodic_task(crontab(hour='1', minute='0'))
 def update_or_create_products():
     price_list = PriceList.objects.get(currency='EUR', is_default=True)
     magento = MagentoServer()
