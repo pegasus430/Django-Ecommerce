@@ -474,6 +474,7 @@ class UmbrellaProductImage(models.Model):
     ''' product image'''
     description = models.CharField(max_length=100)
     image = models.ImageField(upload_to='media/products/%Y/%m/%d')
+    is_main_image = models.BooleanField(default=False)
     product = models.ForeignKey(UmbrellaProduct)
 
     def __unicode__(self):
