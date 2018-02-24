@@ -77,6 +77,9 @@ class CompileMagentoProduct:
     def _compile_associated_skus(self):
         return [i.sku for i in self.umbrella_product.product_set.all()]
 
+    def _compile_size(self):
+        return self.product.product_model.size_description
+
     def _compile_categories(self):
         ''' return categories to assign and create them if needed'''
 
@@ -141,6 +144,7 @@ class CompileMagentoProduct:
             'tax_class_id': self._compile_tax_class_id(),
             'websites': self._compile_website_ids(),
             'size': self.product.product_model.size.short_size,
+            'size_chart': self._compile_size(),
         }]
 
     def simple_item_last(self):
