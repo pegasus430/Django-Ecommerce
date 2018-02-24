@@ -1,6 +1,9 @@
 from .api import MagentoServer
 
 
+import logging
+logger = logging.getLogger(__name__)
+
 def comparable_dict(dict_original, dict_to_reduce):
     '''reduce a dict to a comparable item'''
     dict_to_return = {}
@@ -26,12 +29,17 @@ class CompileMagentoProduct:
 
     def _get_attribute_set_id(self):
         product_type = self.product.umbrella_product.umbrella_product_model.get_product_type_display()
+        attribute_set_id = None
 
         for a in self.magento.attribute_set_list():
-            if product_type == a['name']:
-                return a['set_id']
+            if lower(product_type) == lower(a['name']):
+                attribute_set_id = a['set_id']
             else:
-                return 4 #Default
+                attribute_set_id = 4 #Default
+
+        logger.debug('Detected attribute_set_id {} for product_type: {}.'.format(
+            attribute_set_id, product_type))
+        return attribute_set_id
 
     def _compile_status_enabled(self, status=True):
         if status:
