@@ -72,6 +72,7 @@ def update_or_create_product(magento, price_list_item):
             magento_images = magento.product_image_list(sku)
             
             sila_image_object_list = compiler.umbrella_product.umbrellaproductimage_set.all()
+            logger.debug('Known number of sila image: {}'.format(len(sila_image_object_list)))
             sila_images_to_upload = []
             sila_main_images_to_upload = []
 
