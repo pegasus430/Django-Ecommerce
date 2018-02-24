@@ -75,7 +75,8 @@ def update_or_create_product(magento, price_list_item):
 
             for sila_img in sila_image_object_list:
                 logger.debug('Trying img: {}'.format(sila_img.image.path))
-                with open(sila_img.image.path) as sila_img_data:
+                with open(sila_img.image.path) as sila_img_f:
+                    sila_img_data = sila_img_f.read()
                     match = False
                     for mag_image_data in magento_images:
                         if mag_image_data == sila_img_data:
