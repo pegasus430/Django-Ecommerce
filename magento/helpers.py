@@ -89,10 +89,12 @@ class CompileMagentoProduct:
         for child in self.magento.category_children(product_type_parent_category_id):
             if child['name'].lower() == product_type.lower():
                 product_type_category_found = child['category_id']
+                logger.debug('Found product type category {}'.format(product_type_category_found))
 
         if product_type_category_found == None:
             product_type_category_found = self.magento.category_create(
                 product_type_parent_category_id, product_type.capitalize())
+            logger.debug('Created product type category {}'.format(product_type_category_found))
 
         # Check for collection info:
         collection = self.umbrella_product.collection.name
@@ -102,10 +104,12 @@ class CompileMagentoProduct:
         for child in self.magento.category_children(collection_parent_category_id):
             if child['name'].lower() == collection.lower():
                 collection_category_found = child['category_id']
+                logger.debug('Found collection type category {}'.format(collection_category_found))
 
         if collection_category_found == None:
             collection_category_found = self.magento.category_create(
                 collection_parent_category_id, collection.capitalize())
+            logger.debug('Created collection type category {}'.format(collection_category_found))
 
         return [product_type_category_found, collection_category_found]
 
@@ -118,7 +122,7 @@ class CompileMagentoProduct:
             'websites': self._compile_website_ids(),
             'visibility': self._compile_visibility(search=True, catalog=True),
             'price': self._compile_config_price(),
-            'category_ids': self._compile_categories(),
+            'categories': self._compile_categories(),
             'associated_skus': self._compile_associated_skus(),
         }]
 
