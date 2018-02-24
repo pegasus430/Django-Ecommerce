@@ -32,7 +32,7 @@ class CompileMagentoProduct:
         attribute_set_id = None
 
         for a in self.magento.attribute_set_list():
-            if lower(product_type) == lower(a['name']):
+            if product_type.lower() == a['name'].lower():
                 attribute_set_id = a['set_id']
             else:
                 attribute_set_id = 4 #Default
