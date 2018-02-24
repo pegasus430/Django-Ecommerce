@@ -74,6 +74,7 @@ def update_or_create_product(magento, price_list_item):
             
             sila_image_object_list = compiler.umbrella_product.umbrellaproductimage_set.all()
             sila_images_to_upload = []
+            sila_main_images_to_upload = []
 
             for sila_img in sila_image_object_list:
                 logger.debug('Trying img: {}'.format(sila_img.image.path))
@@ -85,10 +86,15 @@ def update_or_create_product(magento, price_list_item):
                             match = True
 
                 if not match:
-                    sila_images_to_upload.append(sila_img.image.path)
+                    if sila_img.is_main_image:
+                        sila_main_images_to_upload(sila_img.image.path)
+                    else:
+                        sila_images_to_upload.append(sila_img.image.path)
 
             logger.debug('Uploading new images for {} ({})'.format(sku,sila_images_to_upload))
             magento.product_image_create(sku, sila_images_to_upload)
+            logger.debug('Uploading new main images for {} ({})'.format(sku,sila_images_to_upload))
+            magento.product_image_create(sku, sila_images_to_upload, force_main_image=True)
             # for i in sila_image_object_list:
             #     if extract_filename(i.image.url) not in magento_image_name_list:
             #         sila_images_to_upload.append(i.image.path)
